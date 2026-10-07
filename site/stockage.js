@@ -27,7 +27,9 @@
     try {
       r = await fetch(CFG.supabaseUrl.replace(/\/$/, "") + "/rest/v1/rpc/" + fn, {
         method: "POST",
-        headers: { "Content-Type": "application/json", apikey: CFG.supabaseAnonKey, Authorization: "Bearer " + CFG.supabaseAnonKey },
+        // Ancienne clé « anon » (un jeton JWT, « eyJ… ») : aussi en Authorization. Nouvelle clé « sb_publishable_… » : apikey seulement.
+        headers: Object.assign({ "Content-Type": "application/json", apikey: CFG.supabaseAnonKey },
+          CFG.supabaseAnonKey.startsWith("eyJ") ? { Authorization: "Bearer " + CFG.supabaseAnonKey } : {}),
         body: JSON.stringify(args)
       });
     } catch (e) { throw err("RESEAU"); }
