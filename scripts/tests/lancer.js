@@ -3,6 +3,7 @@
    node scripts/tests/lancer.js            → tout
    node scripts/tests/lancer.js profils    → joueurs tests seulement (détail des propositions)
    node scripts/tests/lancer.js aimants    → joueurs aléatoires seulement
+   node scripts/tests/lancer.js traductions → chaque texte a son anglais (site/en.js)
    Code de sortie 1 si une attente échoue : la tâche GitHub ne publie pas. */
 const { QC, chargerCatalogue } = require("./charger");
 const PROFILS = require("./profils");
@@ -124,6 +125,34 @@ if (quoi === "tout" || quoi === "stabilite") {
   if (!okA) echecs++; if (!okB) echecs++;
   console.log(`   ${okA ? "ok" : "ÉCHEC"} : une réponse secondaire changée garde au moins 2 du top 3 (${inter(t0, t1)}/3)`);
   console.log(`   ${okB ? "ok" : "ÉCHEC"} : changer complètement de couleurs change le top 3 (${3 - inter(t0, t2)}/3 changés)`);
+}
+
+/* ---------- 4. Traductions : chaque texte du quiz et du moteur a son anglais (site/en.js), avec les mêmes {variables} ---------- */
+if (quoi === "tout" || quoi === "traductions") {
+  console.log("\n=== TRADUCTIONS ===");
+  const fs = require("fs"), path = require("path"), { ROOT } = require("./charger");
+  const norm = s => String(s).replace(/\s+/g, " ").trim();
+  const EN = new Map();
+  globalThis.I18N = { ajouter: o => { for (const k in o) EN.set(norm(k), o[k]); } };
+  require(path.join(ROOT, "site", "en.js"));
+  const textes = new Set();
+  QC.CHAPITRES.forEach(c => [c.titre, c.intro].forEach(x => textes.add(x)));
+  QC.QUESTIONS.forEach(q => {
+    [q.q, q.help, q.gauche, q.droite].forEach(x => x && textes.add(x));
+    if (q.type !== "paires") (q.options || []).forEach(o => [o.l, o.d].forEach(x => x && textes.add(x)));
+  });
+  [QC.PERSONNAGES, QC.NOMS_STYLES, QC.NOMS_COULEURS].forEach(o => Object.values(o).forEach(x => textes.add(x)));
+  Object.values(QC.AVERSIONS).forEach(a => textes.add(a.l));
+  // textes passés à la traduction dans le code : QC.T("…"), t("…"), tr("…")
+  const code = ["moteur/match.js", "moteur/propositions.js", "site/commun.js", "site/quiz.js", "site/profil.js", "site/groupe.js", "site/stockage.js",
+    "index.html", "qui.html", "joueurs.html", "devine.html"].map(f => fs.readFileSync(path.join(ROOT, f), "utf8")).join("\n");
+  for (const m of code.matchAll(/\b(?:QC\.T|tr|t)\("((?:[^"\\]|\\.)+)"/g)) textes.add(m[1].replace(/\\"/g, '"'));
+  const vars = s => (String(s).match(/\{\w+\}/g) || []).sort().join(",");
+  const sansEn = [...textes].filter(x => norm(x) && !EN.has(norm(x)));
+  const malVar = [...textes].filter(x => EN.has(norm(x)) && vars(x) !== vars(EN.get(norm(x))));
+  if (sansEn.length || malVar.length) echecs++;
+  console.log(`   ${sansEn.length ? "ÉCHEC" : "ok"} : ${textes.size} textes, ${sansEn.length} sans traduction anglaise${sansEn.length ? " :\n     " + sansEn.join("\n     ") : ""}`);
+  console.log(`   ${malVar.length ? "ÉCHEC" : "ok"} : variables identiques en français et en anglais${malVar.length ? " :\n     " + malVar.join("\n     ") : ""}`);
 }
 
 console.log(echecs ? `\n${echecs} échec(s).` : "\nTous les tests passent.");

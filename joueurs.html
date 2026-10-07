@@ -108,16 +108,17 @@
 </main>
 <footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · Combos : Commander Spellbook · ©Wizards of the Coast LLC</footer>
 
+<script src="site/i18n.js"></script><script src="site/en.js"></script>
 <script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
 <script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
 <script>
 (async function () {
-  const QC = window.QC, $ = SITE.$, esc = SITE.esc;
+  const QC = window.QC, $ = SITE.$, esc = SITE.esc, tr = SITE.T;
   if (!(await SITE.demarrer("Les joueurs"))) return;
   const G = await SITE.groupe(), J = G.joueurs.slice().sort((a, b) => (!!b.reponses - !!a.reponses) || a.pseudo.localeCompare(b.pseudo));
-  $("jsub").textContent = `${J.length} JOUEURS · ${J.filter(j => j.reponses).length} PROFILS PUBLIÉS · ${G.cercles.length} GROUPE${G.cercles.length > 1 ? "S" : ""}`;
+  $("jsub").textContent = tr("{n} JOUEURS · {f} PROFILS PUBLIÉS · {g}", { n: J.length, f: J.filter(j => j.reponses).length, g: tr(SITE.pluriel(G.cercles.length) ? "{n} GROUPES" : "{n} GROUPE", { n: G.cercles.length }) });
   $("fg").innerHTML += G.cercles.map(c => `<option value="${c.id}">${esc(c.nom)}</option>`).join("");
-  $("fs").innerHTML += QC.STYLES.slice().sort((a, b) => SITE.NOM_STYLE_COURT[a].localeCompare(SITE.NOM_STYLE_COURT[b])).map(k => `<option value="${k}">Aime : ${esc(SITE.NOM_STYLE_COURT[k])}</option>`).join("");
+  $("fs").innerHTML += QC.STYLES.slice().sort((a, b) => SITE.NOM_STYLE_COURT[a].localeCompare(SITE.NOM_STYLE_COURT[b])).map(k => `<option value="${k}">${esc(tr("Aime : {s}", { s: SITE.NOM_STYLE_COURT[k] }))}</option>`).join("");
   const couleurs = new Set();
   $("fc").innerHTML += QC.COULEURS.map(c => `<button data-c="${c}" aria-pressed="false" aria-label="${QC.NOMS_COULEURS[c]}" title="${QC.NOMS_COULEURS[c]}"><img src="https://svgs.scryfall.io/card-symbols/${c}.svg" alt=""></button>`).join("");
   $("fc").querySelectorAll("button").forEach(b => b.onclick = () => { const c = b.dataset.c; couleurs.has(c) ? couleurs.delete(c) : couleurs.add(c); b.setAttribute("aria-pressed", couleurs.has(c)); filtrer(); });
@@ -129,7 +130,7 @@
       <div class="art" ${av ? `data-art="${esc(av)}"` : ""}>${av ? "" : `<span class="bigini" aria-hidden="true">${esc(j.pseudo[0])}</span>`}<div class="mh">${SITE.hex(pr && pr.P.couleurs.dit, pr && pr.P.couleurs.afficheRevele, { color: col, question: !pr })}</div></div>
       <div class="body"><b>${esc(j.pseudo)}</b><div class="t">${pr ? esc(pr.titre + " · " + (SITE.GUILDES[pr.ident] || pr.ident)) : chip}</div>
       <div class="groupes">${SITE.cerclesDe(j).map(c => `<span class="chipg">${esc(c.nom)}</span>`).join("")}</div>
-      <div class="phare"><time>${pr ? "Profil mis à jour " + SITE.depuis(j.maj) : j.reclame ? "Réclamé, en attente du quiz" : "En attente de son propriétaire"}</time></div></div></a>`;
+      <div class="phare"><time>${pr ? tr("Profil mis à jour {d}", { d: SITE.depuis(j.maj) }) : tr(j.reclame ? "Réclamé, en attente du quiz" : "En attente de son propriétaire")}</time></div></div></a>`;
   }
   function filtrer() {
     const q = norm($("q").value.trim()), g = $("fg").value, s = $("fs").value, e = $("fe").value;
@@ -142,7 +143,7 @@
       if (couleurs.size && !(pr && [...couleurs].some(c => SITE.dominante(pr.P) === c || pr.P.couleurs.final[c] >= .62))) return false;
       return true;
     });
-    $("compte").textContent = l.length === J.length ? `${J.length} joueurs` : `${l.length} joueur${l.length > 1 ? "s" : ""} sur ${J.length}`;
+    $("compte").textContent = l.length === J.length ? tr("{n} joueurs", { n: J.length }) : tr(SITE.pluriel(l.length) ? "{n} joueurs sur {t}" : "{n} joueur sur {t}", { n: l.length, t: J.length });
     $("cards").innerHTML = l.map(carte).join("") || `<p class="ph" style="grid-column:1/-1;text-align:center">Personne ne correspond à ces filtres.</p>`;
     SITE.images($("cards"));
   }

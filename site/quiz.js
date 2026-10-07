@@ -5,7 +5,8 @@
    ===================================================================== */
 (async function () {
   "use strict";
-  const QC = window.QC, ST = window.QCStock, TX = window.QUIZ_TEXTES, $ = SITE.$, esc = SITE.esc, ord = SITE.ord;
+  const QC = window.QC, ST = window.QCStock, TX = window.QUIZ_TEXTES, $ = SITE.$, esc = SITE.esc, ord = SITE.ord, tr = SITE.T;
+  I18N.table(TX.STYLE_DESC); I18N.table(TX.AVERSION_DESC);
   if (!(await SITE.demarrer("Le quiz"))) return;
   const scr = $("screen"), BROUILLON = "qc-brouillon";
   const moi = SITE.moi();
@@ -41,7 +42,7 @@
       SITE.image(s.ch.art).then(v => { if (v.art) $("bg").style.backgroundImage = `url("${v.art}")`; });
     }
     const reste = Math.max(1, Math.round((qs.length - Math.max(0, qi)) * .35));
-    $("qnum").innerHTML = qi >= 0 ? `<span class="long">Question </span>${qi + 1}<span class="long"> sur </span><span class="short"> / </span>${qs.length}<span class="long"> · environ ${reste} min</span>` : "";
+    $("qnum").innerHTML = qi >= 0 ? `<span class="long">Question </span>${qi + 1}<span class="long"> sur </span><span class="short"> / </span>${qs.length}<span class="long"> ${tr("· environ {n} min", { n: reste })}</span>` : "";
   }
   function aller(d) { clearTimeout(T); D.i = Math.max(0, Math.min(STEPS.length - 1, D.i + d)); garder(); rendre(); window.scrollTo(0, 0); }
   const repondre = (id, v) => { D.A[id] = v; garder(); };
@@ -69,7 +70,7 @@
     $("top").style.visibility = "hidden";
     SITE.image("Jace, the Mind Sculptor").then(v => { if (v.art) $("bg").style.backgroundImage = `url("${v.art}")`; });
     const b = lireBrouillon();
-    const reprendre = b && b.mode && b.i > 0 ? `<div class="reprise"><span>Tu as un quiz en cours (${b.mode === "confirme" ? "confirmé" : "découverte"}).</span><button class="btn solid" id="reprendre">Reprendre</button></div>` : "";
+    const reprendre = b && b.mode && b.i > 0 ? `<div class="reprise"><span>${tr("Tu as un quiz en cours ({m}).", { m: tr(b.mode === "confirme" ? "confirmé" : "découverte") })}</span><button class="btn solid" id="reprendre">Reprendre</button></div>` : "";
     const avant = moi && moi.reponses ? `<label class="fine" style="display:block;margin-top:16px"><input type="checkbox" id="depuisAvant"> Partir de mes réponses publiées (pour ne changer que ce qui a évolué)</label>` : "";
     scr.className = "screen in";
     scr.innerHTML = `<h1 class="q" style="font-size:clamp(2rem,6vw,3.2rem)">Le quiz</h1>
@@ -125,13 +126,13 @@
       let corps;
       if (q.art) corps = `<div class="arts">${q.options.map(o => `<button class="art" data-art="${esc(TX.PERSO_ART[o.id] || "")}" data-v="${o.id}" aria-pressed="${v.includes(o.id)}"><span class="tick"></span><span class="t"><b>${esc(o.l)}</b><small>${esc(o.d || "")}</small></span></button>`).join("")}</div>`;
       else corps = `<div class="opts">${q.options.map(o => `<button class="opt multi" data-v="${o.id}" aria-pressed="${v.includes(o.id)}"><span class="k"><span>${v.includes(o.id) ? "✓" : ""}</span></span><span>${q.type === "paires" ? SITE.pips(o.id, 18) + " " + esc(TX.GUILDES_PAIRES[o.id]) : esc(o.l)}</span></button>`).join("")}</div>`;
-      scr.innerHTML = entete(q) + corps + `<div class="count">${v.length} / ${q.max} choisi${v.length > 1 ? "s" : ""}</div>` + pied(v.length > 0);
+      scr.innerHTML = entete(q) + corps + `<div class="count">${tr(SITE.pluriel(v.length) ? "{n} / {m} choisis" : "{n} / {m} choisi", { n: v.length, m: q.max })}</div>` + pied(v.length > 0);
       scr.querySelectorAll("[data-v]").forEach(b => b.onclick = () => basculer(b.dataset.v));
       brancherPied(); SITE.images(scr);
     },
     echelle(q) {
       const v = D.A[q.id];
-      scr.innerHTML = entete(q) + `<div class="scale"><div class="track" role="radiogroup" aria-label="${esc(q.q)}">${[1, 2, 3, 4, 5].map(n => `<button class="dot" role="radio" aria-label="${n} sur 5" aria-checked="${v === n}" aria-pressed="${v === n}" data-v="${n}"></button>`).join("")}</div>
+      scr.innerHTML = entete(q) + `<div class="scale"><div class="track" role="radiogroup" aria-label="${esc(q.q)}">${[1, 2, 3, 4, 5].map(n => `<button class="dot" role="radio" aria-label="${tr("{n} sur 5", { n })}" aria-checked="${v === n}" aria-pressed="${v === n}" data-v="${n}"></button>`).join("")}</div>
         <div class="ends"><span>${esc(q.gauche)}</span><span>${esc(q.droite)}</span></div></div>` + pied(!!v);
       scr.querySelectorAll(".dot").forEach(b => b.onclick = () => { repondre(q.id, +b.dataset.v); rendre(); focusSuivant(); });
       brancherPied();
@@ -154,12 +155,12 @@
     },
     couleurs(q) {
       const v = D.A[q.id] && typeof D.A[q.id] === "object" ? D.A[q.id] : {};
-      const COLS = [["W", "Blanc"], ["U", "Bleu"], ["B", "Noir"], ["R", "Rouge"], ["G", "Vert"], ["C", "Incolore"]];
+      const COLS = [["W", "Blanc"], ["U", "Bleu"], ["B", "Noir"], ["R", "Rouge"], ["G", "Vert"], ["C", "Incolore"]].map(([c, l]) => [c, tr(l)]);
       const LV = [[0, "Jamais"], [1, "Bof"], [2, "Bien"], [3, "J'adore"]];
       const complet = COLS.every(([c]) => v[c] !== undefined);
       scr.innerHTML = entete(q) + `<div class="cgrid">${COLS.map(([c, l]) => `<div class="crow"><img src="https://svgs.scryfall.io/card-symbols/${c}.svg" alt=""><b>${l}</b>
         <div class="lv" role="radiogroup" aria-label="${l}">${LV.map(([n, t]) => `<button role="radio" class="${n === 0 ? "never" : ""}" aria-checked="${v[c] === n}" aria-pressed="${v[c] === n}" data-c="${c}" data-n="${n}">${t}</button>`).join("")}</div>
-        <button class="star" aria-label="Coup de cœur : ${l}" aria-pressed="${v.star === c}" data-c="${c}">★</button></div>`).join("")}</div>` + pied(complet, { idk: false });
+        <button class="star" aria-label="${tr("Coup de cœur : {c}", { c: l })}" aria-pressed="${v.star === c}" data-c="${c}">★</button></div>`).join("")}</div>` + pied(complet, { idk: false });
       scr.querySelectorAll(".lv button").forEach(b => b.onclick = () => { v[b.dataset.c] = +b.dataset.n; if (v.star === b.dataset.c && +b.dataset.n < 3) delete v.star; repondre(q.id, v); rendre(); });
       scr.querySelectorAll(".star").forEach(b => b.onclick = () => { v.star = v.star === b.dataset.c ? undefined : b.dataset.c; if (v.star) v[v.star] = 3; repondre(q.id, v); rendre(); });
       brancherPied();
@@ -168,14 +169,14 @@
     plans(q) { RENDUS.multi(q); },
     tribus(q) {
       let v = Array.isArray(D.A[q.id]) ? D.A[q.id].slice() : [];
-      const fr = Object.fromEntries(TX.TRIBUS.map(([f, e]) => [e, f]));
+      const fr = Object.fromEntries(TX.TRIBUS.map(([f, e]) => [e, tr(f)])); // nom affiché de chaque type (pluriel, dans la langue du site)
       const tous = Object.keys(QC.D.typeColor).sort();
       const basculer = t => { if (v.includes(t)) v = v.filter(x => x !== t); else if (v.length < q.max) v.push(t); repondre(q.id, v.slice()); dessiner(); };
       const dessiner = () => {
-        scr.innerHTML = entete(q) + `<div class="chips">${TX.TRIBUS.filter(([, e]) => tous.includes(e)).map(([f, e]) => `<button class="chip-b" aria-pressed="${v.includes(e)}" data-t="${e}">${esc(f)}</button>`).join("")}</div>
+        scr.innerHTML = entete(q) + `<div class="chips">${TX.TRIBUS.filter(([, e]) => tous.includes(e)).map(([f, e]) => `<button class="chip-b" aria-pressed="${v.includes(e)}" data-t="${e}">${esc(fr[e])}</button>`).join("")}</div>
           <div class="search"><input id="tq" placeholder="Un autre type ? (noms anglais : Treefolk, Ooze, Kraken…)" aria-label="Chercher un type de créature" autocomplete="off"><ul class="sugg" id="ts"></ul></div>
-          <div class="picked">${v.map(t => `<span>${esc(fr[t] || t)} <button aria-label="Retirer ${esc(fr[t] || t)}" data-t="${esc(t)}">✕</button></span>`).join("")}</div>
-          <div class="count">${v.length} / ${q.max} choisi${v.length > 1 ? "s" : ""}</div>` + pied(v.length > 0);
+          <div class="picked">${v.map(t => `<span>${esc(fr[t] || t)} <button aria-label="${esc(tr("Retirer {x}", { x: fr[t] || t }))}" data-t="${esc(t)}">✕</button></span>`).join("")}</div>
+          <div class="count">${tr(SITE.pluriel(v.length) ? "{n} / {m} choisis" : "{n} / {m} choisi", { n: v.length, m: q.max })}</div>` + pied(v.length > 0);
         scr.querySelectorAll("[data-t]").forEach(b => b.onclick = () => basculer(b.dataset.t));
         $("tq").oninput = () => {
           const s = norm($("tq").value);
@@ -193,7 +194,7 @@
       const maj = () => repondre(q.id, { commandants: v });
       const dessiner = () => {
         scr.innerHTML = entete(q) + `<div class="search"><input id="cq" placeholder="Nom d'un commandant (français ou anglais)" aria-label="Chercher un commandant" autocomplete="off"><ul class="sugg" id="cs"></ul></div>
-          <div class="picked">${v.map(n => `<span>${esc(n)} <button aria-label="Retirer ${esc(n)}" data-del="${esc(n)}">✕</button></span>`).join("")}</div>` +
+          <div class="picked">${v.map(n => `<span>${esc(n)} <button aria-label="${esc(tr("Retirer {x}", { x: n }))}" data-del="${esc(n)}">✕</button></span>`).join("")}</div>` +
           pied(true, { label: v.length ? "Suivant" : "Je n'ai pas encore de deck" });
         scr.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { v.splice(v.indexOf(b.dataset.del), 1); maj(); dessiner(); });
         brancherCherche($("cq"), $("cs"), chercherCommandants, n => { if (!v.includes(n)) v.push(n); maj(); dessiner(); });
@@ -206,7 +207,7 @@
       const maj = () => repondre(q.id, v);
       const dessiner = () => {
         scr.innerHTML = entete(q) + `<div class="search"><input id="xq" placeholder="${q.recherche === "commandants" ? "Nom d'un commandant" : "Nom d'une carte (en anglais)"}" aria-label="Chercher" autocomplete="off" ${v.length >= q.max ? "disabled" : ""}><ul class="sugg" id="xs"></ul></div>
-          <div class="picked">${v.map((c, i) => `<span>${esc(c.n)} <button aria-label="Retirer ${esc(c.n)}" data-del="${i}">✕</button></span>`).join("")}</div>
+          <div class="picked">${v.map((c, i) => `<span>${esc(c.n)} <button aria-label="${esc(tr("Retirer {x}", { x: c.n }))}" data-del="${i}">✕</button></span>`).join("")}</div>
           <div class="count">${v.length} / ${q.max}</div><div class="err" id="xerr"></div>` + pied(true, { label: v.length ? "Suivant" : "Passer" });
         scr.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { v.splice(+b.dataset.del, 1); maj(); dessiner(); });
         const source = q.recherche === "commandants" ? chercherCommandants : chercherCartes;
@@ -227,7 +228,7 @@
   function chercherCommandants(s) {
     s = norm(s); if (s.length < 2) return Promise.resolve([]);
     return Promise.resolve(QC.D.cards.filter(c => norm(c.n).includes(s) || norm(c.fr).includes(s)).sort((a, b) => (b.pp || 0) - (a.pp || 0)).slice(0, 8)
-      .map(c => ({ n: c.n, sous: c.fr && c.fr !== c.n ? c.fr : "", art: c.art })));
+      .map(c => ({ n: c.n, sous: !I18N.EN && c.fr && c.fr !== c.n ? c.fr : "", art: c.art })));
   }
   let ctrl = null;
   async function chercherCartes(s) {
@@ -269,7 +270,7 @@
     D.carteEnCours = D.carteEnCours && !vus.has(D.carteEnCours) ? D.carteEnCours : (prochaineCarte(vus) || {}).n;
     const n = D.carteEnCours; if (!n) { aller(1); return; }
     const c = SITE.carte(n);
-    scr.innerHTML = `<h1 class="q" style="text-align:center">${esc(q.q)}</h1><p class="help" style="text-align:center">Carte ${vus.size + 1} sur ${q.n}${c.fr ? " · " + esc(c.fr) : ""}<span class="kbd"> · flèches ← et → au clavier</span></p>
+    scr.innerHTML = `<h1 class="q" style="text-align:center">${esc(q.q)}</h1><p class="help" style="text-align:center">${esc(tr("Carte {n} sur {m}", { n: vus.size + 1, m: q.n }))}${c.fr && !I18N.EN ? " · " + esc(c.fr) : ""}<span class="kbd"> · flèches ← et → au clavier</span></p>
       <div class="swipe"><div class="deck"><div class="card" id="card" style="background-image:url('${esc(c.img || "")}')" role="img" aria-label="${esc(n)}"><span class="stamp like">J'ADORE</span><span class="stamp nope">PAS POUR MOI</span></div></div>
       <div class="react"><div class="rc"><button class="rb no" data-r="0" aria-label="Pas pour moi">✕</button><span>Pas pour moi</span></div>
         <div class="rc"><button class="rb meh" data-r="0.5" aria-label="Bof">?</button><span>Bof</span></div>
@@ -299,7 +300,7 @@
     SITE.teinter(P);
     scr.innerHTML = `<div class="load" id="load">CALCUL DE TON PROFIL…</div>
       <div class="rhex" id="rhex">${SITE.hex(null, null, { labels: true, grid: "#4A4058" })}</div>
-      <div class="rtitle" id="rtitle"><small>${moi ? esc(moi.pseudo.toUpperCase()) + ", TU ES…" : "TU ES…"}</small><h1>${esc(titre)}</h1><p>${esc(SITE.GUILDES[ident] || ident)}</p>${contra ? `<p class="contra">${esc(contra)}</p>` : ""}</div>
+      <div class="rtitle" id="rtitle"><small>${moi ? esc(tr("{p}, TU ES…", { p: moi.pseudo.toUpperCase() })) : tr("TU ES…")}</small><h1>${esc(titre)}</h1><p>${esc(SITE.GUILDES[ident] || ident)}</p>${contra ? `<p class="contra">${esc(contra)}</p>` : ""}</div>
       <div class="rcards">${["La surprise cohérente", "Le choix sûr", "Hors de ta zone"].map((fam, k) => { const x = [F.surprise[0], F.sur[0], F.horsZone[0]][k];
         return `<div class="flip${k === 1 ? " mid" : ""}"><div class="in"><div class="b">${SITE.hex(null, null, { grid: "#B08D57" })}</div><div class="f">${x ? `<img src="${esc(x.c.img || "")}" alt="${esc(x.c.n)}">` : ""}</div></div><div class="cap">${fam}</div></div>`; }).join("")}</div>
       <div class="after" id="after">

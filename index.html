@@ -151,11 +151,12 @@
 
 <footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · Combos : Commander Spellbook · ©Wizards of the Coast LLC<br><a href="ancien.html" style="color:#8E86A0">Ancienne version du quiz</a></footer>
 
+<script src="site/i18n.js"></script><script src="site/en.js"></script>
 <script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
 <script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
 <script>
 (async function () {
-  const ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  const ST = window.QCStock, $ = SITE.$, esc = SITE.esc, tr = SITE.T;
   if (!(await SITE.demarrer("Accueil"))) return;
   const G = await SITE.groupe(), J = G.joueurs, moi = SITE.moi();
   if (!moi) { $("cta1").textContent = "Entrer"; $("cta1").href = "qui.html"; }
@@ -173,14 +174,14 @@
     const n = J.length, j = J[cur], L = J[(cur - 1 + n) % n], R = J[(cur + 1) % n];
     const side = (x, align) => {
       const pr = SITE.profil(x), av = SITE.avatarDe(x);
-      return `<div class="side-txt" style="text-align:${align}"><b>${esc(x.pseudo)}</b><span>${esc(pr ? pr.titre : SITE.statut(x))}</span><p>${pr ? "« " + esc(SITE.devise(pr.P)) + " »" : "&nbsp;"}</p></div>
-        <a href="profil.html?j=${x.id}" class="panel${av ? "" : " empty"}" style="display:block" ${av ? `data-art="${esc(av)}"` : ""} aria-label="Fiche de ${esc(x.pseudo)}">${av ? "" : bigIni(x)}</a>`;
+      return `<div class="side-txt" style="text-align:${align}"><b>${esc(x.pseudo)}</b><span>${esc(pr ? pr.titre : SITE.statut(x))}</span><p>${pr ? esc(SITE.guillemets(SITE.devise(pr.P))) : "&nbsp;"}</p></div>
+        <a href="profil.html?j=${x.id}" class="panel${av ? "" : " empty"}" style="display:block" ${av ? `data-art="${esc(av)}"` : ""} aria-label="${esc(tr("Fiche de {p}", { p: x.pseudo }))}">${av ? "" : bigIni(x)}</a>`;
     };
     $("sl").innerHTML = n > 1 ? side(L, "left") : ""; $("sr").innerHTML = n > 2 ? side(R, "right") : "";
     const sc = $("sc"), pr = SITE.profil(j), av = SITE.avatarDe(j);
     sc.className = "center" + (av ? "" : " empty"); sc.style.backgroundImage = "";
     if (av) sc.setAttribute("data-art", av); else sc.removeAttribute("data-art");
-    const txt = pr ? SITE.texteQui(pr.P) : j.reclame ? `${esc(j.pseudo)} a réclamé son profil, mais n'a pas encore fait le quiz.` : `Ce profil attend son propriétaire. C'est toi, ${esc(j.pseudo)} ? Réclame-le pour faire le quiz.`;
+    const txt = esc(pr ? SITE.texteQui(pr.P) : j.reclame ? tr("{p} a réclamé son profil, mais n'a pas encore fait le quiz.", { p: j.pseudo }) : tr("Ce profil attend son propriétaire. C'est toi, {p} ? Réclame-le pour faire le quiz.", { p: j.pseudo }));
     const cta = !j.reclame ? `<a href="qui.html?j=${j.id}">C'EST MOI →</a>` : `<a href="profil.html?j=${j.id}">VOIR SA FICHE →</a>`;
     sc.innerHTML = (n > 1 ? `<button class="arrow l" aria-label="Joueur précédent">←</button><button class="arrow r" aria-label="Joueur suivant">→</button>` : "") + (av ? "" : bigIni(j)) +
       (pr ? `<div class="hexmini">${SITE.hex(pr.P.couleurs.dit, pr.P.couleurs.afficheRevele, { color: "#E9D7AE", grid: "#555", ink: "#fff" })}</div>` : "") +
@@ -196,7 +197,7 @@
   // Fil des nouvelles : réclamations, publications, devinettes
   SITE.images();
   const nv = await pNv;
-  const T = { reclame: () => "a réclamé son profil", publie: () => "a publié son profil", devine: x => `a deviné ${x.score} réponse${x.score > 1 ? "s" : ""} sur 5 de ${esc((G.parId[x.cible] || {}).pseudo || "?")}`, cercle: x => `a créé le groupe « ${esc(x.nom || "?")} »` };
+  const T = { reclame: () => tr("a réclamé son profil"), publie: () => tr("a publié son profil"), devine: x => esc(tr(SITE.pluriel(x.score) ? "a deviné {n} réponses sur 5 de {p}" : "a deviné {n} réponse sur 5 de {p}", { n: x.score, p: (G.parId[x.cible] || {}).pseudo || "?" })), cercle: x => esc(tr("a créé le groupe « {g} »", { g: x.nom || "?" })) };
   $("feed").innerHTML = nv.filter(x => G.parId[x.joueur] && T[x.type]).slice(0, 4).map(x => { const j = G.parId[x.joueur];
     return `<li><a class="pic" href="profil.html?j=${j.id}" ${SITE.avAttrs(j)} aria-label="${esc(j.pseudo)}"></a><div><b>${esc(j.pseudo)}</b><p>${T[x.type](x)}</p><time datetime="${esc(x.date)}">${SITE.depuis(x.date)}</time></div></li>`; }).join("")
     || `<li class="nofeed"><div class="pic ini">✦</div><div><b>Rien pour l'instant</b><p>Les nouvelles apparaîtront dès qu'un joueur réclamera son profil ou publiera son quiz.</p></div></li>`;

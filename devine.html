@@ -91,11 +91,12 @@ h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6re
 <div id="nav"></div>
 <main class="stage"><div class="bg" id="bg"></div><section class="screen" id="screen" aria-live="polite"><div class="chargement">CHARGEMENT…</div></section></main>
 
+<script src="site/i18n.js"></script><script src="site/en.js"></script>
 <script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
 <script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
 <script>
 (async function () {
-  const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc, tr = SITE.T;
   if (!(await SITE.demarrer("Devine ton ami"))) return;
   const G = await SITE.groupe(), moi = SITE.moi(), scr = $("screen");
   let dv = []; try { dv = await ST.devinettes(); } catch (e) { }
@@ -110,7 +111,7 @@ h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6re
     scr.innerHTML = `<div class="pre">LE JEU DU GROUPE</div><h1 class="big">Devine ton ami</h1><div class="orn"><i></i><b></b><i></i></div>
       <p class="lead">Cinq questions tirées du quiz d'un ami. À toi de deviner ce qu'il a répondu. Qui connaît le mieux la table ?</p>` +
       (cibles.length ? `<div class="friends">${cibles.map(j => { const r = record(j.id); return `<button class="fc" data-id="${j.id}"><div class="pic" ${SITE.avAttrs(j)}></div><b>${esc(j.pseudo)}</b><small>${esc(SITE.profil(j).titre)}</small>
-          <div class="rec">${r >= 0 ? `Ton record : ${r} / 5` : "Jamais joué"}</div></button>`; }).join("")}</div>` + (moi ? "" : `<p class="lead" style="font-size:.85rem">Tu n'es pas connecté : tu peux jouer, mais ton score ne sera pas enregistré. <a href="qui.html" style="color:var(--gold-l)">Choisir mon profil</a></p>`)
+          <div class="rec">${r >= 0 ? tr("Ton record : {r} / 5", { r }) : tr("Jamais joué")}</div></button>`; }).join("")}</div>` + (moi ? "" : `<p class="lead" style="font-size:.85rem">Tu n'es pas connecté : tu peux jouer, mais ton score ne sera pas enregistré. <a href="qui.html" style="color:var(--gold-l)">Choisir mon profil</a></p>`)
       : `<div class="empty">${SITE.hex(null, null, { grid: "#8A7D9A", question: true })}<p>Personne à deviner pour l'instant. Le jeu s'ouvre dès qu'un ami a publié son profil.</p>
         <a class="btn solid" href="quiz.html">Faire le quiz</a> <a class="btn" href="groupe.html">Voir le groupe</a></div>`);
     scr.querySelectorAll(".fc").forEach(b => b.onclick = () => partie(G.parId[b.dataset.id]));
@@ -124,13 +125,13 @@ h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6re
     const A = j.reponses, possibles = QC.QUESTIONS.filter(q => (q.type === "choix" || q.type === "dilemme") && A[q.id] && A[q.id] !== "?" && q.options.some(o => o.id === A[q.id]) && q.id !== "ub");
     const melange = possibles.map(q => [q, Math.random() + (q.options.length >= 3 ? 0 : .6)]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
     Qs = melange.slice(0, 5);
-    if (!Qs.length) { alert("Pas assez de réponses pour jouer."); return; }
+    if (!Qs.length) { alert(tr("Pas assez de réponses pour jouer.")); return; }
     question();
   }
   function question() {
     frais(); const q = Qs[n];
-    scr.innerHTML = `<div class="rhead"><div class="pic" ${SITE.avAttrs(F)}></div><div class="who"><small>QUE RÉPONDRAIT…</small><b>${esc(F.pseudo)} ?</b></div>
-      <div class="dots" aria-label="Question ${n + 1} sur ${Qs.length}">${Qs.map((_, k) => `<i class="${k < n ? (res[k] ? "ok" : "ko") : k === n ? "cur" : ""}"></i>`).join("")}</div></div>
+    scr.innerHTML = `<div class="rhead"><div class="pic" ${SITE.avAttrs(F)}></div><div class="who"><small>QUE RÉPONDRAIT…</small><b>${esc(tr("{p} ?", { p: F.pseudo }))}</b></div>
+      <div class="dots" aria-label="${tr("Question {n} sur {m}", { n: n + 1, m: Qs.length })}">${Qs.map((_, k) => `<i class="${k < n ? (res[k] ? "ok" : "ko") : k === n ? "cur" : ""}"></i>`).join("")}</div></div>
       <h1 class="q">${esc(q.q)}</h1>
       <div class="opts" id="opts">${q.options.map((o, k) => `<button class="opt" data-k="${esc(o.id)}"><span class="k"><span>${k + 1}</span></span><span>${esc(o.l)}</span><span class="badge"><span ${SITE.avAttrs(F)}></span>${esc(F.pseudo)}</span></button>`).join("")}</div>
       <div class="fb" id="fb"><button class="link" id="chg">← Changer d'ami</button></div>`;
@@ -145,7 +146,7 @@ h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6re
     box.querySelector(`[data-k="${CSS.escape(bon)}"]`).classList.add("good"); if (!ok) box.querySelector(`[data-k="${CSS.escape(k)}"]`).classList.add("bad");
     scr.querySelectorAll(".dots i")[n].className = ok ? "ok" : "ko";
     const dernier = n === Qs.length - 1, lb = q.options.find(o => o.id === bon).l;
-    $("fb").innerHTML = `<div class="msg ${ok ? "ok" : "ko"}">${ok ? "Bien vu !" : "Raté…"}<small>${ok ? `${esc(F.pseudo)} a bien répondu ça.` : `${esc(F.pseudo)} a répondu : « ${esc(lb)} »`}</small></div>
+    $("fb").innerHTML = `<div class="msg ${ok ? "ok" : "ko"}">${ok ? "Bien vu !" : "Raté…"}<small>${esc(ok ? tr("{p} a bien répondu ça.", { p: F.pseudo }) : tr("{p} a répondu : « {r} »", { p: F.pseudo, r: lb }))}</small></div>
       <button class="btn solid" id="nx">${dernier ? "Voir mon score" : "Question suivante"}</button>`;
     $("nx").onclick = () => { n++; dernier ? fin() : question(); }; $("nx").focus({ preventScroll: true });
   }
@@ -158,9 +159,9 @@ h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6re
     if (!moi) meilleurs.__toi = s;
     const rows = Object.entries(meilleurs).sort((a, b) => b[1] - a[1]);
     frais("center");
-    scr.innerHTML = `<div class="pre">TU CONNAIS ${esc(F.pseudo.toUpperCase())}…</div><div class="score">${s}<span> / ${sur}</span></div><div class="rank">${rang}</div><div class="orn"><i></i><b></b><i></i></div>
-      <div class="board"><h2>Qui connaît le mieux ${esc(F.pseudo)} ?</h2><ol>${rows.map(([id, v]) => { const p = G.parId[id], me = moi ? id === moi.id : id === "__toi";
-        return `<li class="${me ? "me" : ""}"><span class="pic" ${p ? SITE.avAttrs(p) : 'data-ini="?"'}></span><b>${me ? (moi ? esc(moi.pseudo) + " (toi)" : "Toi") : esc(p ? p.pseudo : "?")}</b><em>${v} / 5</em></li>`; }).join("")}</ol></div>
+    scr.innerHTML = `<div class="pre">${esc(tr("TU CONNAIS {p}…", { p: F.pseudo.toUpperCase() }))}</div><div class="score">${s}<span> / ${sur}</span></div><div class="rank">${rang}</div><div class="orn"><i></i><b></b><i></i></div>
+      <div class="board"><h2>${esc(tr("Qui connaît le mieux {p} ?", { p: F.pseudo }))}</h2><ol>${rows.map(([id, v]) => { const p = G.parId[id], me = moi ? id === moi.id : id === "__toi";
+        return `<li class="${me ? "me" : ""}"><span class="pic" ${p ? SITE.avAttrs(p) : 'data-ini="?"'}></span><b>${me ? esc(moi ? tr("{p} (toi)", { p: moi.pseudo }) : tr("Toi")) : esc(p ? p.pseudo : "?")}</b><em>${v} / 5</em></li>`; }).join("")}</ol></div>
       ${note ? `<p class="lead" style="color:#F0A49A">${esc(note)}</p>` : ""}
       <div class="acts"><button class="btn solid" id="rejouer">Rejouer</button><button class="btn" id="autre">Deviner quelqu'un d'autre</button><a class="btn" href="profil.html?j=${F.id}">Voir sa fiche</a></div>`;
     $("rejouer").onclick = () => partie(F); $("autre").onclick = accueil;

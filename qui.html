@@ -60,11 +60,12 @@ input:focus{border-color:var(--gold-l)}
 </section>
 <footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
 
+<script src="site/i18n.js"></script><script src="site/en.js"></script>
 <script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
 <script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
 <script>
 (async function () {
-  const ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  const ST = window.QCStock, $ = SITE.$, esc = SITE.esc, tr = SITE.T;
   const ok = await SITE.demarrer("", { sansGroupe: true });
   if (!ok) return;
   SITE.images(document.querySelector(".stage"));
@@ -93,11 +94,11 @@ input:focus{border-color:var(--gold-l)}
   };
   const panneau = () => {
     const j = G.parId[pick]; let h;
-    const pin = (ph) => `<input id="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="${ph}" aria-label="${ph}" size="16">`;
-    if (pick === "__new") h = `<h2>Créer ton profil</h2><p>Ton prénom ou ton pseudo, tel que le groupe te connaît.</p>
+    const pin = (ph) => `<input id="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="${tr(ph)}" aria-label="${tr(ph)}" size="16">`;
+    if (pick === "__new") h = `<h2>${tr("Créer ton profil")}</h2><p>Ton prénom ou ton pseudo, tel que le groupe te connaît.</p>
         <div class="row"><input id="nname" placeholder="Prénom" maxlength="24" aria-label="Prénom">${pin("Code à 4 chiffres")}</div>`;
-    else if (j.reclame) h = `<h2>${esc(j.pseudo)} est déjà pris</h2><p>Si c'est ton profil, entre ton code personnel pour te reconnecter sur cet appareil. Sinon, crée un nouveau profil.</p><div class="row">${pin("Ton code à 4 chiffres")}</div>`;
-    else h = `<h2>Tu es ${esc(j.pseudo)} ?</h2><p>Choisis un code personnel à 4 chiffres. Il te servira à te reconnecter sur un autre appareil et à publier ton profil. Ce choix est définitif.</p><div class="row">${pin("Code à 4 chiffres")}</div>`;
+    else if (j.reclame) h = `<h2>${esc(tr("{p} est déjà pris", { p: j.pseudo }))}</h2><p>Si c'est ton profil, entre ton code personnel pour te reconnecter sur cet appareil. Sinon, crée un nouveau profil.</p><div class="row">${pin("Ton code à 4 chiffres")}</div>`;
+    else h = `<h2>${esc(tr("Tu es {p} ?", { p: j.pseudo }))}</h2><p>Choisis un code personnel à 4 chiffres. Il te servira à te reconnecter sur un autre appareil et à publier ton profil. Ce choix est définitif.</p><div class="row">${pin("Code à 4 chiffres")}</div>`;
     $("panel").innerHTML = `<form class="panel" id="pf">${h}<div class="err" id="err" role="alert"></div><button class="btn solid">${pick === "__new" ? "Créer et entrer" : j.reclame ? "Me reconnecter" : "C'est moi"}</button></form>`;
     const f = $("pf"); (f.querySelector("input")).focus();
     f.oninput = () => $("err").textContent = "";

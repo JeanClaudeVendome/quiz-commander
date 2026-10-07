@@ -19,7 +19,8 @@
     PAS_MEMBRE: "Il faut faire partie du groupe pour y ajouter quelqu'un.", PAS_CREATEUR: "Seul le créateur du groupe peut le supprimer.",
     SOI_MEME: "Tu ne peux pas te deviner toi-même.", CODE_ADMIN: "Code administrateur incorrect.", RESEAU: "Impossible de joindre le serveur. Vérifie ta connexion."
   };
-  const err = code => { const e = new Error(MESSAGES[code] || code); e.code = code; return e; };
+  const tr = (s, v) => window.I18N ? I18N.T(s, v) : s;
+  const err = code => { const e = new Error(MESSAGES[code] ? tr(MESSAGES[code]) : code); e.code = code; return e; };
   const lire = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
   const ecrire = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 
@@ -39,7 +40,7 @@
     if (!r.ok) {
       let m = ""; try { m = JSON.parse(txt).message || ""; } catch (e) { m = txt; }
       const code = Object.keys(MESSAGES).find(k => m.includes(k));
-      throw code ? err(code) : new Error("Erreur du serveur : " + m.slice(0, 120));
+      throw code ? err(code) : new Error(tr("Erreur du serveur : {m}", { m: m.slice(0, 120) }));
     }
     const res = txt ? JSON.parse(txt) : null;
     if (res && res.erreur) throw err(res.erreur); // code personnel faux : renvoyé sans exception côté base (compteur d'essais conservé)

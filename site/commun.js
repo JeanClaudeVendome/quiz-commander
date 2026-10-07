@@ -4,8 +4,20 @@
    ===================================================================== */
 (function () {
   "use strict";
-  const QC = window.QC, ST = window.QCStock;
+  const QC = window.QC, ST = window.QCStock, I = window.I18N, t = I.T;
   const SITE = window.SITE = {};
+  SITE.T = t;
+
+  /* ---------- langue : textes du moteur traduits une fois pour toutes (le calcul ne dépend que des identifiants) ---------- */
+  I.donnees(QC.CHAPITRES, ["titre", "intro"]);
+  I.donnees(QC.QUESTIONS, ["q", "help", "gauche", "droite", "l", "d"]);
+  [QC.PERSONNAGES, QC.NOMS_STYLES, QC.NOMS_COULEURS].forEach(I.table);
+  I.donnees(QC.AVERSIONS, ["l"]);
+  /* Nom d'une carte à afficher : le nom français s'il existe (en français), le nom anglais sinon */
+  SITE.nomCarte = c => (!I.EN && c.fr) || c.n;
+  /* Pluriel : en français à partir de 2 (0 et 1 au singulier), en anglais dès que ce n'est pas 1 */
+  SITE.pluriel = n => I.EN ? n !== 1 : n > 1;
+  SITE.guillemets = s => I.EN ? "“" + s + "”" : "« " + s + " »";
 
   /* ---------- petits outils ---------- */
   const esc = SITE.esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -15,18 +27,18 @@
   SITE.depuis = d => {
     if (!d) return "";
     const m = Math.round((Date.now() - new Date(d).getTime()) / 60000);
-    if (m < 1) return "à l'instant"; if (m < 60) return `il y a ${m} min`; if (m < 1440) return `il y a ${Math.round(m / 60)} h`;
-    const j = Math.round(m / 1440); if (j === 1) return "hier"; if (j < 30) return `il y a ${j} jours`;
-    return "le " + new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    if (m < 1) return t("à l'instant"); if (m < 60) return t("il y a {n} min", { n: m }); if (m < 1440) return t("il y a {n} h", { n: Math.round(m / 60) });
+    const j = Math.round(m / 1440); if (j === 1) return t("hier"); if (j < 30) return t("il y a {n} jours", { n: j });
+    return t("le {d}", { d: SITE.dateLongue(d) });
   };
-  SITE.dateLongue = d => new Date(d).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+  SITE.dateLongue = d => new Date(d).toLocaleDateString(I.locale, { day: "numeric", month: "long", year: "numeric" });
 
   /* ---------- données ---------- */
   let catalogue = null;
   SITE.charger = async function () {
     if (catalogue) return catalogue;
     const r = await fetch("data/commanders.json");
-    if (!r.ok) throw new Error("Données introuvables (data/commanders.json).");
+    if (!r.ok) throw new Error(t("Données introuvables (data/commanders.json)."));
     catalogue = await r.json();
     QC.preparer(catalogue.cards);
     return catalogue;
@@ -38,15 +50,17 @@
     WU: "Azorius", UB: "Dimir", BR: "Rakdos", RG: "Gruul", WG: "Selesnya", WB: "Orzhov", UR: "Izzet", BG: "Golgari", WR: "Boros", UG: "Simic",
     WUB: "Esper", UBR: "Grixis", BRG: "Jund", WRG: "Naya", WUG: "Bant", WBG: "Abzan", WUR: "Jeskai", UBG: "Sultai", WBR: "Mardu", URG: "Temur",
     UBRG: "Quatre couleurs sans blanc", WBRG: "Quatre couleurs sans bleu", WURG: "Quatre couleurs sans noir", WUBG: "Quatre couleurs sans rouge", WUBR: "Quatre couleurs sans vert", WUBRG: "Cinq couleurs" };
-  SITE.GUILDES = GUILDES;
+  SITE.GUILDES = I.table(GUILDES);
   const TITRES_STYLE = { aggro: "Le chef de guerre", voltron: "Le champion", tokens: "Le souverain bâtisseur", aristo: "Le maître des sacrifices",
     counters: "Le jardinier", kindred: "Le chef de clan", big: "Le dompteur de colosses", lands: "Le druide", blink: "L'illusionniste",
     life: "L'ange gardien", gy: "Le nécromancien", artifacts: "Le savant fou", ench: "L'enchanteur", spells: "L'archimage", control: "Le stratège",
     stax: "Le geôlier", pillow: "Le bâtisseur de forteresses", combo: "L'horloger", hug: "Le diplomate", slug: "Le bourreau", goad: "Le manipulateur",
     theft: "L'escroc", mill: "L'archiviste", chaos: "L'agent du chaos", walkers: "Le maître des arpenteurs", punish: "Le vengeur" };
+  I.table(TITRES_STYLE);
   const PSY_TXT = { timmy: ["Timmy", "les grands moments, les gros sorts, les attaques dont on se souvient"],
     johnny: ["Johnny", "faire marcher une idée qui n'appartient qu'à soi, la combinaison que personne n'a vue venir"],
     spike: ["Spike", "bien jouer, optimiser, gagner proprement"] };
+  for (const k in PSY_TXT) PSY_TXT[k][1] = t(PSY_TXT[k][1]);
   const STYLE_ART = { aggro: "Craterhoof Behemoth", voltron: "Sword of Feast and Famine", tokens: "Anointed Procession", aristo: "Blood Artist",
     counters: "Hardened Scales", kindred: "Kindred Discovery", big: "Worldspine Wurm", lands: "Field of the Dead", blink: "Ephemerate", life: "Soul Warden",
     gy: "Animate Dead", artifacts: "Sol Ring", ench: "Enchantress's Presence", spells: "Brainstorm", control: "Cyclonic Rift", stax: "Winter Orb",
@@ -57,7 +71,7 @@
     big: "Rampe & gros sorts", lands: "Terrains", blink: "Blink", life: "Gain de vie", gy: "Cimetière", artifacts: "Artefacts", ench: "Enchantements",
     spells: "Spellslinger", control: "Contrôle", stax: "Stax", pillow: "Pillowfort", combo: "Combo", hug: "Group hug", slug: "Group slug", goad: "Goad",
     theft: "Vol & clones", mill: "Meule", chaos: "Chaos", walkers: "Superfriends", punish: "Punition" };
-  SITE.NOM_STYLE_COURT = NOM_STYLE_COURT;
+  SITE.NOM_STYLE_COURT = I.table(NOM_STYLE_COURT);
 
   SITE.identite = function (P) {
     const F = P.couleurs.final, cols = "WUBRG".split("").sort((a, b) => F[b] - F[a]);
@@ -69,23 +83,23 @@
   SITE.titre = function (P) {
     const f = Object.entries(P.theme.fant).sort((a, b) => b[1] - a[1])[0];
     if (f && f[1] >= 1) return QC.PERSONNAGES[f[0]];
-    return TITRES_STYLE[P.topStyles[0]] || "L'explorateur";
+    return TITRES_STYLE[P.topStyles[0]] || t("L'explorateur");
   };
   SITE.psyPrincipale = P => Object.entries(P.motivation).sort((a, b) => b[1] - a[1])[0][0];
   SITE.texteQui = function (P) {
     const k = SITE.psyPrincipale(P), [nom, d] = PSY_TXT[k];
     const st = P.topStyles.filter(s => P.styles[s] > .2).slice(0, 2).map(s => QC.NOMS_STYLES[s]);
-    let t = `${nom} avant tout : ${d}.`;
-    if (st.length) t += ` Aime surtout ${st.join(" et ")}.`;
-    if (P.psy.vorthos > .62) t += " Le thème compte autant que l'efficacité.";
-    else if (P.psy.mel > .62) t += " Sensible à la beauté d'une mécanique bien huilée.";
+    let x = t("{nom} avant tout : {d}.", { nom, d });
+    if (st.length) x += t(" Aime surtout {s}.", { s: st.join(t(" et ")) });
+    if (P.psy.vorthos > .62) x += t(" Le thème compte autant que l'efficacité.");
+    else if (P.psy.mel > .62) x += t(" Sensible à la beauté d'une mécanique bien huilée.");
     const pol = P.set.politique;
-    if (pol >= 4) t += " Adore négocier à table."; else if (pol && pol <= 2) t += " Préfère jouer que négocier.";
-    return t;
+    if (pol >= 4) x += t(" Adore négocier à table."); else if (pol && pol <= 2) x += t(" Préfère jouer que négocier.");
+    return x;
   };
   SITE.contradiction = function (P) {
     const c = P.contradictions.find(x => x.type === "couleur-dite"), d = P.contradictions.find(x => x.type === "couleur-revelee");
-    if (c && d) return `Se dit attiré par ${QC.NOMS_COULEURS[c.c]}, mais ses réponses penchent vers ${QC.NOMS_COULEURS[d.c]}.`;
+    if (c && d) return t("Se dit attiré par {a}, mais ses réponses penchent vers {b}.", { a: QC.NOMS_COULEURS[c.c], b: QC.NOMS_COULEURS[d.c] });
     return null;
   };
   SITE.devise = function (P) {
@@ -97,11 +111,12 @@
       stax: "Les règles, c'est moi", pillow: "Qui s'y frotte s'y pique", combo: "L'ombre qui gagne au dernier tour", hug: "Tout le monde y gagne",
       slug: "Un peu de mal à tout le monde", goad: "Laissez-les s'entretuer", theft: "Ce qui est à toi est à moi", mill: "Plus une seule carte",
       chaos: "Personne ne sait ce qui va arriver", walkers: "Une équipe d'arpenteurs", punish: "Chaque coup se paie" };
-    return D[top] || "Un joueur à découvrir";
+    return t(D[top] || "Un joueur à découvrir");
   };
   SITE.citation = function (A) {
     const q = QC.QUESTIONS.find(x => x.id === "moment"), o = q && q.options.find(x => x.id === A.moment);
-    return o ? "Ma meilleure partie ? Celle où " + o.l.charAt(0).toLowerCase() + o.l.slice(1).replace(/^j'/, "j'") + "." : null;
+    // « I » reste en majuscule en anglais ; en français, la phrase continue en minuscule
+    return o ? t("Ma meilleure partie ? Celle où {x}.", { x: /^I\b/.test(o.l) ? o.l : o.l.charAt(0).toLowerCase() + o.l.slice(1) }) : null;
   };
   SITE.deteste = function (A, P) {
     const l = Object.entries(P.aversions).filter(([, v]) => v === 0).map(([k]) => (QC.AVERSIONS[k] || {}).l).filter(Boolean);
@@ -118,7 +133,7 @@
   const compacter = x => ({ n: x.c.n, note: x.note, pct: x.pct, rang: x.rang, parts: x.parts, pourquoi: x.pourquoi, attention: x.attention, drapeaux: x.drapeaux });
   const regonfler = l => l.map(x => Object.assign({}, x, { c: SITE.carte(x.n) })).filter(x => x.c);
   function propositions(j, P) {
-    const cle = j.id + ":" + j.maj + ":" + ((catalogue && catalogue.meta && catalogue.meta.built) || "") + ":" + QC.R.diversite;
+    const cle = j.id + ":" + j.maj + ":" + ((catalogue && catalogue.meta && catalogue.meta.built) || "") + ":" + QC.R.diversite + ":" + I.LANG; // les explications dépendent de la langue
     const d = lireRes();
     if (d[cle]) {
       const r = d[cle];
@@ -149,7 +164,7 @@
   SITE.statut = function (j) {
     const pr = SITE.profil(j);
     if (pr) return pr.titre + " · " + (GUILDES[pr.ident] || pr.ident);
-    return j.reclame ? "Quiz pas encore fait" : "Profil libre";
+    return t(j.reclame ? "Quiz pas encore fait" : "Profil libre");
   };
   SITE.avAttrs = j => { const a = SITE.avatarDe(j); return a ? `data-art="${esc(a)}"` : `data-ini="${esc(j.pseudo[0])}"`; };
 
@@ -177,8 +192,8 @@
     const faits = mb.filter(j => j.reponses).length;
     return `<a class="gc${dedans ? " mien" : ""}" href="groupe.html?g=${c.id}">
       <div class="gc-mos">${mb.slice(0, 4).map(j => `<span ${SITE.avAttrs(j)}></span>`).join("")}${mb.length > 4 ? `<span class="plus">+${mb.length - 4}</span>` : ""}${!mb.length ? `<span class="ini">?</span>` : ""}</div>
-      <div class="gc-txt"><b>${esc(c.nom)}</b><small>${mb.length} joueur${mb.length > 1 ? "s" : ""} · ${faits} profil${faits > 1 ? "s" : ""} publié${faits > 1 ? "s" : ""}${dedans ? " · ton groupe" : ""}</small></div>
-      <div class="gc-hex">${SITE.hex(moy, null, { color: "#6B4A70", question: !moy, aria: "Hexagone du groupe " + c.nom })}</div></a>`;
+      <div class="gc-txt"><b>${esc(c.nom)}</b><small>${t(SITE.pluriel(mb.length) ? "{n} joueurs" : "{n} joueur", { n: mb.length })} · ${t(SITE.pluriel(faits) ? "{n} profils publiés" : "{n} profil publié", { n: faits })}${dedans ? " · " + t("ton groupe") : ""}</small></div>
+      <div class="gc-hex">${SITE.hex(moy, null, { color: "#6B4A70", question: !moy, aria: t("Hexagone du groupe {g}", { g: c.nom }) })}</div></a>`;
   };
 
   /* ---------- teinte (couleur dominante) ---------- */
@@ -234,7 +249,7 @@
       SITE.image(n).then(v => {
         const url = el.dataset.art ? v.art : v.img; if (!url) return;
         if (el.tagName === "IMG") el.src = url; else el.style.backgroundImage = `url("${url}")`;
-        if (el.dataset.credit) SITE.artiste(n).then(a => { const cr = document.getElementById(el.dataset.credit); if (cr && a) cr.textContent = "Illustration : " + a; });
+        if (el.dataset.credit) SITE.artiste(n).then(a => { const cr = document.getElementById(el.dataset.credit); if (cr && a) cr.textContent = t("Illustration : {a}", { a }); });
       });
     });
   };
@@ -261,7 +276,7 @@
     if (opt.question) s += `<text x="120" y="134" text-anchor="middle" font-family="Cinzel,serif" font-size="40" fill="${grid}">?</text>`;
     if (opt.labels) QC.COULEURS.forEach((c, i) => { const x = 120 + 98 * Math.cos(ang(i)), y = 120 + 98 * Math.sin(ang(i)); s += `<image href="https://svgs.scryfall.io/card-symbols/${c}.svg" x="${x - 12}" y="${y - 12}" width="24" height="24"><title>${QC.NOMS_COULEURS[c]}</title></image>`; });
     if (opt.extra) s += opt.extra;
-    return `<svg viewBox="0 0 240 240" role="img" aria-label="${esc(opt.aria || "Hexagone des couleurs")}">${s}</svg>`;
+    return `<svg viewBox="0 0 240 240" role="img" aria-label="${esc(opt.aria || t("Hexagone des couleurs"))}">${s}</svg>`;
   };
   SITE.pips = (ci, size) => (ord(ci) || "C").split("").map(c => `<img src="https://svgs.scryfall.io/card-symbols/${c}.svg" alt="${QC.NOMS_COULEURS[c]}" style="width:${size || 16}px;height:${size || 16}px;vertical-align:-3px;margin-right:2px">`).join("");
 
@@ -269,19 +284,21 @@
   SITE.nav = function (courant) {
     const moi = SITE.moi();
     const L = [["index.html", "Accueil"], ["groupe.html", "Les groupes"], ["joueurs.html", "Les joueurs"], [moi ? "profil.html?j=" + moi.id : "qui.html", "Mon profil"], ["quiz.html", "Le quiz"], ["devine.html", "Devine ton ami"]];
-    const who = moi ? `<a class="me" href="profil.html?j=${moi.id}"><span ${SITE.avAttrs(moi)}></span>${esc(moi.pseudo)}</a>` : `<a class="me" href="qui.html">Entrer</a>`;
+    const who = moi ? `<a class="me" href="profil.html?j=${moi.id}" translate="no"><span ${SITE.avAttrs(moi)}></span>${esc(moi.pseudo)}</a>` : `<a class="me" href="qui.html">${t("Entrer")}</a>`;
+    const autre = I.EN ? "fr" : "en", langue = `<button class="lang" id="lang" lang="${autre}" title="${I.EN ? "Passer en français" : "Switch to English"}" aria-label="${I.EN ? "Passer en français" : "Switch to English"}">${autre.toUpperCase()}</button>`;
     const el = document.getElementById("nav");
     if (!el) return;
-    el.outerHTML = `<nav class="nav" id="mainnav"><a class="logo" href="index.html">Le grand quiz<small>COMMANDER</small></a><ul id="navlist">${L.map(([h, l]) => `<li><a href="${h}"${l === courant ? ' aria-current="page"' : ""}>${l}</a></li>`).join("")}</ul>${who}
+    el.outerHTML = `<nav class="nav" id="mainnav"><a class="logo" href="index.html">Le grand quiz<small>COMMANDER</small></a><ul id="navlist">${L.map(([h, l]) => `<li><a href="${h}"${l === courant ? ' aria-current="page"' : ""}>${t(l)}</a></li>`).join("")}</ul>${langue}${who}
       <button class="burger" aria-label="Menu" aria-expanded="false" aria-controls="navlist"><i></i><i></i><i></i></button></nav>`;
     const n = document.getElementById("mainnav");
+    n.querySelector("#lang").onclick = () => I.choisir(autre);
     n.querySelector(".burger").onclick = function () { const o = n.classList.toggle("open"); this.setAttribute("aria-expanded", o); };
     SITE.images(n);
   };
   SITE.bandeauLocal = function () {
     if (ST.mode !== "local") return;
     document.body.insertAdjacentHTML("beforeend", `<div class="note" role="note"><b>Mode local</b> · les profils restent dans ce navigateur (voir LISEZ-MOI pour les partager) · <button id="resetLocal">tout effacer</button></div>`);
-    document.getElementById("resetLocal").onclick = () => { if (confirm("Effacer tous les profils et réponses enregistrés dans ce navigateur ?")) { ST.reinitialiserLocal(); localStorage.removeItem("qc-brouillon"); location.reload(); } };
+    document.getElementById("resetLocal").onclick = () => { if (confirm(t("Effacer tous les profils et réponses enregistrés dans ce navigateur ?"))) { ST.reinitialiserLocal(); localStorage.removeItem("qc-brouillon"); location.reload(); } };
   };
 
   /* Démarrage commun : données, groupe, navigation. Redirige vers « qui.html » si aucun groupe n'est choisi (mode Supabase). */
@@ -300,4 +317,6 @@
     SITE.bandeauLocal();
     return true;
   };
+
+  I.traduirePage(); // textes fixes de la page, puis tout ce que les scripts ajouteront
 })();

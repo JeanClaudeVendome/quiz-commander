@@ -75,8 +75,8 @@
     const mot = 1 - .5 * ["timmy", "johnny", "spike"].reduce((s, k) => s + Math.abs(A.motivation[k] - B.motivation[k]), 0);
     const pct = Math.round(100 * (.4 * col + .4 * sty + .2 * mot));
     const communs = [], oppo = [];
-    QC.COULEURS.forEach(c => { if (ca[c] > .62 && cb[c] > .62) communs.push("vous partagez " + QC.NOMS_COULEURS[c]); });
-    QC.STYLES.forEach(k => { if (A.styles[k] > .35 && B.styles[k] > .35) communs.push("vous aimez tous les deux " + QC.NOMS_STYLES[k]); });
+    QC.COULEURS.forEach(c => { if (ca[c] > .62 && cb[c] > .62) communs.push(QC.T("vous partagez {c}", { c: QC.NOMS_COULEURS[c] })); });
+    QC.STYLES.forEach(k => { if (A.styles[k] > .35 && B.styles[k] > .35) communs.push(QC.T("vous aimez tous les deux {s}", { s: QC.NOMS_STYLES[k] })); });
     QC.COULEURS.map(c => [c, ca[c] - cb[c]]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])).slice(0, 2)
       .forEach(([c, d]) => { if (Math.abs(d) > .25) oppo.push({ c, plus: d > 0 ? "A" : "B" }); });
     return { pct, couleurs: col, styles: sty, motivation: mot, communs: communs.slice(0, 5), oppositions: oppo };

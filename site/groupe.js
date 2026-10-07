@@ -6,7 +6,7 @@
    ===================================================================== */
 (async function () {
   "use strict";
-  const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc, tr = SITE.T;
   if (!(await SITE.demarrer("Les groupes"))) return;
   const G = await SITE.groupe(), moi = SITE.moi(), gid = SITE.param("g");
   const pDv = ST.devinettes().catch(() => []);
@@ -15,8 +15,8 @@
   /* ===================== Liste des groupes ===================== */
   if (!gid) {
     const mes = SITE.mesCercles(), autres = G.cercles.filter(c => !mes.includes(c));
-    $("gsub").textContent = `${G.cercles.length} GROUPE${G.cercles.length > 1 ? "S" : ""} · ${G.joueurs.length} JOUEURS`;
-    const tous = { id: "tous", nom: "Toute la communauté", membres: G.joueurs.map(j => j.id) };
+    $("gsub").textContent = tr(SITE.pluriel(G.cercles.length) ? "{n} GROUPES" : "{n} GROUPE", { n: G.cercles.length }) + " · " + tr("{n} joueurs", { n: G.joueurs.length }).toUpperCase();
+    const tous = { id: "tous", nom: tr("Toute la communauté"), membres: G.joueurs.map(j => j.id) };
     $("liste").innerHTML =
       (moi ? `<div class="section-title"><h2>Tes groupes</h2><div class="orn"><i></i><b></b><i></i></div></div>
         <div class="gcs">${mes.map(c => SITE.carteCercle(c)).join("") || `<p class="vide-g">Tu ne fais encore partie d'aucun groupe : rejoins-en un ci-dessous, ou crée le tien.</p>`}</div>` : "") +
@@ -38,15 +38,15 @@
   }
 
   /* ===================== Page d'un groupe ===================== */
-  const C = gid === "tous" ? { id: "tous", nom: "Toute la communauté", membres: G.joueurs.map(j => j.id) } : G.parCercle[gid];
+  const C = gid === "tous" ? { id: "tous", nom: tr("Toute la communauté"), membres: G.joueurs.map(j => j.id) } : G.parCercle[gid];
   if (!C) { $("liste").innerHTML = `<p class="vide-g" style="padding:60px 0">Ce groupe n'existe plus. <a href="groupe.html">Voir tous les groupes</a></p>`; return; }
   $("detail").hidden = false; $("liste").hidden = true;
-  document.title = C.nom + " — Le grand quiz Commander";
+  document.title = C.nom + " — " + tr("Le grand quiz Commander");
   const J = SITE.membresDe(C), dedans = moi && C.membres.includes(moi.id), estCreateur = moi && C.cree_par === moi.id;
   $("gtitre").textContent = C.nom;
   const faits = J.filter(j => j.reponses).map(j => { const pr = SITE.profil(j); return { j, P: pr.P, A: pr.A, ident: pr.ident, titre: pr.titre }; });
   const nR = J.filter(j => j.reclame).length, nF = faits.length;
-  $("gsub").textContent = `${J.length} JOUEUR${J.length > 1 ? "S" : ""} · ${nF} PROFIL${nF > 1 ? "S" : ""} COMPLÉTÉ${nF > 1 ? "S" : ""}`;
+  $("gsub").textContent = tr(SITE.pluriel(J.length) ? "{n} joueurs" : "{n} joueur", { n: J.length }).toUpperCase() + " · " + tr(SITE.pluriel(nF) ? "{n} PROFILS COMPLÉTÉS" : "{n} PROFIL COMPLÉTÉ", { n: nF });
   $("hexTitre").textContent = gid === "tous" ? "L'hexagone de la communauté" : "L'hexagone du groupe";
   // actions : rejoindre, quitter, supprimer
   if (gid !== "tous" && moi) {
@@ -54,8 +54,8 @@
       ${estCreateur ? `<button class="btn" id="supprimer">Supprimer le groupe</button>` : ""}</div><div class="err-g" id="ea" role="alert" style="color:#F0A49A"></div>`;
     const agir = async f => { try { await f(); location.reload(); } catch (er) { $("ea").textContent = er.message; } };
     if ($("rejoindre")) $("rejoindre").onclick = () => agir(() => ST.rejoindre(C.id));
-    if ($("quitter")) $("quitter").onclick = () => { if (confirm(`Quitter « ${C.nom} » ? Ton profil reste visible par tous.`)) agir(() => ST.quitter(C.id)); };
-    if ($("supprimer")) $("supprimer").onclick = () => { if (confirm(`Supprimer le groupe « ${C.nom} » ? Les joueurs et leurs profils ne sont pas supprimés.`)) agir(async () => { await ST.supprimerCercle(C.id); location.href = "groupe.html"; }); };
+    if ($("quitter")) $("quitter").onclick = () => { if (confirm(tr("Quitter « {g} » ? Ton profil reste visible par tous.", { g: C.nom }))) agir(() => ST.quitter(C.id)); };
+    if ($("supprimer")) $("supprimer").onclick = () => { if (confirm(tr("Supprimer le groupe « {g} » ? Les joueurs et leurs profils ne sont pas supprimés.", { g: C.nom }))) agir(async () => { await ST.supprimerCercle(C.id); location.href = "groupe.html"; }); };
   }
   const fin = x => x.P.couleurs.final;
   const moy = nF ? Object.fromEntries(QC.COULEURS.map(c => [c, faits.reduce((s, x) => s + fin(x)[c], 0) / nF])) : null;
@@ -65,10 +65,10 @@
     let extra = faits.map(x => { const on = sel === x.j.id, col = SITE.TINT[SITE.dominante(x.P)][0];
       return `<polygon points="${SITE.hexPoly(fin(x))}" fill="${on ? col : "none"}" fill-opacity="${on ? .3 : 0}" stroke="${col}" stroke-width="${on ? 2.5 : 1}" stroke-opacity="${sel && !on ? .15 : .55}"/>`; }).join("");
     if (moy) extra += `<polygon points="${SITE.hexPoly(moy)}" fill="#4A2E4F" fill-opacity="${sel ? .05 : .22}" stroke="#4A2E4F" stroke-width="2" stroke-dasharray="${sel ? "4 4" : ""}"/>`;
-    $("bighex").innerHTML = SITE.hex(null, null, { labels: true, question: !moy, extra, aria: "Hexagone de " + C.nom });
+    $("bighex").innerHTML = SITE.hex(null, null, { labels: true, question: !moy, extra, aria: tr("Hexagone de {g}", { g: C.nom }) });
     document.querySelectorAll("#who button").forEach(b => b.setAttribute("aria-pressed", (b.dataset.id || null) === sel));
     $("whohint").textContent = !moy ? "L'hexagone se dessinera dès que le premier profil sera publié."
-      : sel ? `${G.parId[sel].pseudo} en couleur, la moyenne en pointillés.` : "La moyenne en violet, chaque joueur en trait fin.";
+      : sel ? tr("{p} en couleur, la moyenne en pointillés.", { p: G.parId[sel].pseudo }) : "La moyenne en violet, chaque joueur en trait fin.";
   }
   $("who").innerHTML = `<button data-id=""><span style="background:#4A2E4F"></span>Tout le monde</button>` + J.map(j => j.reponses
     ? `<button data-id="${j.id}"><span ${SITE.avAttrs(j)}></span>${esc(j.pseudo)}</button>`
@@ -84,7 +84,7 @@
     return `<a class="pc${pr ? "" : " empty"}" href="profil.html?j=${j.id}" style="--t:${col}">
       <div class="art" ${av ? `data-art="${esc(av)}"` : ""}>${av ? "" : `<span class="bigini" aria-hidden="true">${esc(j.pseudo[0])}</span>`}<div class="mh">${SITE.hex(pr && pr.P.couleurs.dit, pr && pr.P.couleurs.afficheRevele, { color: col, question: !pr })}</div></div>
       <div class="body"><b>${esc(j.pseudo)}</b><div class="t">${pr ? esc(pr.titre + " · " + (SITE.GUILDES[pr.ident] || pr.ident)) : chip}</div>
-      <div class="phare">Commandant phare : <strong>${esc(phare)}</strong><time>${pr ? "Profil mis à jour " + SITE.depuis(j.maj) : j.reclame ? "Réclamé, en attente du quiz" : "En attente de son propriétaire"}</time></div></div></a>`;
+      <div class="phare">Commandant phare : <strong>${esc(phare)}</strong><time>${pr ? tr("Profil mis à jour {d}", { d: SITE.depuis(j.maj) }) : tr(j.reclame ? "Réclamé, en attente du quiz" : "En attente de son propriétaire")}</time></div></div></a>`;
   }).join("") || `<p class="vide-g">Personne dans ce groupe pour l'instant.</p>`;
 
   // ajouter un ami au groupe (profil à réclamer, ou joueur déjà inscrit)
@@ -119,7 +119,7 @@
     $("cmpEmpty").innerHTML = `<div class="duel"><div class="side"><div class="pic ini">?</div></div><div class="score"><div class="pct zero">– %</div><small>COMPATIBILITÉ</small></div><div class="side"><div class="pic ini">?</div></div></div>
       <p class="ph" style="text-align:center;color:#B9B0C6">Le face-à-face s'ouvrira quand deux joueurs auront publié leur profil.</p>`;
   } else {
-    const opt = x => `<option value="${x.j.id}">${esc(x.j.pseudo)}${ids.has(x.j.id) ? "" : " (autre groupe)"}</option>`;
+    const opt = x => `<option value="${x.j.id}">${esc(x.j.pseudo)}${ids.has(x.j.id) ? "" : tr(" (autre groupe)")}</option>`;
     const sa = $("sa"), sb = $("sb"); sa.innerHTML = sb.innerHTML = tousFaits.map(opt).join("");
     sa.value = moi && moi.reponses ? moi.id : tousFaits[0].j.id; sb.value = tousFaits.find(x => x.j.id !== sa.value).j.id;
     const comparer = () => {
@@ -128,10 +128,10 @@
       const c = QC.compatibilite(a.P, b.P);
       $("pct").textContent = (a === b ? 100 : c.pct) + " %";
       $("duohex").innerHTML = SITE.hex(null, null, { grid: "#4A4058", extra: `<polygon points="${SITE.hexPoly(fin(a))}" fill="${SITE.TINT[SITE.dominante(a.P)][0]}" fill-opacity=".45" stroke="#E9D7AE"/><polygon points="${SITE.hexPoly(fin(b))}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/>` });
-      const opp = c.oppositions.map(o => `${esc((o.plus === "A" ? a : b).j.pseudo)} est bien plus attiré par ${QC.NOMS_COULEURS[o.c]}`);
+      const opp = c.oppositions.map(o => esc(tr("{p} est bien plus attiré par {c}", { p: (o.plus === "A" ? a : b).j.pseudo, c: QC.NOMS_COULEURS[o.c] })));
       const ka = SITE.psyPrincipale(a.P), kb = SITE.psyPrincipale(b.P);
-      if (ka !== kb) opp.push(`${esc(a.j.pseudo)} est plutôt ${NOMPSY[ka]}, ${esc(b.j.pseudo)} plutôt ${NOMPSY[kb]}`);
-      const da = SITE.deteste(a.A, a.P); if (da) opp.push(`${esc(b.j.pseudo)} devrait éviter ce que ${esc(a.j.pseudo)} ne veut plus affronter : ${esc(da)}`);
+      if (ka !== kb) opp.push(esc(tr("{a} est plutôt {x}, {b} plutôt {y}", { a: a.j.pseudo, x: NOMPSY[ka], b: b.j.pseudo, y: NOMPSY[kb] })));
+      const da = SITE.deteste(a.A, a.P); if (da) opp.push(esc(tr("{b} devrait éviter ce que {a} ne veut plus affronter : {d}", { b: b.j.pseudo, a: a.j.pseudo, d: da })));
       $("common").innerHTML = c.communs.map(x => `<li>${esc(x.charAt(0).toUpperCase() + x.slice(1))}</li>`).join("") || "<li>Pas grand-chose… idéal pour des parties variées !</li>";
       $("oppo").innerHTML = opp.slice(0, 4).map(x => `<li>${x}</li>`).join("") || "<li>Presque rien : vous jouez de façon très proche.</li>";
       SITE.images($("duel"));

@@ -48,6 +48,8 @@ footer .logo{font-family:Cinzel,serif;color:#fff;font-weight:800;letter-spacing:
 .nav .me{display:flex;align-items:center;gap:8px;font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.08em;text-decoration:none;color:#fff;border:1px solid rgba(233,215,174,.6);padding:4px 12px 4px 4px;border-radius:30px;white-space:nowrap}
 .nav .me:only-child,.nav a.me:not(:has(span)){padding:6px 14px}
 .nav .me span{width:26px;height:26px;border-radius:50%;background:#2A2033 center/cover;font-size:.8rem}
+.nav .lang{font-family:Cinzel,serif;font-size:.72rem;letter-spacing:.12em;color:var(--gold-l);background:none;border:1px solid rgba(233,215,174,.45);border-radius:30px;padding:5px 10px;cursor:pointer;flex:none}
+.nav .lang:hover,.nav .lang:focus-visible{border-color:var(--gold-l);color:#fff}
 
 /* Avatar sans illustration : l'initiale */
 .ini{display:flex !important;align-items:center !important;justify-content:center !important;background:#2A2033 !important;color:var(--gold-l) !important;font-family:Cinzel,serif !important;font-weight:700;text-decoration:none}

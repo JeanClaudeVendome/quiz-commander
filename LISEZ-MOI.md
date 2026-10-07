@@ -29,6 +29,13 @@ Site statique (HTML, CSS, JavaScript) prévu pour GitHub Pages, avec une petite 
 - **Dans un groupe dont il fait partie**, un joueur peut ajouter un ami : s'il est déjà inscrit, il rejoint le groupe ; sinon, un profil « à réclamer » est créé à son nom.
 - **Seul le créateur d'un groupe peut le supprimer.** Les joueurs et leurs profils ne sont jamais supprimés avec lui.
 
+## Français et anglais
+
+- Le site existe **en français et en anglais**. Au premier passage, il suit la langue du navigateur (français si le navigateur est en français, anglais sinon). Le bouton **EN / FR** de la barre du haut change de langue, et ce choix est retenu. Un lien peut forcer la langue : `index.html?lang=en`.
+- Les réponses ne dépendent pas de la langue : un joueur qui fait le quiz en anglais et un autre en français se comparent normalement. Les noms des groupes et des joueurs ne sont pas traduits.
+- Le français est la langue source. Toutes les traductions anglaises sont dans `site/en.js` : chaque phrase française y sert de clé. **Si tu ajoutes ou modifies un texte** (une question, une option…), ajoute sa traduction dans ce fichier ; `node scripts/tests/lancer.js traductions` signale tout texte oublié (la tâche du lundi refuse de publier sinon).
+- En anglais, les commandants s'affichent sous leur nom anglais ; en français, sous leur nom français quand il existe.
+
 ## Mettre le site en ligne (environ 10 minutes)
 
 1. Crée un compte gratuit sur [github.com](https://github.com) si tu n'en as pas.

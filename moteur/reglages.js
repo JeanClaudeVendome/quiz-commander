@@ -6,6 +6,11 @@
 (function (QC) {
   "use strict";
 
+  /* Traduction : le français est la langue source. Par défaut, QC.T laisse le texte tel quel (tests Node en français) ;
+     le site remplace QC.T par la vraie traduction (site/i18n.js). Les {variables} sont remplacées dans tous les cas. */
+  QC.LANG = QC.LANG || "fr";
+  QC.T = QC.T || function (fr, v) { return v ? String(fr).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m) : fr; };
+
   QC.STYLES = ["aggro", "voltron", "tokens", "aristo", "counters", "kindred", "big", "lands", "blink", "life", "gy", "artifacts",
     "ench", "spells", "control", "stax", "pillow", "combo", "hug", "slug", "goad", "theft", "mill", "chaos", "walkers", "punish"];
   QC.COULEURS = ["W", "U", "B", "R", "G", "C"];
