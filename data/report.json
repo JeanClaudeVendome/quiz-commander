@@ -7,9 +7,9 @@
  "universes_beyond": 1292,
  "puissance": {
   "1": 400,
-  "2": 2513,
+  "2": 2512,
   "3": 438,
-  "4": 121,
+  "4": 122,
   "5": 0
  },
  "complexite": {
@@ -29,7 +29,12 @@
    "3": 2.94
   }
  },
- "etiquettes_inconnues": [],
+ "etiquettes_inconnues": [
+  "auto-equip",
+  "synergy-flashback",
+  "synergy-leaves-creature",
+  "synergy-unearth"
+ ],
  "references_puissance_introuvables": [],
  "corrections_sans_correspondance": [],
  "date": "2026-10-07"
