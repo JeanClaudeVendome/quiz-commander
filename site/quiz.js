@@ -113,7 +113,7 @@
       brancherPied();
     },
     dilemme(q) {
-      const v = D.A[q.id], [a, b] = q.options, art = q.art || [];
+      const v = D.A[q.id], [a, b] = q.options, art = q.art || TX.DILEMME_ART[q.id] || [];
       const cote = (o, i) => `<button class="side${art[i] ? "" : " noart"}" ${art[i] ? `data-art="${esc(art[i])}"` : ""} data-v="${o.id}" aria-pressed="${v === o.id}"><b>${esc(o.l)}</b></button>`;
       scr.innerHTML = entete(q) + `<div class="pair">${cote(a, 0)}<div class="or"><span>OU</span></div>${cote(b, 1)}</div>` + pied(!!v);
       scr.querySelectorAll(".side").forEach(x => x.onclick = () => { repondre(q.id, x.dataset.v); rendre(); focusSuivant(); });

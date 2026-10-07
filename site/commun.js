@@ -173,12 +173,20 @@
   const IMG_KEY = "qc-images";
   let imgCache = {}; try { imgCache = JSON.parse(localStorage.getItem(IMG_KEY) || "{}"); } catch (e) { }
   let file = Promise.resolve();
-  SITE.image = function (name) {
+  /* Appel Scryfall avec nouvel essai si Scryfall demande de ralentir (erreur 429) : jusqu'à 3 essais, pauses croissantes */
+  async function scryNamed(name) {
+    for (let essai = 0; essai < 3; essai++) {
+      const r = await fetch("https://api.scryfall.com/cards/named?exact=" + encodeURIComponent(name));
+      if (r.status !== 429) return r.json();
+      await new Promise(ok => setTimeout(ok, 900 * (essai + 1)));
+    }
+    return {};
+  }  SITE.image = function (name) {
     const c = SITE.carte(name);
     if (c && c.art) return Promise.resolve({ art: c.art, img: c.img, artist: null });
     if (imgCache[name]) return Promise.resolve(imgCache[name]);
     return file = file.then(() => new Promise(r => setTimeout(r, 110))).then(() =>
-      fetch("https://api.scryfall.com/cards/named?exact=" + encodeURIComponent(name)).then(r => r.json()).then(c => {
+      scryNamed(name).then(c => {
         const f = c.image_uris ? c : (c.card_faces || [])[0] || {};
         const v = { art: (f.image_uris || {}).art_crop, img: (f.image_uris || {}).normal, artist: c.artist };
         if (v.art) { imgCache[name] = v; try { localStorage.setItem(IMG_KEY, JSON.stringify(imgCache)); } catch (e) { } }
@@ -188,7 +196,7 @@
   SITE.artiste = function (name) { // l'illustrateur n'est pas dans le catalogue : on le demande à Scryfall
     if (imgCache[name] && imgCache[name].artist) return Promise.resolve(imgCache[name].artist);
     return file = file.then(() => new Promise(r => setTimeout(r, 110))).then(() =>
-      fetch("https://api.scryfall.com/cards/named?exact=" + encodeURIComponent(name)).then(r => r.json()).then(c => {
+      scryNamed(name).then(c => {
         const f = c.image_uris ? c : (c.card_faces || [])[0] || {};
         imgCache[name] = { art: (f.image_uris || {}).art_crop, img: (f.image_uris || {}).normal, artist: c.artist };
         try { localStorage.setItem(IMG_KEY, JSON.stringify(imgCache)); } catch (e) { }

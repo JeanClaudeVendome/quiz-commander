@@ -5,6 +5,21 @@ window.QUIZ_TEXTES = {
     king: "Kenrith, the Returned King", horror: "Ulamog, the Ceaseless Hunger", trickster: "Lazav, the Multifarious", archmage: "Jace, the Mind Sculptor",
     beastmaster: "Ghalta, Primal Hunger", chaos: "Krark, the Thumbless", angel: "Giada, Font of Hope", warlord: "Aurelia, the Warleader",
     diplomat: "Kynaios and Tiro of Meletis", machine: "Karn, Silver Golem" },
+  /* Illustrations des dilemmes « Tu préfères… » : [option a, option b] */
+  DILEMME_ART: {
+    d1: ["Craterhoof Behemoth", "Thassa's Oracle"],          // spectaculaire / toujours de la même façon
+    d9: ["Paradox Engine", "History of Benalia"],              // mécanique huilée / histoire
+    d3: ["Ghalta, Primal Hunger", "Krenko, Mob Boss"],         // une créature énorme / cinquante petites
+    d11: ["Field of the Dead", "Karn, Scion of Urza"],         // terrains / artefacts
+    d12: ["Ephemerate", "Doubling Season"],                    // faire revenir ses créatures / permanents uniques
+    d2: ["Overwhelming Stampede", "Brainstorm"],               // plateau énorme / main pleine
+    d6: ["Living Death", "Rhystic Study"],                     // cimetière / main
+    d7: ["Grand Arbiter Augustin IV", "Insurrection"],         // imposer le rythme / exploser au bon moment
+    d10: ["Demonic Tutor", "Possibility Storm"],               // plan fiable / surprise
+    d4: ["Sword of Feast and Famine", "Purphoros, God of the Forge"], // un seul joueur / tout le monde
+    d5: ["Elspeth, Sun's Champion", "Agent of Treachery"],     // ses propres cartes / celles des autres
+    d8: ["Kynaios and Tiro of Meletis", "Ghostly Prison"]      // interagir / construire dans son coin
+  },
   STYLE_DESC: {
     aggro: "Attaquer tôt et souvent avec une armée de créatures.", voltron: "Un seul monstre équipé jusqu'aux dents ; victoire aux dégâts de commandant.",
     tokens: "Remplir la table de jetons, puis tout booster d'un coup.", aristo: "Sacrifier tes propres créatures pour drainer la table.",
