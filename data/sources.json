@@ -1,0 +1,38 @@
+{
+ "_doc": "Réglages des sources de données de scripts/build_data.py. « otags » : pour chaque style de jeu, les étiquettes de fonction de Scryfall (Tagger, recherche oracletag:) qui le signalent, avec un poids entre 0 et 1. Une étiquette parente inclut ses étiquettes enfants. Les poids ont été réglés le 7 octobre 2026 en mesurant la précision de chaque étiquette sur les commandants vérifiés à la main (les étiquettes justes moins de 25 % du temps ont été retirées). Les étiquettes « synergy-* » décrivent ce dont la carte a besoin : ce sont les plus fiables pour un commandant.",
+ "otags": {
+  "aggro": [["extra-combat", 1], ["extra-attack", 0.8], ["power-boost-to-all", 0.6], ["anthem", 0.6], ["attacking-matters", 0.45], ["attack-trigger", 0.3], ["synergy-double-strike", 0.5], ["synergy-haste", 0.4], ["synergy-trample", 0.3]],
+  "voltron": [["synergy-equipment", 1], ["synergy-solo-attack", 1], ["synergy-aura", 0.8], ["synergy-equipment-legendary", 0.7], ["cost-reducer-equipment", 0.8], ["cost-reducer-equip-ability", 0.8], ["tutor-equipment", 0.6], ["tutor-aura", 0.5], ["quick-equip", 0.5], ["auto-equip", 0.5], ["synergy-hexproof", 0.3]],
+  "tokens": [["synergy-token", 1], ["synergy-token-creature", 1], ["token-doubler", 1], ["token-increaser", 0.9], ["tokenfall", 0.7], ["creature-count-matters", 0.6], ["repeatable-token-generator", 0.55], ["repeatable-creature-tokens", 0.55]],
+  "aristo": [["synergy-sacrifice", 1], ["sacrifice-outlet", 0.9], ["death-trigger", 0.7], ["drain-life", 0.6], ["synergy-leaves-creature", 0.5]],
+  "counters": [["counters-matter", 1], ["counter-doubler", 1], ["counter-increaser", 1], ["counter-lord", 0.8], ["repeatable-proliferate", 0.8], ["synergy-proliferate", 0.7], ["synergy-modified", 0.4]],
+  "kindred": [["typal", 1], ["tribal", 1], ["lord", 0.5]],
+  "big": [["greatest-power-matters", 0.9], ["power-doubler", 0.8], ["power-matters", 0.65], ["cheat-into-play", 0.7], ["cost-reducer-creature", 0.6], ["cheat-mana", 0.55], ["ramp", 0.25]],
+  "lands": [["landfall", 1], ["lands-matter", 1], ["synergy-land", 1], ["lands-in-graveyard-matter", 0.9], ["synergy-land-graveyard", 0.8], ["extra-land", 0.7], ["synergy-nonbasic-land", 0.4]],
+  "blink": [["flicker", 1], ["blink", 1]],
+  "life": [["lifegain-matters", 1], ["lifegain-increaser", 1], ["synergy-lifegain", 1], ["synergy-lifelink", 0.5], ["lifegain", 0.3], ["life-gain", 0.3]],
+  "gy": [["cast-from-graveyard", 1], ["synergy-graveyard-cast", 0.9], ["reanimate", 0.8], ["recursion", 0.6], ["self-mill", 0.6], ["graveyard-fuel", 0.5], ["synergy-flashback", 0.5], ["synergy-unearth", 0.5], ["synergy-surveil", 0.4], ["synergy-mill", 0.35]],
+  "artifacts": [["artifact-matters", 1], ["synergy-artifact", 1], ["artifact-count-matters", 1], ["synergy-artifact-creature", 0.8], ["synergy-vehicle", 0.7], ["cost-reducer-artifact", 0.7], ["artifactfall", 0.6], ["synergy-treasure", 0.5], ["tutor-artifact", 0.4]],
+  "ench": [["enchantress", 1], ["enchantment-engine", 1], ["synergy-enchantment", 1], ["synergy-enchantment-creature", 0.8], ["cost-reducer-enchantment", 0.7], ["enchantmentfall", 0.6], ["tutor-enchantment", 0.5], ["synergy-aura", 0.4]],
+  "spells": [["magecraft", 1], ["storm-count-matters", 1], ["synergy-instant", 1], ["synergy-sorcery", 1], ["copy-spell", 0.8], ["cost-reducer-instant-sorcery", 0.9], ["synergy-noncreature", 0.6], ["prowess-anthem", 0.6], ["cost-reducer-noncreature", 0.5], ["cast-trigger", 0.35]],
+  "control": [["counterspell", 0.9], ["synergy-counterspell", 1], ["sweeper", 0.8], ["synergy-flash", 0.5], ["lockdown", 0.4]],
+  "stax": [["hatebear", 1], ["lockdown", 0.6], ["doesn-t-untap", 0.6], ["symmetrical", 0.35]],
+  "pillow": [["pillowfort", 1], ["tax-attack", 1], ["prevent-attack", 0.8], ["fog", 0.5]],
+  "combo": [],
+  "hug": [["group-hug", 1], ["monarch-matters", 0.6], ["synergy-vote", 0.7]],
+  "slug": [["group-slug", 1], ["burn-player-each", 0.8], ["life-loss-matters", 0.6], ["punisher", 0.4]],
+  "goad": [["forces-attack", 1], ["force-attacker", 1], ["synergy-goad", 1]],
+  "theft": [["theft", 1], ["synergy-theft", 1], ["threaten", 0.7], ["reanimate-from-opponent", 0.7], ["clone", 0.4]],
+  "mill": [["mill-opponent", 1], ["mill-each", 0.6], ["synergy-mill", 0.35]],
+  "chaos": [["coin-flip", 1], ["dice-roll", 1], ["synergy-dice", 1], ["dice", 0.8], ["random-card", 0.8], ["gives-cascade", 0.7], ["synergy-cascade", 0.7]],
+  "walkers": [["synergy-planeswalker", 1], ["planeswalker-support", 1], ["planeswalker-deck-staples", 0.6], ["planeswalkerfall", 0.6]],
+  "punish": [["punisher", 1], ["redirect-damage", 1]]
+ },
+ "power_otags": [["tutor", 0.3], ["extra-turn", 0.45], ["free-casting", 0.3], ["cost-reducer", 0.15], ["untapper", 0.15]],
+ "spellbook_tags": {
+  "_doc": "Étiquettes de puissance des combos de Commander Spellbook, du plus fort au plus faible : R Ruthless, S Spicy, P Powerful, O Oddball, C Core, E Exhibition (B = combo interdit en Commander, ignoré). « bonus » : ajout à la puissance estimée du commandant (échelle des brackets) selon son meilleur combo. « style » : force du style « combo » selon ce même meilleur combo.",
+  "bonus": {"R": 1.3, "S": 0.8, "P": 0.4, "O": 0.1, "C": 0.0, "E": 0.0},
+  "style": {"R": 0.85, "S": 0.65, "P": 0.45, "O": 0.25, "C": 0.15, "E": 0.05},
+  "order": "RSPOCE"
+ }
+}

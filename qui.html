@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qui es-tu ? — Le grand quiz Commander</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/style.css">
+<style>
+body{background:var(--night)}
+.stage{position:relative;min-height:100vh;background:var(--night) center 30%/cover no-repeat;color:#fff;padding:120px 16px 80px}
+.stage::before{content:"";position:absolute;inset:0;background:rgba(18,15,24,.82)}
+.stage>*{position:relative}
+.head{text-align:center}
+.head h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,7vw,4.5rem);margin:0;line-height:1}
+.head p{color:#CFC6DA;max-width:54ch;margin:14px auto 0}
+.head .orn{color:var(--gold-l)}
+.code{max-width:440px;margin:34px auto 0;text-align:center}
+.code label{display:block;font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.12em;color:var(--gold-l);margin-bottom:8px}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+input{font:inherit;background:rgba(255,255,255,.06);border:1px solid #5A4E68;color:#fff;padding:10px 14px;outline:none;min-height:44px}
+input:focus{border-color:var(--gold-l)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;max-width:900px;margin:34px auto 0}
+.who{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:22px 12px 18px;border:1px solid #4A4058;background:rgba(255,255,255,.03);transition:border-color .2s,transform .2s;position:relative}
+.who:hover{border-color:var(--gold-l);transform:translateY(-3px)}
+.who:focus-visible{outline:2px solid var(--gold-l);outline-offset:3px}
+.who .pic{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:#2A2033 center/cover;box-shadow:0 0 0 3px var(--night),0 0 0 4px #5A4E68;font-size:2.4rem}
+.who b{font-family:Cinzel,serif;font-size:1.25rem;display:block}
+.who small{color:#A89FB5;font-size:.8rem}
+.who.locked{opacity:.6}
+.who .lock{position:absolute;top:10px;right:12px;font-size:.72rem;letter-spacing:.1em;color:var(--gold-l);font-family:Cinzel,serif}
+.who.new{border-style:dashed}
+.who.new .pic{background:transparent;box-shadow:0 0 0 1px #5A4E68;font-size:2.6rem;color:var(--gold-l);display:flex;align-items:center;justify-content:center}
+.who[aria-pressed="true"]{border-color:var(--gold-l);background:rgba(233,215,174,.08);opacity:1}
+.panel{max-width:520px;margin:30px auto 0;padding:24px;border:1px solid var(--gold);background:rgba(18,15,24,.85);text-align:center}
+.panel h2{font-family:Cinzel,serif;margin:0 0 6px}
+.panel p{color:#CFC6DA;margin:6px 0 16px}
+.err{color:#F0A49A;font-size:.9rem;min-height:1.3em;margin-top:8px}
+.already{max-width:560px;margin:30px auto 0;text-align:center;color:#CFC6DA}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+<section class="stage" data-art="Mirror Gallery">
+  <div class="head">
+    <h1>Qui es-tu ?</h1>
+    <p id="intro">Choisis ton profil. Une fois réclamé, il est verrouillé à ton nom : personne d'autre ne pourra le prendre.</p>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <form class="code" id="codeForm" hidden>
+    <label for="gcode">CODE DU GROUPE</label>
+    <div class="row"><input id="gcode" autocomplete="off" autocapitalize="none" size="20" required><button class="btn solid">Entrer</button></div>
+    <div class="err" id="codeErr" role="alert"></div>
+  </form>
+  <div id="already"></div>
+  <div class="grid" id="grid"></div>
+  <div id="panel"></div>
+</section>
+<footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
+
+<script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
+<script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
+<script>
+(async function () {
+  const ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  const ok = await SITE.demarrer("", { sansGroupe: true });
+  if (!ok) return;
+  SITE.images(document.querySelector(".stage"));
+
+  if (!ST.code()) { // mode partagé : il faut d'abord le code du groupe
+    $("codeForm").hidden = false; $("intro").textContent = "Entre le code que l'administrateur du groupe t'a donné.";
+    $("gcode").focus();
+    $("codeForm").onsubmit = async e => {
+      e.preventDefault(); $("codeErr").textContent = "";
+      try { await ST.entrer($("gcode").value.trim()); location.reload(); } catch (er) { $("codeErr").textContent = er.message; }
+    };
+    return;
+  }
+  const G = await SITE.groupe();
+  const moi = SITE.moi();
+  if (moi) $("already").innerHTML = `<div class="already">Tu es connecté en tant que <b>${esc(moi.pseudo)}</b>. <a class="btn" style="padding:6px 12px;font-size:.7rem;margin-left:8px" href="profil.html?j=${moi.id}">Mon profil</a> <button class="btn" style="padding:6px 12px;font-size:.7rem" id="sortir">Ce n'est pas moi</button></div>`;
+  if (moi) $("sortir").onclick = () => { ST.sortir(); location.reload(); };
+
+  let pick = SITE.param("j");
+  const dessiner = () => {
+    $("grid").innerHTML = G.joueurs.map(j => `<button class="who${j.reclame ? " locked" : ""}" data-id="${j.id}" aria-pressed="${pick === j.id}">
+        ${j.reclame ? `<span class="lock">PRIS</span>` : ""}<div class="pic" ${SITE.avAttrs(j)}></div><b>${esc(j.pseudo)}</b><small>${j.reclame ? "Déjà réclamé" : "Libre"}</small></button>`).join("")
+      + `<button class="who new" data-id="__new" aria-pressed="${pick === "__new"}"><div class="pic">+</div><b>Nouveau</b><small>Créer un autre profil</small></button>`;
+    $("grid").querySelectorAll(".who").forEach(b => b.onclick = () => { pick = b.dataset.id; dessiner(); panneau(); });
+    SITE.images($("grid"));
+  };
+  const panneau = () => {
+    const j = G.parId[pick]; let h;
+    const pin = (ph) => `<input id="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="${ph}" aria-label="${ph}" size="16">`;
+    if (pick === "__new") h = `<h2>Créer ton profil</h2><p>Ton prénom ou ton pseudo, tel que le groupe te connaît.</p>
+        <div class="row"><input id="nname" placeholder="Prénom" maxlength="24" aria-label="Prénom">${pin("Code à 4 chiffres")}</div>`;
+    else if (j.reclame) h = `<h2>${esc(j.pseudo)} est déjà pris</h2><p>Si c'est ton profil, entre ton code personnel pour te reconnecter sur cet appareil. Sinon, crée un nouveau profil.</p><div class="row">${pin("Ton code à 4 chiffres")}</div>`;
+    else h = `<h2>Tu es ${esc(j.pseudo)} ?</h2><p>Choisis un code personnel à 4 chiffres. Il te servira à te reconnecter sur un autre appareil et à publier ton profil. Ce choix est définitif.</p><div class="row">${pin("Code à 4 chiffres")}</div>`;
+    $("panel").innerHTML = `<form class="panel" id="pf">${h}<div class="err" id="err" role="alert"></div><button class="btn solid">${pick === "__new" ? "Créer et entrer" : j.reclame ? "Me reconnecter" : "C'est moi"}</button></form>`;
+    const f = $("pf"); (f.querySelector("input")).focus();
+    f.oninput = () => $("err").textContent = "";
+    f.onsubmit = async e => {
+      e.preventDefault();
+      const p = $("pin").value.trim();
+      if (!/^\d{4}$/.test(p)) { $("err").textContent = "Entre un code de 4 chiffres."; return; }
+      const btn = f.querySelector("button"); btn.disabled = true;
+      try {
+        let id = pick;
+        if (pick === "__new") { const n = $("nname").value.trim(); if (!n) throw new Error("Entre un prénom."); id = await ST.creer(n, p); }
+        else if (j.reclame) await ST.connexion(id, p);
+        else await ST.reclamer(id, p);
+        location.href = "profil.html?j=" + id;
+      } catch (er) { $("err").textContent = er.message; btn.disabled = false; }
+    };
+  };
+  dessiner(); if (pick && (G.parId[pick] || pick === "__new")) panneau();
+})();
+</script>
+</body>
+</html>

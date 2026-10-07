@@ -1,0 +1,670 @@
+{
+ "_doc": "Règles d'étiquetage partagées entre scripts/build_data.py et assets/app.js. Expressions régulières simples (sans lookbehind), appliquées au texte oracle en minuscules, nom de la carte remplacé par ~. Avant l'analyse, « that target ~ » est retiré pour ne pas confondre une protection avec une taxe.",
+ "tags": {
+  "tokens": [
+   [
+    "create[s]? [^.]{0,60}tokens?",
+    2
+   ],
+   [
+    "tokens? you control",
+    1.5
+   ],
+   [
+    "twice that many [^.]{0,20}tokens",
+    2
+   ]
+  ],
+  "counters": [
+   [
+    "\\+1/\\+1 counters?",
+    2
+   ],
+   [
+    "proliferate",
+    2
+   ],
+   [
+    "experience counter",
+    1
+   ]
+  ],
+  "aristo": [
+   [
+    "sacrifice (another|a|an) (creature|permanent)",
+    2
+   ],
+   [
+    "whenever (another |a )?(nontoken )?creature( you control)? dies",
+    2
+   ],
+   [
+    "dies, [^.]{0,40}(loses|deals)",
+    1
+   ]
+  ],
+  "gy": [
+   [
+    "from your graveyard",
+    2
+   ],
+   [
+    "(cards?|creature card) in your graveyard",
+    1.5
+   ],
+   [
+    "\\bmills?\\b[^.]{0,30}(you|your)",
+    1
+   ]
+  ],
+  "lands": [
+   [
+    "landfall",
+    2.5
+   ],
+   [
+    "additional land",
+    2
+   ],
+   [
+    "land cards?",
+    1.5
+   ],
+   [
+    "whenever a land",
+    2
+   ]
+  ],
+  "blink": [
+   [
+    "exile [^\\n]{0,80}return (it|that card|those cards|them) to the battlefield",
+    2.5
+   ],
+   [
+    "permanent entering causes",
+    2
+   ],
+   [
+    "enters or leaves",
+    1
+   ]
+  ],
+  "artifacts": [
+   [
+    "\\bartifacts?\\b",
+    1.5
+   ],
+   [
+    "\\btreasures?\\b",
+    1
+   ],
+   [
+    "equipment",
+    1
+   ],
+   [
+    "vehicles?",
+    1
+   ]
+  ],
+  "ench": [
+   [
+    "\\benchantments?\\b",
+    1.5
+   ],
+   [
+    "\\bauras?\\b",
+    1.5
+   ],
+   [
+    "constellation",
+    2
+   ]
+  ],
+  "spells": [
+   [
+    "instant (or|and) sorcery",
+    2
+   ],
+   [
+    "noncreature spells?",
+    1.5
+   ],
+   [
+    "magecraft",
+    2
+   ],
+   [
+    "prowess",
+    1
+   ],
+   [
+    "copy (that|target) (instant|spell)",
+    2
+   ],
+   [
+    "instant spell",
+    1
+   ]
+  ],
+  "big": [
+   [
+    "costs? \\{x\\} less",
+    2
+   ],
+   [
+    "power (4|5|6|7) or greater",
+    1.5
+   ],
+   [
+    "greatest power",
+    1.5
+   ],
+   [
+    "add [^.]{0,20}mana[^.]{0,30}(any|x)",
+    1
+   ],
+   [
+    "unspent",
+    2
+   ]
+  ],
+  "life": [
+   [
+    "gains? (\\d+|x|that much) life",
+    1.5
+   ],
+   [
+    "whenever you gain life",
+    2.5
+   ],
+   [
+    "lifelink",
+    1
+   ]
+  ],
+  "walkers": [
+   [
+    "planeswalkers?",
+    2
+   ],
+   [
+    "loyalty",
+    1.5
+   ]
+  ],
+  "aggro": [
+   [
+    "additional combat",
+    2.5
+   ],
+   [
+    "whenever (~|a creature you control|one or more creatures you control) attacks?",
+    1.5
+   ],
+   [
+    "creatures you control get \\+",
+    1.5
+   ],
+   [
+    "\\bhaste\\b",
+    0.5
+   ],
+   [
+    "double strike",
+    1
+   ],
+   [
+    "attacking causes",
+    2.5
+   ],
+   [
+    "whenever you attack",
+    2
+   ]
+  ],
+  "voltron": [
+   [
+    "equipped creature",
+    2
+   ],
+   [
+    "enchanted creature",
+    1
+   ],
+   [
+    "attached to",
+    1.5
+   ],
+   [
+    "\\bhexproof\\b",
+    1
+   ],
+   [
+    "attacks alone",
+    2
+   ]
+  ],
+  "mill": [
+   [
+    "(target|each) (player|opponent) mills",
+    2.5
+   ],
+   [
+    "mills? (that many|\\w+) cards",
+    1.5
+   ],
+   [
+    "would mill",
+    2.5
+   ]
+  ],
+  "control": [
+   [
+    "counter target",
+    2
+   ],
+   [
+    "destroy target",
+    1
+   ],
+   [
+    "exile target (creature|nonland|permanent)",
+    1
+   ],
+   [
+    "return target [^.]{0,30}to its owner's hand",
+    1
+   ]
+  ],
+  "stax": [
+   [
+    "can't (be )?cast",
+    2
+   ],
+   [
+    "spells (your opponents|opponents|each opponent) cast cost",
+    2
+   ],
+   [
+    "don't untap",
+    2
+   ],
+   [
+    "can't be activated",
+    2
+   ],
+   [
+    "each opponent can't",
+    2
+   ]
+  ],
+  "pillow": [
+   [
+    "can't attack you",
+    2.5
+   ],
+   [
+    "attacks you or a planeswalker you control",
+    2
+   ],
+   [
+    "creature an opponent controls attacks",
+    1.5
+   ]
+  ],
+  "hug": [
+   [
+    "each player (draws|may|gains|creates)",
+    2
+   ],
+   [
+    "target (opponent|player) (draws|gains|creates|may draw)",
+    2
+   ],
+   [
+    "each opponent (draws|may draw|creates)",
+    1.5
+   ],
+   [
+    "\\bmonarch\\b",
+    1.5
+   ]
+  ],
+  "slug": [
+   [
+    "each opponent loses",
+    1.5
+   ],
+   [
+    "damage to each opponent",
+    2
+   ],
+   [
+    "each player loses",
+    2
+   ],
+   [
+    "whenever (a player|an opponent) (casts|draws)",
+    1.5
+   ],
+   [
+    "damage to an opponent",
+    1.5
+   ]
+  ],
+  "goad": [
+   [
+    "\\bgoad",
+    3
+   ],
+   [
+    "attacks? each combat if able",
+    1.5
+   ]
+  ],
+  "theft": [
+   [
+    "gain control of",
+    2.5
+   ],
+   [
+    "you don't own",
+    2
+   ],
+   [
+    "opponent's library",
+    1.5
+   ],
+   [
+    "an opponent owns",
+    1.5
+   ]
+  ],
+  "chaos": [
+   [
+    "flip a coin",
+    3
+   ],
+   [
+    "\\bcascade\\b",
+    2
+   ],
+   [
+    "at random",
+    1.5
+   ],
+   [
+    "roll a",
+    1
+   ],
+   [
+    "suspend",
+    1.5
+   ]
+  ],
+  "punish": [
+   [
+    "deals? damage to you",
+    2
+   ],
+   [
+    "whenever an opponent casts",
+    1
+   ],
+   [
+    "excess",
+    1.5
+   ]
+  ]
+ },
+ "kindred_words": [
+  "chosen type",
+  "creature type",
+  "of the chosen",
+  "share a creature type"
+ ],
+ "fantasy_rules": {
+  "villain": {
+   "types": [
+    "Villain",
+    "Demon",
+    "Devil"
+   ],
+   "colors_with_tags": [
+    [
+     "B",
+     [
+      "theft",
+      "slug",
+      "aristo"
+     ]
+    ]
+   ]
+  },
+  "dwarf": {
+   "types": [
+    "Dwarf"
+   ]
+  },
+  "necro": {
+   "types": [
+    "Zombie",
+    "Skeleton",
+    "Spectre",
+    "Wraith"
+   ],
+   "colors_with_tags": [
+    [
+     "B",
+     [
+      "gy"
+     ]
+    ]
+   ]
+  },
+  "dragons": {
+   "types": [
+    "Dragon"
+   ]
+  },
+  "pirate": {
+   "types": [
+    "Pirate"
+   ]
+  },
+  "paladin": {
+   "types": [
+    "Knight"
+   ],
+   "colors_with_tags": [
+    [
+     "W",
+     [
+      "voltron"
+     ]
+    ]
+   ]
+  },
+  "inventor": {
+   "types": [
+    "Artificer"
+   ],
+   "colors_with_tags": [
+    [
+     "U",
+     [
+      "artifacts"
+     ]
+    ],
+    [
+     "R",
+     [
+      "artifacts"
+     ]
+    ]
+   ]
+  },
+  "druid": {
+   "types": [
+    "Druid",
+    "Treefolk"
+   ],
+   "colors_with_tags": [
+    [
+     "G",
+     [
+      "lands"
+     ]
+    ]
+   ]
+  },
+  "king": {
+   "types": [
+    "Noble",
+    "King",
+    "Queen"
+   ],
+   "colors_with_tags": [
+    [
+     "W",
+     [
+      "tokens"
+     ]
+    ]
+   ]
+  },
+  "horror": {
+   "types": [
+    "Horror",
+    "Eldrazi",
+    "Nightmare"
+   ]
+  },
+  "trickster": {
+   "types": [
+    "Rogue",
+    "Faerie",
+    "Ninja"
+   ],
+   "colors_with_tags": [
+    [
+     "U",
+     [
+      "theft"
+     ]
+    ],
+    [
+     "B",
+     [
+      "theft"
+     ]
+    ]
+   ]
+  },
+  "archmage": {
+   "types": [
+    "Wizard",
+    "Sphinx"
+   ],
+   "colors_with_tags": [
+    [
+     "U",
+     [
+      "spells"
+     ]
+    ]
+   ]
+  },
+  "beastmaster": {
+   "types": [
+    "Beast",
+    "Dinosaur",
+    "Hydra",
+    "Cat",
+    "Wolf",
+    "Bear",
+    "Elephant",
+    "Wurm"
+   ],
+   "colors_with_tags": [
+    [
+     "G",
+     [
+      "counters"
+     ]
+    ]
+   ]
+  },
+  "chaos": {
+   "colors_with_tags": [
+    [
+     "R",
+     [
+      "chaos"
+     ]
+    ]
+   ]
+  },
+  "angel": {
+   "types": [
+    "Angel"
+   ],
+   "colors_with_tags": [
+    [
+     "W",
+     [
+      "life"
+     ]
+    ]
+   ]
+  },
+  "warlord": {
+   "types": [
+    "Warrior",
+    "Soldier",
+    "Samurai",
+    "Berserker"
+   ],
+   "colors_with_tags": [
+    [
+     "R",
+     [
+      "aggro"
+     ]
+    ],
+    [
+     "W",
+     [
+      "aggro"
+     ]
+    ]
+   ]
+  },
+  "diplomat": {
+   "types": [
+    "Advisor"
+   ],
+   "colors_with_tags": [
+    [
+     "G",
+     [
+      "hug"
+     ]
+    ],
+    [
+     "U",
+     [
+      "hug"
+     ]
+    ],
+    [
+     "W",
+     [
+      "hug"
+     ]
+    ]
+   ]
+  }
+ }
+}

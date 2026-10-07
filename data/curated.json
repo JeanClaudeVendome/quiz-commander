@@ -1,0 +1,2475 @@
+{
+"_doc": "Corrections manuelles appliquées par scripts/build_data.py : style de jeu (t), personnages (f), types ajoutés (kx), puissance 1-3 (pw), complexité 1-3 (cx), drapeaux (p partenaire, b background, a atypique, s salé), univers Beyond (ub), description française (d).",
+"cards": [
+{"n":"Vial Smasher the Fierce","t":["slug","spells"],"f":["villain"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Le premier sort de chaque tour inflige des dégâts égaux à sa valeur de mana à un adversaire au hasard."},
+{"n":"Kraum, Ludevic's Opus","t":["spells","control"],"f":["horror"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Tu pioches dès qu'un adversaire lance son deuxième sort du tour : un partenaire très apprécié en compétitif."},
+{"n":"Thrasios, Triton Hero","t":["combo","lands"],"f":["druid","archmage"],"kx":[],"pw":3,"cx":2,"pop":2,"fl":"p","ub":"","d":"Transforme ton mana en trop en terrains et en cartes : le moteur de nombreux combos de mana infini."},
+{"n":"Tymna the Weaver","t":["aggro","control"],"f":["angel"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Pioche pour chaque adversaire blessé au combat : une source de cartes discrète et régulière."},
+{"n":"Rograkh, Son of Rohgahh","t":["voltron","combo"],"f":["warlord"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Un commandant gratuit : il sert surtout à ajouter le rouge à son partenaire et à lancer les combos plus tôt."},
+{"n":"Silas Renn, Seeker Adept","t":["artifacts","gy"],"f":["inventor"],"kx":[],"pw":3,"cx":2,"pop":2,"fl":"p","ub":"","d":"Rejoue les artefacts de ton cimetière à chaque attaque."},
+{"n":"Ishai, Ojutai Dragonspeaker","t":["counters","spells"],"f":["archmage"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Grandit à chaque sort adverse : un partenaire qui ajoute le blanc et le bleu sans rien coûter de plus."},
+{"n":"Esior, Wardwing Familiar","t":["voltron","spells"],"f":["archmage"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Rend plus chers les sorts qui ciblent ta créature : un partenaire bleu bon marché et protecteur."},
+{"n":"Ardenn, Intrepid Archaeologist","t":["voltron","ench"],"f":["paladin"],"kx":[],"pw":3,"cx":1,"pop":2,"fl":"p","ub":"","d":"Déplace gratuitement équipements et auras à chaque combat."},
+{
+"n": "Isshin, Two Heavens as One",
+"t": [
+"aggro",
+"tokens"
+],
+"f": [
+"warlord",
+"king"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Double tous les déclencheurs liés aux attaques : chaque effet de combat se déclenche deux fois."
+},
+{
+"n": "Najeela, the Blade-Blossom",
+"t": [
+"aggro",
+"kindred",
+"combo"
+],
+"f": [
+"warlord"
+],
+"kx": [
+"Warrior"
+],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque guerrier qui attaque en crée un autre ; en fin de partie, des phases de combat supplémentaires."
+},
+{
+"n": "Aurelia, the Warleader",
+"t": [
+"aggro",
+"voltron"
+],
+"f": [
+"warlord",
+"paladin"
+],
+"kx": [
+"Angel"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "À sa première attaque du tour, tout se dégage et une phase de combat supplémentaire suit."
+},
+{
+"n": "Karlach, Fury of Avernus",
+"t": [
+"aggro"
+],
+"f": [
+"warlord"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "b",
+"ub": "",
+"d": "Chaque premier combat est suivi d’un second, avec initiative pour tous les attaquants. Peut prendre un Background."
+},
+{
+"n": "Gishath, Sun's Avatar",
+"t": [
+"kindred",
+"big",
+"aggro"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Dinosaur"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Quand Gishath touche un joueur, les dinosaures révélés du dessus de ta bibliothèque entrent gratuitement."
+},
+{
+"n": "Edgar Markov",
+"t": [
+"kindred",
+"aggro",
+"tokens"
+],
+"f": [
+"king",
+"warlord"
+],
+"kx": [
+"Vampire"
+],
+"pw": 3,
+"cx": 1,
+"pop": 3,
+"fl": "s",
+"ub": "",
+"d": "Chaque vampire lancé crée un jeton vampire, même depuis la zone de commandement. Rapide, et réputé « salé »."
+},
+{
+"n": "Syr Gwyn, Hero of Ashvale",
+"t": [
+"kindred",
+"voltron",
+"artifacts"
+],
+"f": [
+"paladin",
+"warlord"
+],
+"kx": [
+"Knight"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chevaliers et équipements : chaque créature équipée qui attaque te fait piocher."
+},
+{
+"n": "Light-Paws, Emperor's Voice",
+"t": [
+"voltron",
+"ench"
+],
+"f": [
+"paladin"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque aura lancée va chercher une autre aura dans ta bibliothèque et l’attache au renard."
+},
+{
+"n": "Sram, Senior Edificer",
+"t": [
+"voltron",
+"artifacts"
+],
+"f": [
+"dwarf",
+"paladin"
+],
+"kx": [
+"Dwarf"
+],
+"pw": 3,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Pioche à chaque aura, équipement ou véhicule lancé : le nain qui ne manque jamais de carburant."
+},
+{
+"n": "Uril, the Miststalker",
+"t": [
+"voltron",
+"ench"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Hexproof et +2/+2 par aura attachée : un monstre intouchable."
+},
+{
+"n": "Rafiq of the Many",
+"t": [
+"voltron",
+"aggro"
+],
+"f": [
+"paladin"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Une créature qui attaque seule gagne exalté et double initiative."
+},
+{
+"n": "Wyleth, Soul of Steel",
+"t": [
+"voltron",
+"artifacts"
+],
+"f": [
+"paladin",
+"warlord"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Pioche une carte par aura et équipement attachés chaque fois qu’elle attaque."
+},
+{
+"n": "Skullbriar, the Walking Grave",
+"t": [
+"voltron",
+"counters"
+],
+"f": [
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Garde ses marqueurs +1/+1 même quand il change de zone : il ne fait que grandir."
+},
+{
+"n": "Rhys the Redeemed",
+"t": [
+"tokens"
+],
+"f": [
+"king",
+"druid"
+],
+"kx": [
+"Elf"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Crée des elfes, puis double d’un coup tous tes jetons."
+},
+{
+"n": "Jetmir, Nexus of Revels",
+"t": [
+"tokens",
+"aggro"
+],
+"f": [
+"king",
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Plus tu as de créatures, plus elles gagnent : vigilance, piétinement, puis double initiative."
+},
+{
+"n": "Adrix and Nev, Twincasters",
+"t": [
+"tokens"
+],
+"f": [
+"archmage",
+"inventor"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque création de jetons est doublée, quelle qu’elle soit."
+},
+{
+"n": "Chatterfang, Squirrel General",
+"t": [
+"tokens",
+"aristo"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Squirrel"
+],
+"pw": 3,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Chaque création de jetons ajoute autant d’écureuils, qu’on sacrifie pour affaiblir les créatures adverses."
+},
+{
+"n": "Krenko, Mob Boss",
+"t": [
+"tokens",
+"kindred"
+],
+"f": [
+"warlord"
+],
+"kx": [
+"Goblin"
+],
+"pw": 3,
+"cx": 1,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Crée autant de gobelins que tu en contrôles déjà : la horde double à chaque tour."
+},
+{
+"n": "Darien, King of Kjeldor",
+"t": [
+"tokens",
+"life"
+],
+"f": [
+"king"
+],
+"kx": [
+"Soldier"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque dégât reçu peut devenir un soldat : te frapper renforce ton armée."
+},
+{
+"n": "Marneus Calgar",
+"t": [
+"tokens",
+"aggro"
+],
+"f": [
+"king",
+"paladin"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "Warhammer 40K",
+"d": "Space Marines : double initiative, pioche à chaque création de jetons, et crée des Astartes."
+},
+{
+"n": "Teysa Karlov",
+"t": [
+"aristo",
+"tokens"
+],
+"f": [
+"villain",
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Les capacités déclenchées par la mort d’une créature se déclenchent deux fois."
+},
+{
+"n": "Korvold, Fae-Cursed King",
+"t": [
+"aristo",
+"big"
+],
+"f": [
+"villain",
+"dragons"
+],
+"kx": [
+"Dragon"
+],
+"pw": 3,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Pioche et grandit à chaque sacrifice : le dragon gourmand du Jund."
+},
+{
+"n": "Prossh, Skyraider of Kher",
+"t": [
+"aristo",
+"tokens"
+],
+"f": [
+"dragons"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Arrive avec une nuée de kobolds à sacrifier pour devenir énorme."
+},
+{
+"n": "Meren of Clan Nel Toth",
+"t": [
+"gy",
+"aristo"
+],
+"f": [
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Chaque créature qui meurt nourrit une réanimation à ta fin de tour."
+},
+{
+"n": "Judith, the Scourge Diva",
+"t": [
+"aristo",
+"aggro"
+],
+"f": [
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque créature non-jeton qui meurt inflige un dégât où tu veux."
+},
+{
+"n": "Ayara, First of Locthwain",
+"t": [
+"aristo",
+"life"
+],
+"f": [
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque créature noire qui arrive draine la table ; sacrifie-les pour piocher."
+},
+{
+"n": "Atraxa, Praetors' Voice",
+"t": [
+"counters",
+"walkers"
+],
+"f": [
+"angel",
+"horror"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Prolifère à chaque fin de tour : marqueurs +1/+1, loyauté, poison, tout grandit."
+},
+{
+"n": "Ezuri, Claw of Progress",
+"t": [
+"counters"
+],
+"f": [
+"inventor"
+],
+"kx": [
+"Elf"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tes petites créatures te donnent de l’expérience, convertie en marqueurs +1/+1 à chaque combat."
+},
+{
+"n": "Hamza, Guardian of Arashin",
+"t": [
+"counters",
+"big"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque créature avec un marqueur +1/+1 réduit le coût de tes créatures."
+},
+{
+"n": "Marchesa, the Black Rose",
+"t": [
+"counters",
+"gy"
+],
+"f": [
+"necro",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tes créatures avec un marqueur +1/+1 reviennent du cimetière à la fin du tour."
+},
+{
+"n": "Hapatra, Vizier of Poisons",
+"t": [
+"counters",
+"tokens"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Marqueurs -1/-1 qui créent des serpents à contact mortel."
+},
+{
+"n": "Pir, Imaginative Rascal",
+"t": [
+"counters"
+],
+"f": [
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "p",
+"ub": "",
+"d": "Duo avec Toothy, Imaginary Friend (Simic) : chaque pose de marqueurs en ajoute un de plus."
+},
+{
+"n": "Kess, Dissident Mage",
+"t": [
+"spells",
+"gy"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Relance un éphémère ou un rituel depuis ton cimetière à chaque tour."
+},
+{
+"n": "Veyran, Voice of Duality",
+"t": [
+"spells"
+],
+"f": [
+"archmage",
+"inventor"
+],
+"kx": [
+"Wizard"
+],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque éphémère ou rituel lancé fait déclencher tes effets une fois de plus."
+},
+{
+"n": "Mizzix of the Izmagnus",
+"t": [
+"spells",
+"big"
+],
+"f": [
+"archmage",
+"inventor"
+],
+"kx": [
+"Wizard"
+],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque gros sort rend les suivants moins chers : une chaîne toujours plus massive."
+},
+{
+"n": "Kalamax, the Stormsire",
+"t": [
+"spells",
+"combo"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Copie ton premier éphémère du tour tant que Kalamax est engagé."
+},
+{
+"n": "Talrand, Sky Summoner",
+"t": [
+"spells",
+"control"
+],
+"f": [
+"archmage"
+],
+"kx": [
+"Wizard"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque éphémère ou rituel crée un drake volant."
+},
+{
+"n": "Niv-Mizzet, Parun",
+"t": [
+"spells",
+"combo"
+],
+"f": [
+"archmage",
+"dragons",
+"inventor"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Chaque carte piochée inflige un dégât, et chaque éphémère ou rituel lancé (par n’importe qui) te fait piocher."
+},
+{
+"n": "Krark, the Thumbless",
+"t": [
+"chaos",
+"spells"
+],
+"f": [
+"chaos",
+"trickster"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "p",
+"ub": "",
+"d": "Pile ou face à chaque sort : copie si tu gagnes, retour en main si tu perds. Possède Partner."
+},
+{
+"n": "Zada, Hedron Grinder",
+"t": [
+"chaos",
+"spells",
+"tokens"
+],
+"f": [
+"chaos"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les sorts qui ne ciblent que Zada sont copiés pour chacune de tes autres créatures."
+},
+{
+"n": "Baral, Chief of Compliance",
+"t": [
+"control",
+"spells"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Éphémères et rituels moins chers ; chaque contresort réussi te fait piocher puis défausser."
+},
+{
+"n": "Dragonlord Ojutai",
+"t": [
+"control",
+"voltron"
+],
+"f": [
+"dragons",
+"archmage"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Intouchable tant qu’il est dégagé ; il trouve la meilleure carte à chaque coup porté."
+},
+{
+"n": "Ertai Resurrected",
+"t": [
+"control"
+],
+"f": [
+"archmage",
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Flash : contre un sort ou détruit une créature à son arrivée."
+},
+{
+"n": "Isperia, Supreme Judge",
+"t": [
+"pillow",
+"control"
+],
+"f": [
+"archmage"
+],
+"kx": [
+"Sphinx"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque créature qui t’attaque te fait piocher : attaquer ce sphinx coûte cher."
+},
+{
+"n": "Unesh, Criosphinx Sovereign",
+"t": [
+"kindred",
+"control"
+],
+"f": [
+"archmage"
+],
+"kx": [
+"Sphinx"
+],
+"pw": 1,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les sphinx coûtent moins cher, et chacun qui arrive te fait piocher dans une pile choisie par un adversaire."
+},
+{
+"n": "Lavinia, Azorius Renegade",
+"t": [
+"stax",
+"control"
+],
+"f": [
+"paladin"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Les adversaires ne peuvent pas lancer de non-créatures plus chères que leur nombre de terrains ; les sorts gratuits sont contrés."
+},
+{
+"n": "Brago, King Eternal",
+"t": [
+"blink",
+"stax"
+],
+"f": [
+"king"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque coup porté fait clignoter tes permanents : effets d’arrivée en boucle."
+},
+{
+"n": "Gaddock Teeg",
+"t": [
+"stax"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Interdit à tous les non-créatures à 4 manas ou plus et les sorts à X."
+},
+{
+"n": "Drana and Linvala",
+"t": [
+"stax",
+"theft"
+],
+"f": [
+"trickster",
+"angel"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Bloque les capacités activées des créatures adverses et se les approprie."
+},
+{
+"n": "Zur the Enchanter",
+"t": [
+"ench",
+"stax",
+"voltron"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Va chercher un enchantement à 3 manas ou moins à chaque attaque."
+},
+{
+"n": "Oloro, Ageless Ascetic",
+"t": [
+"life",
+"control"
+],
+"f": [
+"angel"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Gagne 2 points de vie à chaque entretien, même depuis la zone de commandement, et convertit ce gain en pioche."
+},
+{
+"n": "Daxos the Returned",
+"t": [
+"pillow",
+"ench",
+"life"
+],
+"f": [
+"angel"
+],
+"kx": [],
+"pw": 1,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque enchantement lancé te donne de l’expérience et des esprits de plus en plus gros."
+},
+{
+"n": "Kazuul, Tyrant of the Cliffs",
+"t": [
+"pillow",
+"punish"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque créature qui t’attaque te donne un ogre 3/3, sauf si l’attaquant paie 3."
+},
+{
+"n": "Kynaios and Tiro of Meletis",
+"t": [
+"hug"
+],
+"f": [
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque fin de tour, tout le monde peut poser un terrain ; ceux qui ne le font pas piochent."
+},
+{
+"n": "Phelddagrif",
+"t": [
+"hug"
+],
+"f": [
+"diplomat"
+],
+"kx": [],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Un hippopotame qui distribue jetons, vie et cartes… contre faveurs."
+},
+{
+"n": "Selvala, Explorer Returned",
+"t": [
+"hug",
+"big"
+],
+"f": [
+"diplomat",
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tout le monde révèle et pioche ; toi, tu gagnes du mana et de la vie."
+},
+{
+"n": "Zedruu the Greathearted",
+"t": [
+"hug",
+"chaos"
+],
+"f": [
+"trickster",
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Donne tes permanents encombrants aux autres et pioche pour chaque cadeau."
+},
+{
+"n": "Queen Marchesa",
+"t": [
+"hug",
+"aggro"
+],
+"f": [
+"king",
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Te rend monarque et crée des assassins tant qu’un adversaire porte la couronne."
+},
+{
+"n": "Kenrith, the Returned King",
+"t": [
+"hug",
+"chaos"
+],
+"f": [
+"king",
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Cinq capacités, une par couleur, qui peuvent aussi aider les autres joueurs."
+},
+{
+"n": "Karazikar, the Eye Tyrant",
+"t": [
+"goad",
+"hug"
+],
+"f": [
+"trickster",
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Provoque une créature à chaque attaque, et pioche quand tes adversaires s’attaquent entre eux."
+},
+{
+"n": "Nekusar, the Mindrazer",
+"t": [
+"slug"
+],
+"f": [
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tout le monde pioche plus, et chaque carte piochée par un adversaire lui inflige un dégât."
+},
+{
+"n": "Purphoros, God of the Forge",
+"t": [
+"slug",
+"punish",
+"tokens"
+],
+"f": [
+"chaos"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque créature qui arrive inflige 2 dégâts à chaque adversaire."
+},
+{
+"n": "Liesa, Shroud of Dusk",
+"t": [
+"slug",
+"life"
+],
+"f": [
+"angel",
+"villain"
+],
+"kx": [
+"Angel"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque joueur qui lance un sort perd 2 points de vie ; vol et lien de vie."
+},
+{
+"n": "Torbran, Thane of Red Fell",
+"t": [
+"slug",
+"aggro"
+],
+"f": [
+"dwarf",
+"warlord"
+],
+"kx": [
+"Dwarf"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tes sources rouges infligent 2 dégâts de plus aux adversaires et à leurs permanents."
+},
+{
+"n": "Kardur, Doomscourge",
+"t": [
+"goad",
+"aristo"
+],
+"f": [
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "À son arrivée, toutes les créatures adverses doivent attaquer quelqu’un d’autre que toi ; chaque mort au combat draine."
+},
+{
+"n": "Marisi, Breaker of the Coil",
+"t": [
+"goad",
+"aggro"
+],
+"f": [
+"warlord",
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque coup porté à un joueur provoque toutes ses créatures."
+},
+{
+"n": "Muldrotha, the Gravetide",
+"t": [
+"gy",
+"lands"
+],
+"f": [
+"necro",
+"druid"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Rejoue depuis ton cimetière un permanent de chaque type, à chaque tour."
+},
+{
+"n": "Karador, Ghost Chieftain",
+"t": [
+"gy",
+"aristo"
+],
+"f": [
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Lance une créature depuis ton cimetière à chaque tour, et coûte moins cher avec un cimetière plein."
+},
+{
+"n": "Chainer, Nightmare Adept",
+"t": [
+"gy",
+"aggro"
+],
+"f": [
+"necro",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Défausse une carte pour lancer une créature depuis ton cimetière ; elle gagne la célérité."
+},
+{
+"n": "Sidisi, Brood Tyrant",
+"t": [
+"gy",
+"tokens"
+],
+"f": [
+"necro"
+],
+"kx": [
+"Zombie"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque fois que des créatures sont meulées depuis ta bibliothèque, tu crées un zombie."
+},
+{
+"n": "Gisa and Geralf",
+"t": [
+"gy",
+"kindred"
+],
+"f": [
+"necro"
+],
+"kx": [
+"Zombie"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Meule quatre cartes, puis lance un zombie depuis ton cimetière à chaque tour."
+},
+{
+"n": "Wilhelt, the Rotcleaver",
+"t": [
+"kindred",
+"aristo"
+],
+"f": [
+"necro"
+],
+"kx": [
+"Zombie"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tes zombies qui meurent reviennent en version décomposée ; sacrifie-en un en fin de tour pour piocher."
+},
+{
+"n": "Szarekh, the Silent King",
+"t": [
+"artifacts",
+"gy"
+],
+"f": [
+"necro",
+"villain"
+],
+"kx": [],
+"pw": 1,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "Warhammer 40K",
+"d": "Nécrons : chaque attaque te meule trois cartes et récupère une créature artefact ou un véhicule."
+},
+{
+"n": "The Gitrog Monster",
+"t": [
+"lands",
+"gy"
+],
+"f": [
+"horror"
+],
+"kx": [
+"Frog"
+],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Pioche à chaque terrain qui va au cimetière ; à chaque entretien, sacrifie un terrain ou Gitrog."
+},
+{
+"n": "Lord Windgrace",
+"t": [
+"lands",
+"walkers"
+],
+"f": [
+"druid",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "a",
+"ub": "",
+"d": "Planeswalker commandant : défausse et pioche, ramène tes terrains, et finit en détruisant six permanents."
+},
+{
+"n": "Tatyova, Benthic Druid",
+"t": [
+"lands"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 1,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Pioche et gagne un point de vie à chaque terrain posé."
+},
+{
+"n": "Aesi, Tyrant of Gyre Strait",
+"t": [
+"lands",
+"big"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Un terrain supplémentaire par tour et une pioche à chaque landfall."
+},
+{
+"n": "Titania, Protector of Argoth",
+"t": [
+"lands"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque terrain qui va au cimetière depuis le jeu te donne un élémental 5/3."
+},
+{
+"n": "Omnath, Locus of Rage",
+"t": [
+"lands",
+"tokens"
+],
+"f": [
+"druid",
+"beastmaster"
+],
+"kx": [
+"Elemental"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque terrain crée un élémental 5/5 ; chaque élémental qui meurt inflige 3 dégâts."
+},
+{
+"n": "Kodama of the West Tree",
+"t": [
+"counters",
+"lands"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Tes créatures modifiées gagnent le piétinement et vont chercher un terrain quand elles touchent un joueur."
+},
+{
+"n": "Omnath, Locus of Mana",
+"t": [
+"big"
+],
+"f": [
+"druid"
+],
+"kx": [
+"Elemental"
+],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Ton mana vert ne se vide plus entre les phases, et Omnath grandit avec."
+},
+{
+"n": "Selvala, Heart of the Wilds",
+"t": [
+"big",
+"hug"
+],
+"f": [
+"druid"
+],
+"kx": [
+"Elf"
+],
+"pw": 3,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Produit autant de mana que ta plus grosse créature ; les grosses créatures font piocher."
+},
+{
+"n": "The Ur-Dragon",
+"t": [
+"kindred",
+"big"
+],
+"f": [
+"dragons",
+"king"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 1,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Les dragons coûtent moins cher, et chaque attaque de dragons te fait piocher et poser un permanent."
+},
+{
+"n": "Miirym, Sentinel Wyrm",
+"t": [
+"kindred",
+"big"
+],
+"f": [
+"dragons"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 1,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Chaque autre dragon non-jeton qui arrive est copié."
+},
+{
+"n": "Ghalta, Primal Hunger",
+"t": [
+"big",
+"aggro"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Dinosaur"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Coûte moins cher selon la force totale de tes créatures : le battlecruiser vert pur."
+},
+{
+"n": "Gargos, Vicious Watcher",
+"t": [
+"big",
+"kindred"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Hydra"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les hydres coûtent 4 de moins, et chaque cible sur tes créatures fait combattre Gargos."
+},
+{
+"n": "Zaxara, the Exemplary",
+"t": [
+"kindred",
+"big"
+],
+"f": [
+"beastmaster",
+"archmage"
+],
+"kx": [
+"Hydra"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Produit deux manas et crée une hydre à chaque sort à X."
+},
+{
+"n": "Xenagos, God of Revels",
+"t": [
+"big",
+"aggro"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque combat, une de tes créatures gagne la célérité et double sa force."
+},
+{
+"n": "Grumgully, the Generous",
+"t": [
+"counters"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 1,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque autre créature non-humaine arrive avec un marqueur +1/+1 de plus."
+},
+{
+"n": "Tovolar, Dire Overlord",
+"t": [
+"kindred",
+"aggro"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Werewolf",
+"Wolf"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Loups et loups-garous : pioche à chaque coup porté, et la nuit tombe quand la meute est là."
+},
+{
+"n": "Ruric Thar, the Unbowed",
+"t": [
+"punish",
+"stax"
+],
+"f": [
+"beastmaster"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque non-créature lancé inflige 6 dégâts à son lanceur : la punition des sorts."
+},
+{
+"n": "Saskia the Unyielding",
+"t": [
+"aggro",
+"voltron"
+],
+"f": [
+"warlord"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Tous tes dégâts de combat sont aussi infligés au joueur que tu as désigné."
+},
+{
+"n": "Osgir, the Reconstructor",
+"t": [
+"artifacts",
+"gy"
+],
+"f": [
+"inventor"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Exile un artefact de ton cimetière pour en créer deux copies."
+},
+{
+"n": "Breya, Etherium Shaper",
+"t": [
+"artifacts",
+"combo"
+],
+"f": [
+"inventor"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Arrive avec deux thopters ; sacrifie deux artefacts pour blesser, tuer ou te soigner."
+},
+{
+"n": "Daretti, Scrap Savant",
+"t": [
+"artifacts",
+"walkers",
+"gy"
+],
+"f": [
+"inventor"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "a",
+"ub": "",
+"d": "Planeswalker commandant : sacrifie un artefact pour en ramener un autre du cimetière."
+},
+{
+"n": "Shorikai, Genesis Engine",
+"t": [
+"artifacts",
+"tokens"
+],
+"f": [
+"inventor",
+"king"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "a",
+"ub": "",
+"d": "Véhicule commandant : pioche et crée un pilote à chaque activation."
+},
+{
+"n": "Alela, Artful Provocateur",
+"t": [
+"artifacts",
+"ench",
+"tokens"
+],
+"f": [
+"trickster"
+],
+"kx": [
+"Faerie"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque artefact ou enchantement lancé crée une fée volante."
+},
+{
+"n": "Magda, Brazen Outlaw",
+"t": [
+"kindred",
+"artifacts"
+],
+"f": [
+"dwarf"
+],
+"kx": [
+"Dwarf"
+],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les nains frappent plus fort et créent des trésors en s’engageant ; cinq trésors vont chercher un artefact ou un dragon."
+},
+{
+"n": "Sythis, Harvest's Hand",
+"t": [
+"ench",
+"life"
+],
+"f": [
+"druid",
+"angel"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Pioche et gagne un point de vie à chaque enchantement lancé."
+},
+{
+"n": "Tuvasa the Sunlit",
+"t": [
+"ench",
+"voltron"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Grandit avec chaque enchantement et pioche au premier enchantement de chaque tour."
+},
+{
+"n": "Estrid, the Masked",
+"t": [
+"ench",
+"walkers"
+],
+"f": [
+"trickster"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "a",
+"ub": "",
+"d": "Planeswalker commandant : masques protecteurs, et son ultime ramène tes enchantements."
+},
+{
+"n": "Lathril, Blade of the Elves",
+"t": [
+"kindred",
+"tokens",
+"aristo"
+],
+"f": [
+"warlord"
+],
+"kx": [
+"Elf"
+],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Crée des elfes en frappant, puis en engage dix pour drainer dix points de vie à chacun."
+},
+{
+"n": "Ezuri, Renegade Leader",
+"t": [
+"kindred",
+"aggro"
+],
+"f": [
+"druid"
+],
+"kx": [
+"Elf"
+],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Régénère tes elfes et leur donne +3/+3 et le piétinement d’un coup."
+},
+{
+"n": "Sliver Overlord",
+"t": [
+"kindred",
+"theft"
+],
+"f": [
+"horror"
+],
+"kx": [
+"Sliver"
+],
+"pw": 3,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Va chercher n’importe quel slivoïde, et vole ceux des autres."
+},
+{
+"n": "Grolnok, the Omnivore",
+"t": [
+"kindred",
+"gy"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Frog"
+],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les grenouilles meulent en attaquant, et tu peux jouer les permanents meulés."
+},
+{
+"n": "Arahbo, Roar of the World",
+"t": [
+"kindred",
+"voltron"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Cat"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Tes chats grandissent à chaque combat, même depuis la zone de commandement."
+},
+{
+"n": "Rin and Seri, Inseparable",
+"t": [
+"kindred",
+"tokens"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Cat",
+"Dog"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque chien lancé crée un chat, et chaque chat lancé crée un chien."
+},
+{
+"n": "Giada, Font of Hope",
+"t": [
+"kindred",
+"counters"
+],
+"f": [
+"angel"
+],
+"kx": [
+"Angel"
+],
+"pw": 2,
+"cx": 1,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Chaque ange arrive avec des marqueurs +1/+1 de plus."
+},
+{
+"n": "Celestine, the Living Saint",
+"t": [
+"life",
+"gy"
+],
+"f": [
+"angel",
+"paladin"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "Warhammer 40K",
+"d": "Sœurs de Bataille : la vie gagnée dans le tour ramène une créature du cimetière."
+},
+{
+"n": "Marrow-Gnawer",
+"t": [
+"kindred",
+"aristo"
+],
+"f": [
+"trickster"
+],
+"kx": [
+"Rat"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les rats ont la peur ; sacrifie-en un pour créer autant de rats que tu en as."
+},
+{
+"n": "Millicent, Restless Revenant",
+"t": [
+"kindred",
+"tokens"
+],
+"f": [
+"necro"
+],
+"kx": [
+"Spirit"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque esprit qui meurt ou touche un joueur crée un esprit volant."
+},
+{
+"n": "Hakbal of the Surging Soul",
+"t": [
+"kindred",
+"counters"
+],
+"f": [
+"druid"
+],
+"kx": [
+"Merfolk"
+],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque combat, tes ondins explorent : terrains en main ou marqueurs +1/+1."
+},
+{
+"n": "Admiral Beckett Brass",
+"t": [
+"kindred",
+"theft",
+"aggro"
+],
+"f": [
+"pirate",
+"villain"
+],
+"kx": [
+"Pirate"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Si trois pirates touchent un joueur, vole-lui un permanent."
+},
+{
+"n": "Captain N'ghathrod",
+"t": [
+"theft",
+"mill"
+],
+"f": [
+"horror",
+"pirate"
+],
+"kx": [
+"Horror"
+],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Tes horreurs meulent en frappant, et tu récupères les créatures et artefacts meulés."
+},
+{
+"n": "Gonti, Lord of Luxury",
+"t": [
+"theft"
+],
+"f": [
+"trickster",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Regarde le dessus de la bibliothèque d’un adversaire et vole-lui une carte à lancer."
+},
+{
+"n": "Charix, the Raging Isle",
+"t": [
+"kindred",
+"voltron"
+],
+"f": [
+"beastmaster"
+],
+"kx": [
+"Crab"
+],
+"pw": 1,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Un crabe géant difficile à cibler, qui frappe plus fort avec tes îles."
+},
+{
+"n": "Phenax, God of Deception",
+"t": [
+"mill"
+],
+"f": [
+"trickster",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque créature peut meuler un joueur d’autant de cartes que son endurance."
+},
+{
+"n": "Bruvac the Grandiloquent",
+"t": [
+"mill"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Toute la meule de tes adversaires est doublée."
+},
+{
+"n": "Karlov of the Ghost Council",
+"t": [
+"life",
+"counters"
+],
+"f": [
+"angel"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Chaque gain de vie le fait grandir ; dépense ses marqueurs pour exiler une créature."
+},
+{
+"n": "Lathiel, the Bounteous Dawn",
+"t": [
+"life",
+"counters"
+],
+"f": [
+"angel"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "La vie gagnée dans le tour devient des marqueurs +1/+1 sur tes créatures."
+},
+{
+"n": "Roon of the Hidden Realm",
+"t": [
+"blink"
+],
+"f": [
+"druid"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Fait clignoter une créature chaque tour : ses effets d’arrivée se répètent."
+},
+{
+"n": "Yarok, the Desecrated",
+"t": [
+"blink",
+"lands",
+"gy"
+],
+"f": [
+"horror",
+"necro"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 3,
+"fl": "",
+"ub": "",
+"d": "Double les déclencheurs d’arrivée de tes permanents."
+},
+{
+"n": "Maelstrom Wanderer",
+"t": [
+"chaos",
+"big"
+],
+"f": [
+"chaos"
+],
+"kx": [],
+"pw": 2,
+"cx": 1,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Double cascade et célérité pour tous : le chaos à grande échelle."
+},
+{
+"n": "Yidris, Maelstrom Wielder",
+"t": [
+"chaos",
+"aggro"
+],
+"f": [
+"chaos"
+],
+"kx": [],
+"pw": 3,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Après un coup porté, tes sorts lancés depuis ta main gagnent cascade."
+},
+{
+"n": "Jhoira of the Ghitu",
+"t": [
+"chaos",
+"big"
+],
+"f": [
+"inventor",
+"chaos"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Met tes sorts en suspension : ils arrivent gratuitement quatre tours plus tard."
+},
+{
+"n": "Obeka, Splitter of Seconds",
+"t": [
+"chaos",
+"combo"
+],
+"f": [
+"trickster"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Chaque coup porté te donne autant d’étapes d’entretien supplémentaires."
+},
+{
+"n": "Abaddon the Despoiler",
+"t": [
+"chaos",
+"slug"
+],
+"f": [
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "Warhammer 40K",
+"d": "Chaos Space Marines : tes sorts gagnent cascade selon la vie perdue par tes adversaires."
+},
+{
+"n": "Kozilek, the Great Distortion",
+"t": [
+"big",
+"control"
+],
+"f": [
+"horror"
+],
+"kx": [
+"Eldrazi"
+],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Eldrazi incolore : remplit ta main à son lancement et contre des sorts en défaussant."
+},
+{
+"n": "K'rrik, Son of Yawgmoth",
+"t": [
+"combo",
+"big"
+],
+"f": [
+"villain",
+"horror"
+],
+"kx": [],
+"pw": 3,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Paie le noir avec des points de vie : la puissance brute contre ta vie."
+},
+{
+"n": "Tinybones, Trinket Thief",
+"t": [
+"slug"
+],
+"f": [
+"trickster",
+"villain"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Pioche quand un adversaire défausse ; finit les mains vides à coups de 10 dégâts."
+},
+{
+"n": "Sauron, the Dark Lord",
+"t": [
+"aggro",
+"theft"
+],
+"f": [
+"villain",
+"horror"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 2,
+"fl": "",
+"ub": "Le Seigneur des Anneaux",
+"d": "Chaque sort adverse grossit ton armée d’orques ; l’Anneau te tente encore et encore."
+},
+{
+"n": "Nicol Bolas, the Ravager",
+"t": [
+"control",
+"big"
+],
+"f": [
+"villain",
+"dragons"
+],
+"kx": [
+"Dragon"
+],
+"pw": 2,
+"cx": 2,
+"pop": 2,
+"fl": "",
+"ub": "",
+"d": "Fait défausser à son arrivée, puis se transforme en planeswalker dévastateur."
+},
+{
+"n": "Toralf, God of Fury",
+"t": [
+"punish"
+],
+"f": [
+"chaos"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "",
+"ub": "",
+"d": "Les dégâts non-combat en trop sur les créatures adverses rebondissent ailleurs."
+},
+{
+"n": "Commodore Guff",
+"t": [
+"walkers"
+],
+"f": [
+"archmage",
+"diplomat"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "a",
+"ub": "",
+"d": "Planeswalker commandant : nourrit tes autres planeswalkers en loyauté et crée des sorciers."
+},
+{
+"n": "Teferi, Temporal Archmage",
+"t": [
+"walkers",
+"control"
+],
+"f": [
+"archmage"
+],
+"kx": [],
+"pw": 2,
+"cx": 3,
+"pop": 1,
+"fl": "a",
+"ub": "",
+"d": "Planeswalker commandant : manipule le dessus de ta bibliothèque et dégage tes permanents."
+},
+{
+"n": "The Swarmlord",
+"t": [
+"counters",
+"aristo"
+],
+"f": [
+"beastmaster",
+"horror"
+],
+"kx": [],
+"pw": 2,
+"cx": 2,
+"pop": 1,
+"fl": "",
+"ub": "Warhammer 40K",
+"d": "Tyranides : pioche chaque fois qu’une de tes créatures avec un marqueur meurt."
+}
+]
+}

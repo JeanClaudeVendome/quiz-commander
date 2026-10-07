@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devine ton ami — Le grand quiz Commander</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/style.css">
+<style>
+body{background:var(--night)}
+.stage{position:relative;min-height:100vh;color:#fff;overflow:hidden;display:flex;flex-direction:column}
+.bg{position:absolute;inset:-30px;background:var(--night) center 30%/cover no-repeat;filter:blur(7px) saturate(.9);transform:scale(1.05)}
+.stage::before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 25%,rgba(18,15,24,.5),rgba(18,15,24,.94) 70%)}
+.stage>*:not(.bg){position:relative;z-index:2}
+.screen{flex:1;max-width:820px;width:100%;margin:0 auto;padding:110px 20px 60px;display:flex;flex-direction:column;justify-content:center}
+.screen.in{animation:in .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.center{text-align:center}
+.pre{font-family:Cinzel,serif;letter-spacing:.25em;color:var(--gold-l);font-size:.8rem}
+h1.big{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,8vw,4.6rem);margin:6px 0 0;line-height:1}
+.lead{color:#CFC6DA;max-width:50ch;margin:16px auto 0}
+.orn{color:var(--gold-l)}
+
+/* ---------- Lobby ---------- */
+.friends{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px;margin-top:36px}
+.fc{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:24px 14px 18px;border:1px solid #4A4058;background:rgba(255,255,255,.03);transition:transform .2s,border-color .2s}
+.fc:hover{transform:translateY(-4px);border-color:var(--gold-l)}
+.fc:focus-visible{outline:2px solid var(--gold-l);outline-offset:3px}
+.fc .pic{position:relative;width:112px;height:112px;border-radius:50%;margin:0 auto 14px;background:#2A2033 center/cover;box-shadow:0 0 0 3px var(--night),0 0 0 4px var(--gold);font-size:2.6rem}
+.fc .pic::after{content:"?";position:absolute;right:-8px;bottom:-6px;width:42px;height:42px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:var(--gold-l);color:var(--night);font-family:Cinzel,serif;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.fc b{font-family:Cinzel,serif;font-size:1.3rem;display:block}
+.fc small{display:block;color:#A89FB5;font-size:.8rem}
+.fc .rec{margin-top:10px;font-size:.8rem;color:var(--gold-l)}
+.empty{margin-top:36px;padding:40px 20px;border:1px dashed #5A4E68;text-align:center}
+.empty svg{width:120px;opacity:.6}
+.empty p{color:#B9B0C6;max-width:46ch;margin:10px auto 22px}
+
+/* ---------- Manche ---------- */
+.rhead{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+.rhead .pic{width:64px;height:64px;border-radius:50%;background:#2A2033 center/cover;box-shadow:0 0 0 2px var(--night),0 0 0 3px var(--gold);flex:none;font-size:1.6rem}
+.rhead .who{flex:1}
+.rhead .who small{font-family:Cinzel,serif;letter-spacing:.16em;color:var(--gold-l);font-size:.72rem}
+.rhead .who b{display:block;font-family:Cinzel,serif;font-size:1.2rem}
+.dots{display:flex;gap:10px}
+.dots i{width:12px;height:12px;transform:rotate(45deg);border:1px solid #8A7D9A}
+.dots i.ok{background:#8FD9A8;border-color:#8FD9A8}
+.dots i.ko{background:#E27E72;border-color:#E27E72}
+.dots i.cur{border-color:var(--gold-l);box-shadow:0 0 0 3px rgba(233,215,174,.2)}
+.q{font-family:Cinzel,serif;font-weight:700;font-size:clamp(1.5rem,4.2vw,2.2rem);line-height:1.2;margin:0 0 22px;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:34px 1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid #4A4058;background:rgba(255,255,255,.035);min-height:56px;transition:border-color .15s,background .15s}
+.opt:hover{border-color:#8A7D9A}
+.opt:focus-visible{outline:2px solid var(--gold-l);outline-offset:2px}
+.opt .k{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:.85rem;border:1px solid #5A4E68;transform:rotate(45deg)}
+.opt .k span{transform:rotate(-45deg)}
+.opt .badge{display:none;align-items:center;gap:8px;font-size:.78rem;color:#8FD9A8;font-family:Cinzel,serif}
+.opt .badge span{width:28px;height:28px;border-radius:50%;background:#2A2033 center/cover;font-size:.8rem}
+.locked .opt{cursor:default}
+.locked .opt:not(.good):not(.bad){opacity:.45}
+.opt.good{border-color:#8FD9A8;background:rgba(143,217,168,.1)}
+.opt.good .k{background:#8FD9A8;border-color:#8FD9A8;color:var(--night)}
+.opt.good .badge{display:flex}
+.opt.bad{border-color:#E27E72;background:rgba(226,126,114,.1)}
+.opt.bad .k{background:#E27E72;border-color:#E27E72;color:var(--night)}
+.fb{min-height:64px;margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.fb .msg{font-family:Cinzel,serif;font-size:1.1rem}
+.fb .msg.ok{color:#8FD9A8}.fb .msg.ko{color:#F0A49A}
+.fb .msg small{display:block;font-family:Lato,sans-serif;font-size:.85rem;color:#B9B0C6;margin-top:2px}
+
+/* ---------- Résultat ---------- */
+.score{font-family:Cinzel,serif;font-weight:800;font-size:clamp(5rem,18vw,9rem);line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--gold-l);margin-top:10px}
+.score span{color:var(--gold-l);-webkit-text-stroke:0}
+.rank{font-family:Cinzel,serif;font-size:clamp(1.4rem,4vw,2rem);margin-top:6px}
+.board{max-width:460px;margin:34px auto 0;text-align:left}
+.board h2{font-family:Cinzel,serif;font-size:1rem;color:var(--gold-l);text-align:center;margin:0 0 10px;letter-spacing:.06em}
+.board ol{list-style:none;margin:0;padding:0;counter-reset:r}
+.board li{counter-increment:r;display:grid;grid-template-columns:28px 36px 1fr auto;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid #3A3047}
+.board li::before{content:counter(r);font-family:Cinzel,serif;color:#8A7D9A;text-align:center}
+.board li .pic{width:36px;height:36px;border-radius:50%;background:#2A2033 center/cover;font-size:.9rem}
+.board li.me{background:rgba(233,215,174,.07)}
+.board li b{font-family:Cinzel,serif;font-weight:500}
+.board li em{font-style:normal;color:var(--gold-l);font-family:Cinzel,serif}
+.acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.link{all:unset;cursor:pointer;color:#B9B0C6;font-size:.9rem;text-decoration:underline;text-underline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+<main class="stage"><div class="bg" id="bg"></div><section class="screen" id="screen" aria-live="polite"><div class="chargement">CHARGEMENT…</div></section></main>
+
+<script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
+<script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
+<script>
+(async function () {
+  const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
+  if (!(await SITE.demarrer("Devine ton ami"))) return;
+  const G = await SITE.groupe(), moi = SITE.moi(), scr = $("screen");
+  let dv = []; try { dv = await ST.devinettes(); } catch (e) { }
+  const cibles = G.joueurs.filter(j => j.reponses && (!moi || j.id !== moi.id));
+  const RANGS = [[5, "Âme sœur de table"], [4, "Meilleur ami"], [3, "Bon camarade"], [2, "Simple connaissance"], [0, "Un inconnu à ta table"]];
+  const fond = n => SITE.image(n).then(v => { if (v.art) $("bg").style.backgroundImage = `url("${v.art}")`; });
+  const frais = cls => { scr.className = "screen in " + (cls || ""); void scr.offsetWidth; };
+  const record = id => moi ? Math.max(-1, ...dv.filter(d => d.devineur === moi.id && d.cible === id).map(d => d.score)) : -1;
+
+  function accueil() {
+    fond("Mirror Gallery"); frais("center");
+    scr.innerHTML = `<div class="pre">LE JEU DU GROUPE</div><h1 class="big">Devine ton ami</h1><div class="orn"><i></i><b></b><i></i></div>
+      <p class="lead">Cinq questions tirées du quiz d'un ami. À toi de deviner ce qu'il a répondu. Qui connaît le mieux la table ?</p>` +
+      (cibles.length ? `<div class="friends">${cibles.map(j => { const r = record(j.id); return `<button class="fc" data-id="${j.id}"><div class="pic" ${SITE.avAttrs(j)}></div><b>${esc(j.pseudo)}</b><small>${esc(SITE.profil(j).titre)}</small>
+          <div class="rec">${r >= 0 ? `Ton record : ${r} / 5` : "Jamais joué"}</div></button>`; }).join("")}</div>` + (moi ? "" : `<p class="lead" style="font-size:.85rem">Tu n'es pas connecté : tu peux jouer, mais ton score ne sera pas enregistré. <a href="qui.html" style="color:var(--gold-l)">Choisir mon profil</a></p>`)
+      : `<div class="empty">${SITE.hex(null, null, { grid: "#8A7D9A", question: true })}<p>Personne à deviner pour l'instant. Le jeu s'ouvre dès qu'un ami a publié son profil.</p>
+        <a class="btn solid" href="quiz.html">Faire le quiz</a> <a class="btn" href="groupe.html">Voir le groupe</a></div>`);
+    scr.querySelectorAll(".fc").forEach(b => b.onclick = () => partie(G.parId[b.dataset.id]));
+    SITE.images(scr);
+  }
+
+  /* Cinq questions au hasard parmi celles où l'ami a répondu (choix ou dilemme, au moins trois réponses possibles de préférence) */
+  let F, Qs, n, res;
+  function partie(j) {
+    F = j; n = 0; res = []; fond(SITE.avatarDe(j));
+    const A = j.reponses, possibles = QC.QUESTIONS.filter(q => (q.type === "choix" || q.type === "dilemme") && A[q.id] && A[q.id] !== "?" && q.options.some(o => o.id === A[q.id]) && q.id !== "ub");
+    const melange = possibles.map(q => [q, Math.random() + (q.options.length >= 3 ? 0 : .6)]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
+    Qs = melange.slice(0, 5);
+    if (!Qs.length) { alert("Pas assez de réponses pour jouer."); return; }
+    question();
+  }
+  function question() {
+    frais(); const q = Qs[n];
+    scr.innerHTML = `<div class="rhead"><div class="pic" ${SITE.avAttrs(F)}></div><div class="who"><small>QUE RÉPONDRAIT…</small><b>${esc(F.pseudo)} ?</b></div>
+      <div class="dots" aria-label="Question ${n + 1} sur ${Qs.length}">${Qs.map((_, k) => `<i class="${k < n ? (res[k] ? "ok" : "ko") : k === n ? "cur" : ""}"></i>`).join("")}</div></div>
+      <h1 class="q">${esc(q.q)}</h1>
+      <div class="opts" id="opts">${q.options.map((o, k) => `<button class="opt" data-k="${esc(o.id)}"><span class="k"><span>${k + 1}</span></span><span>${esc(o.l)}</span><span class="badge"><span ${SITE.avAttrs(F)}></span>${esc(F.pseudo)}</span></button>`).join("")}</div>
+      <div class="fb" id="fb"><button class="link" id="chg">← Changer d'ami</button></div>`;
+    scr.querySelectorAll(".opt").forEach(b => b.onclick = () => repondre(b.dataset.k));
+    $("chg").onclick = accueil;
+    SITE.images(scr); scr.querySelector(".opt").focus({ preventScroll: true });
+  }
+  function repondre(k) {
+    const box = $("opts"); if (box.classList.contains("locked")) return;
+    const q = Qs[n], bon = F.reponses[q.id], ok = k === bon; res.push(ok);
+    box.classList.add("locked");
+    box.querySelector(`[data-k="${CSS.escape(bon)}"]`).classList.add("good"); if (!ok) box.querySelector(`[data-k="${CSS.escape(k)}"]`).classList.add("bad");
+    scr.querySelectorAll(".dots i")[n].className = ok ? "ok" : "ko";
+    const dernier = n === Qs.length - 1, lb = q.options.find(o => o.id === bon).l;
+    $("fb").innerHTML = `<div class="msg ${ok ? "ok" : "ko"}">${ok ? "Bien vu !" : "Raté…"}<small>${ok ? `${esc(F.pseudo)} a bien répondu ça.` : `${esc(F.pseudo)} a répondu : « ${esc(lb)} »`}</small></div>
+      <button class="btn solid" id="nx">${dernier ? "Voir mon score" : "Question suivante"}</button>`;
+    $("nx").onclick = () => { n++; dernier ? fin() : question(); }; $("nx").focus({ preventScroll: true });
+  }
+  async function fin() {
+    const s = res.filter(Boolean).length, sur = Qs.length;
+    let note = "";
+    if (moi) { try { await ST.devinette(F.id, s, sur); dv.push({ devineur: moi.id, cible: F.id, score: s, sur, date: new Date().toISOString() }); } catch (e) { note = e.message; } }
+    const rang = RANGS.find(([m]) => s * 5 / sur >= m)[1];
+    const meilleurs = {}; dv.filter(d => d.cible === F.id).forEach(d => meilleurs[d.devineur] = Math.max(meilleurs[d.devineur] || 0, d.score));
+    if (!moi) meilleurs.__toi = s;
+    const rows = Object.entries(meilleurs).sort((a, b) => b[1] - a[1]);
+    frais("center");
+    scr.innerHTML = `<div class="pre">TU CONNAIS ${esc(F.pseudo.toUpperCase())}…</div><div class="score">${s}<span> / ${sur}</span></div><div class="rank">${rang}</div><div class="orn"><i></i><b></b><i></i></div>
+      <div class="board"><h2>Qui connaît le mieux ${esc(F.pseudo)} ?</h2><ol>${rows.map(([id, v]) => { const p = G.parId[id], me = moi ? id === moi.id : id === "__toi";
+        return `<li class="${me ? "me" : ""}"><span class="pic" ${p ? SITE.avAttrs(p) : 'data-ini="?"'}></span><b>${me ? (moi ? esc(moi.pseudo) + " (toi)" : "Toi") : esc(p ? p.pseudo : "?")}</b><em>${v} / 5</em></li>`; }).join("")}</ol></div>
+      ${note ? `<p class="lead" style="color:#F0A49A">${esc(note)}</p>` : ""}
+      <div class="acts"><button class="btn solid" id="rejouer">Rejouer</button><button class="btn" id="autre">Deviner quelqu'un d'autre</button><a class="btn" href="profil.html?j=${F.id}">Voir sa fiche</a></div>`;
+    $("rejouer").onclick = () => partie(F); $("autre").onclick = accueil;
+    SITE.images(scr);
+  }
+  document.addEventListener("keydown", e => { if (/^[1-9]$/.test(e.key)) { const b = scr.querySelectorAll(".opt")[+e.key - 1]; if (b) b.click(); } });
+  const cible = G.parId[SITE.param("j")];
+  if (cible && cible.reponses && (!moi || cible.id !== moi.id)) partie(cible); else accueil();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — Le quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+body{background:var(--night)}
+/* ---------- Scène ---------- */
+.stage{position:relative;min-height:100vh;color:#fff;overflow:hidden;display:flex;flex-direction:column}
+.bg{position:absolute;inset:-30px;background:var(--night) center 30%/cover no-repeat;filter:blur(6px) saturate(.9);transform:scale(1.05);transition:opacity .6s}
+.stage::before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse at 50% 30%,rgba(18,15,24,.55),rgba(18,15,24,.92) 70%)}
+.stage>*:not(.bg){position:relative;z-index:2}
+
+/* ---------- Barre de progression ---------- */
+.top{padding:86px 20px 0;max-width:820px;margin:0 auto;width:100%}
+.chap{display:flex;justify-content:space-between;align-items:baseline;font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.14em;color:var(--gold-l)}
+.chap span:last-child{color:#A89FB5;letter-spacing:.06em;font-family:Lato,sans-serif}
+.bar{height:3px;background:rgba(255,255,255,.12);margin-top:8px;position:relative}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--gold-l);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.bar b{position:absolute;top:-3px;width:9px;height:9px;transform:translateX(-4px) rotate(45deg);background:var(--gold-l);transition:left .5s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- Écran ---------- */
+.screen{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:820px;width:100%;margin:0 auto;padding:30px 20px 40px}
+.screen.in{animation:in .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.q{font-family:Cinzel,serif;font-weight:700;font-size:clamp(1.5rem,4.2vw,2.3rem);line-height:1.2;margin:0 0 8px;text-wrap:balance}
+.help{color:#B9B0C6;margin:0 0 26px}
+
+/* Réponses simples */
+.opts{display:grid;gap:10px}
+.opt{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:center;padding:14px 16px;border:1px solid #4A4058;background:rgba(255,255,255,.035);transition:border-color .15s,background .15s,transform .15s;min-height:56px}
+.opt:hover{border-color:#8A7D9A;background:rgba(255,255,255,.06)}
+.opt:focus-visible{outline:2px solid var(--gold-l);outline-offset:2px}
+.opt .k{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:.85rem;border:1px solid #5A4E68;transform:rotate(45deg)}
+.opt .k span{transform:rotate(-45deg)}
+.opt small{display:block;color:#A89FB5;font-size:.85rem;margin-top:2px}
+.opt[aria-pressed="true"]{border-color:var(--gold-l);background:rgba(233,215,174,.1)}
+.opt[aria-pressed="true"] .k{background:var(--gold-l);color:var(--night);border-color:var(--gold-l)}
+
+/* Choix illustrés (personnages) */
+.arts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.art{all:unset;box-sizing:border-box;cursor:pointer;position:relative;aspect-ratio:4/3;background:#2A2033 center/cover;border:1px solid #4A4058;overflow:hidden;transition:transform .2s,border-color .2s}
+.art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(18,15,24,.95))}
+.art:hover{transform:translateY(-3px);border-color:#8A7D9A}
+.art:focus-visible{outline:2px solid var(--gold-l);outline-offset:2px}
+.art .t{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:12px}
+.art b{font-family:Cinzel,serif;font-size:1rem;display:block;line-height:1.2}
+.art small{color:#C9C0D5;font-size:.78rem;line-height:1.3;display:block;margin-top:4px}
+.art[aria-pressed="true"]{border:2px solid var(--gold-l)}
+.art .tick{position:absolute;top:10px;right:10px;z-index:2;width:26px;height:26px;transform:rotate(45deg);background:var(--gold-l);display:none}
+.art[aria-pressed="true"] .tick{display:block}
+.count{font-size:.85rem;color:var(--gold-l);margin-top:12px}
+
+/* Dilemme */
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative;min-height:340px}
+.side{all:unset;box-sizing:border-box;cursor:pointer;position:relative;background:#2A2033 center/cover;display:flex;align-items:flex-end;padding:20px;overflow:hidden;transition:filter .25s}
+.side::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(18,15,24,.92))}
+.side b{position:relative;z-index:2;font-family:Cinzel,serif;font-size:clamp(1.05rem,2.5vw,1.35rem);line-height:1.25}
+.pair:hover .side:not(:hover){filter:brightness(.55) saturate(.6)}
+.side:focus-visible{outline:2px solid var(--gold-l);outline-offset:-2px}
+.side[aria-pressed="true"]{box-shadow:inset 0 0 0 3px var(--gold-l)}
+.pair .or{position:absolute;left:50%;top:50%;z-index:3;width:58px;height:58px;transform:translate(-50%,-50%) rotate(45deg);background:var(--night);border:1px solid var(--gold-l);display:flex;align-items:center;justify-content:center;pointer-events:none}
+.pair .or span{transform:rotate(-45deg);font-family:Cinzel,serif;font-weight:700;color:var(--gold-l)}
+
+/* Échelle */
+.scale{padding:30px 0 10px}
+.track{position:relative;display:flex;justify-content:space-between;align-items:center;margin:0 10px}
+.track::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,#5A4E68,var(--gold),#5A4E68)}
+.dot{all:unset;cursor:pointer;position:relative;width:26px;height:26px;transform:rotate(45deg);border:1px solid #8A7D9A;background:var(--night);transition:all .2s}
+.dot:nth-child(3){width:20px;height:20px}
+.dot:hover{border-color:var(--gold-l)}
+.dot:focus-visible{outline:2px solid var(--gold-l);outline-offset:4px}
+.dot[aria-pressed="true"]{background:var(--gold-l);border-color:var(--gold-l);width:34px;height:34px;box-shadow:0 0 0 6px rgba(233,215,174,.15)}
+.ends{display:flex;justify-content:space-between;gap:30px;margin-top:22px;font-family:Cinzel,serif;font-size:.95rem}
+.ends span{max-width:40%}
+.ends span:last-child{text-align:right}
+
+/* Coup d'œil */
+.swipe{display:flex;flex-direction:column;align-items:center}
+.deck{position:relative;width:min(300px,76vw);aspect-ratio:488/680;margin:6px 0 22px}
+.card{position:absolute;inset:0;border-radius:4.5%/3.2%;background:#2A2033 center/cover;box-shadow:0 20px 40px rgba(0,0,0,.5);touch-action:none;cursor:grab;user-select:none;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s}
+.card.under{transform:scale(.94) translateY(14px);filter:brightness(.6)}
+.card.drag{transition:none;cursor:grabbing}
+.stamp{position:absolute;top:18px;padding:4px 12px;font-family:Cinzel,serif;font-weight:800;font-size:1.3rem;border:3px solid;transform:rotate(-12deg);opacity:0;background:rgba(18,15,24,.6)}
+.stamp.like{left:14px;color:#8FD9A8}
+.stamp.nope{right:14px;color:#F0A49A;transform:rotate(12deg)}
+.react{display:flex;gap:18px}
+.rb{all:unset;cursor:pointer;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:1px solid #5A4E68;background:rgba(255,255,255,.04);transition:transform .15s,border-color .15s}
+.rb:hover{transform:scale(1.08)}
+.rb:focus-visible{outline:2px solid var(--gold-l);outline-offset:3px}
+.rb.no{color:#F0A49A}.rb.no:hover{border-color:#F0A49A}
+.rb.meh{color:#C9C0D5;width:50px;height:50px;font-size:1.1rem;align-self:center}
+.rb.yes{color:#8FD9A8}.rb.yes:hover{border-color:#8FD9A8}
+.react{align-items:flex-start;gap:6px}
+.rc{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;width:96px;height:96px;font-size:.78rem;color:#A89FB5}
+
+/* Couleurs */
+.cgrid{display:grid;gap:8px}
+.crow{display:grid;grid-template-columns:40px 110px 1fr 40px;gap:12px;align-items:center;padding:10px 12px;border:1px solid #3A3047;background:rgba(255,255,255,.03)}
+.crow img{width:32px;height:32px}
+.crow b{font-family:Cinzel,serif}
+.lv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.lv button{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-size:.82rem;padding:8px 4px;border:1px solid #4A4058;color:#C9C0D5}
+.lv button:hover{border-color:#8A7D9A}
+.lv button:focus-visible,.star:focus-visible{outline:2px solid var(--gold-l);outline-offset:2px}
+.lv button[aria-pressed="true"]{background:var(--gold-l);border-color:var(--gold-l);color:var(--night);font-weight:700}
+.lv button.never[aria-pressed="true"]{background:#E27E72;border-color:#E27E72}
+.star{all:unset;cursor:pointer;font-size:1.4rem;color:#5A4E68;text-align:center}
+.star[aria-pressed="true"]{color:var(--gold-l)}
+
+/* Pied */
+.foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:30px}
+.link{all:unset;cursor:pointer;color:#B9B0C6;font-size:.9rem;text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:#fff}
+.link:focus-visible{outline:2px solid var(--gold-l);outline-offset:3px}
+.btn[disabled]{opacity:.35;pointer-events:none}
+
+/* Chapitre */
+.chapter{text-align:center;align-items:center}
+.chapter .num{font-family:Cinzel,serif;font-weight:800;font-size:clamp(4rem,14vw,8rem);line-height:1;color:transparent;-webkit-text-stroke:1px var(--gold-l)}
+.chapter h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2rem,6vw,3.6rem);margin:6px 0 0;line-height:1.05}
+.chapter p{color:#CFC6DA;max-width:46ch;margin:16px auto 30px}
+.chapter .orn{color:var(--gold-l)}
+
+/* Révélation */
+.reveal{text-align:center;align-items:center}
+.reveal .load{font-family:Cinzel,serif;letter-spacing:.2em;color:var(--gold-l);font-size:.85rem}
+.reveal .rhex{width:min(340px,80vw);margin:6px auto 0}
+.reveal .rtitle{opacity:0;transform:translateY(10px);transition:all .8s}
+.reveal .rtitle.on{opacity:1;transform:none}
+.reveal .rtitle small{font-family:Cinzel,serif;letter-spacing:.2em;color:var(--gold-l);font-size:.8rem}
+.reveal .rtitle h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.2rem,7vw,4rem);margin:4px 0 0;line-height:1}
+.reveal .rtitle p{color:#CFC6DA;margin:8px 0 0}
+.rcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;max-width:640px;margin:30px auto 0}
+.flip{perspective:900px}
+.flip .in{position:relative;aspect-ratio:488/680;transition:transform .9s cubic-bezier(.3,.7,.2,1);transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:4.5%/3.2%;overflow:hidden}
+.flip .b{background:radial-gradient(circle at 50% 45%,#3A2840,#120F18 75%);border:5px solid #0B090E;display:flex;align-items:center;justify-content:center}
+.flip .b svg{width:55%}
+.flip .f{transform:rotateY(180deg);background:#222 center/cover}
+.flip .f img{width:100%;height:100%;object-fit:cover;display:block}
+.flip .cap{font-family:Cinzel,serif;font-size:.78rem;color:var(--gold-l);margin-top:8px;opacity:0;transition:opacity .6s .5s}
+.flip.on .cap{opacity:1}
+.flip.mid .in{box-shadow:0 0 0 2px var(--gold-l),0 16px 40px rgba(0,0,0,.6);border-radius:4.5%/3.2%}
+.after{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px;opacity:0;transition:opacity .8s}
+.after.on{opacity:1}
+.demo{font-size:.78rem;color:#8E86A0;margin-top:14px}
+
+.short{display:none}
+@media (hover:none),(max-width:640px){.kbd{display:none}}
+@media (max-width:640px){
+  .long{display:none}.short{display:inline}
+  .top{padding-top:76px}
+  .screen{padding:24px 16px 70px;justify-content:flex-start}
+  .help{margin-bottom:18px}
+  .arts{grid-template-columns:1fr;gap:8px}
+  .art{aspect-ratio:auto;height:96px;background-size:auto 100%;background-position:left center}
+  .art::after{background:linear-gradient(90deg,rgba(18,15,24,0) 0%,rgba(18,15,24,.85) 34%,rgba(18,15,24,.97) 48%)}
+  .art .t{top:0;left:40%;display:flex;flex-direction:column;justify-content:center;padding:10px 40px 10px 4px}
+  .art small{margin-top:2px}
+  .art .tick{top:50%;margin-top:-13px;right:14px}
+  .opt{padding:12px;gap:12px}
+  .foot{margin-top:24px}
+  .ends{font-size:.85rem}
+  .deck{width:min(260px,68vw)}
+  .pair{grid-template-columns:1fr;min-height:0}.side{min-height:190px}
+  .pair .side:first-child{align-items:flex-start}
+  .pair .side:first-child::after{background:linear-gradient(0deg,transparent 30%,rgba(18,15,24,.92))}
+  .pair .or{width:46px;height:46px}
+  .crow{grid-template-columns:32px 1fr 34px;grid-template-areas:"i n s" "l l l"}
+  .crow img{grid-area:i;width:28px;height:28px}.crow b{grid-area:n}.crow .star{grid-area:s}.crow .lv{grid-area:l}
+  .rcards{gap:8px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<div id="nav" data-current="Le quiz"></div>
+<main class="stage">
+  <div class="bg" id="bg"></div>
+  <div class="top" id="top"><div class="chap"><span id="chapName"></span><span id="qnum"></span></div><div class="bar"><i id="barI"></i><b id="barB"></b></div></div>
+  <section class="screen" id="screen" aria-live="polite"></section>
+</main>
+
+<script src="commun.js"></script>
+<script>
+/* ---------- Parcours de démonstration (extrait du vrai quiz) ---------- */
+const STEPS = [
+  { k: "chapter", n: "I", title: "Qui tu es", intro: "Pas de bonne réponse : suis ton instinct. Si une question ne te parle pas, « Je ne sais pas » est une réponse utile aussi.", art: "Jace, the Mind Sculptor" },
+  { k: "arts", id: "fantasy", max: 2, q: "Qui as-tu envie d’incarner à la table ?", help: "Deux choix maximum. Pense à un personnage, pas à une mécanique.", opts: [
+    ["villain", "Le grand méchant", "Ambition, domination, tout le monde contre toi.", "Nicol Bolas, Dragon-God"],
+    ["necro", "Le nécromancien", "Les morts se relèvent à ton signal.", "Meren of Clan Nel Toth"],
+    ["inventor", "Le savant fou", "Inventions et expériences ratées.", "Urza, Lord High Artificer"],
+    ["druid", "Le druide", "La nature grandit, les terres répondent.", "Tatyova, Benthic Druid"],
+    ["warlord", "Le chef de guerre", "Tout le monde à l’attaque, maintenant.", "Aurelia, the Warleader"],
+    ["chaos", "L’agent du chaos", "Personne ne sait ce qui va arriver.", "Krark, the Thumbless"]] },
+  { k: "single", id: "moment", q: "Ta meilleure partie de Commander, c’est celle où…", opts: [
+    ["t", "J’ai posé un truc énorme et toute la table a réagi"], ["j", "Ma combinaison improbable a enfin fonctionné"], ["s", "J’ai gagné en jouant chaque tour parfaitement"]] },
+  { k: "chapter", n: "II", title: "Comment tu veux gagner", intro: "La façon dont une partie se termine compte autant que le fait de gagner.", art: "Craterhoof Behemoth" },
+  { k: "pair", id: "d3", q: "Tu préfères…", a: ["Une seule créature énorme", "Ghalta, Primal Hunger"], b: ["Cinquante petites créatures", "Krenko, Mob Boss"] },
+  { k: "scale", id: "explosion", q: "Comment tu préfères conclure ?", left: "Petit à petit, en grignotant", right: "En un seul tour où tout explose" },
+  { k: "chapter", n: "III", title: "Coup d’œil", intro: "De vrais commandants défilent. Réagis à l’instinct : l’illustration, le texte, l’ambiance. Glisse la carte, ou utilise les boutons.", art: "Mirror Gallery" },
+  { k: "swipe", id: "swipe", q: "Ton ressenti sur ce commandant", cards: ["Atraxa, Praetors' Voice", "Krenko, Mob Boss", "Talrand, Sky Summoner", "Edgar Markov"] },
+  { k: "chapter", n: "IV", title: "Ta place à la table", intro: "Le Commander se joue à plusieurs : ton rôle social compte autant que ton deck.", art: "Kenrith, the Returned King" },
+  { k: "single", id: "probleme", q: "Face à un problème, tu…", opts: [
+    ["W", "Imposes une règle qui vaut pour tout le monde"], ["U", "L’avais vu venir, et tu avais déjà la réponse"], ["B", "Le règles, quel qu’en soit le prix"],
+    ["R", "Agis tout de suite, on verra après"], ["G", "Deviens simplement plus fort que lui"], ["C", "Sors l’outil qui marche dans tous les cas"]] },
+  { k: "single", id: "role", q: "Ton rôle naturel à la table", opts: [
+    ["threat", "La menace", "On me cible dès le tour 3"], ["diplo", "Le diplomate", "Je négocie, je fais des alliances"], ["sheriff", "Le shérif", "Je calme celui qui mène"],
+    ["shadow", "L’ombre", "On m’oublie jusqu’au tour où je gagne"], ["chaos", "Le chaos", "Personne ne sait ce que je vais faire"]] },
+  { k: "chapter", n: "V", title: "Les couleurs", intro: "Pour finir, la seule question où l’on parle vraiment de couleurs. Tes réponses précédentes ont déjà dessiné une bonne partie de ton hexagone.", art: "The Ur-Dragon" },
+  { k: "colors", id: "colors", q: "Ton affinité avec chaque couleur", help: "Une seule étoile pour ta couleur coup de cœur." },
+  { k: "reveal" }
+];
+const QSTEPS = STEPS.filter(s => s.k !== "chapter" && s.k !== "reveal");
+const A = {}; let i = 0;
+const $ = id => document.getElementById(id);
+const scr = $("screen");
+
+function chapterOf(idx) { for (let j = idx; j >= 0; j--) if (STEPS[j].k === "chapter") return STEPS[j]; return STEPS[0]; }
+function progress() {
+  const s = STEPS[i], ch = chapterOf(i), qi = QSTEPS.indexOf(s);
+  const done = s.k === "reveal" ? QSTEPS.length : qi >= 0 ? qi : QSTEPS.indexOf(STEPS.slice(i).find(x => QSTEPS.includes(x)));
+  const pct = done / QSTEPS.length * 100;
+  $("barI").style.width = pct + "%"; $("barB").style.left = pct + "%";
+  $("chapName").innerHTML = s.k === "reveal" ? "RÉVÉLATION" : `<span class="long">CHAPITRE </span>${ch.n} · ${ch.title.toUpperCase()}`;
+  $("qnum").innerHTML = qi >= 0 ? `<span class="long">Question </span>${qi + 1}<span class="long"> sur </span><span class="short"> / </span>${QSTEPS.length}<span class="long"> · environ ${Math.max(1, Math.round((QSTEPS.length - qi) * .4))} min</span>` : "";
+  $("top").style.visibility = s.k === "reveal" ? "hidden" : "visible";
+  scry(ch.art).then(c => { if (c.art) $("bg").style.backgroundImage = `url("${c.art}")`; });
+}
+let T = null;
+function go(d) { clearTimeout(T); i = Math.max(0, Math.min(STEPS.length - 1, i + d)); render(); }
+function foot(canNext, opt) {
+  opt = opt || {};
+  return `<div class="foot"><button class="link" onclick="go(-1)" ${i === 0 ? 'style="visibility:hidden"' : ""}>← Précédent</button>
+    ${opt.idk === false ? "" : `<button class="link" onclick="A['${STEPS[i].id}']='?';go(1)">Je ne sais pas</button>`}
+    <button class="btn solid" onclick="go(1)" ${canNext ? "" : "disabled"}>${opt.label || "Suivant"}</button></div>`;
+}
+const auto = () => { clearTimeout(T); T = setTimeout(() => go(1), 380); };
+
+function render() {
+  const s = STEPS[i]; progress();
+  scr.className = "screen in" + (s.k === "chapter" ? " chapter" : s.k === "reveal" ? " reveal" : "");
+  void scr.offsetWidth;
+  if (s.k === "chapter") {
+    scr.innerHTML = `<div class="num">${s.n}</div><h1>${s.title}</h1><div class="orn"><i></i><b></b><i></i></div><p>${s.intro}</p>
+      <div><button class="btn solid" onclick="go(1)" id="first">${i === 0 ? "Commencer" : "Continuer"}</button></div>
+      ${i > 0 ? `<div style="margin-top:16px"><button class="link" onclick="go(-1)">← Précédent</button></div>` : ""}`;
+  }
+  else if (s.k === "single") {
+    const v = A[s.id];
+    scr.innerHTML = `<h1 class="q">${s.q}</h1><p class="help">${s.help || "Une seule réponse.<span class=\"kbd\"> Touches 1 à " + s.opts.length + " au clavier.</span>"}</p>
+      <div class="opts" role="radiogroup" aria-label="${s.q}">${s.opts.map(([id, l, d], n) => `<button class="opt" role="radio" aria-checked="${v === id}" aria-pressed="${v === id}" data-v="${id}"><span class="k"><span>${n + 1}</span></span><span>${l}${d ? `<small>${d}</small>` : ""}</span></button>`).join("")}</div>${foot(!!v)}`;
+    scr.querySelectorAll(".opt").forEach(b => b.onclick = () => { A[s.id] = b.dataset.v; render(); auto(); });
+  }
+  else if (s.k === "arts") {
+    const v = A[s.id] || [];
+    scr.innerHTML = `<h1 class="q">${s.q}</h1><p class="help">${s.help}</p>
+      <div class="arts">${s.opts.map(([id, l, d, art]) => `<button class="art" data-art="${art}" data-v="${id}" aria-pressed="${v.includes(id)}"><span class="tick"></span><span class="t"><b>${l}</b><small>${d}</small></span></button>`).join("")}</div>
+      <div class="count">${v.length} / ${s.max} choisi${v.length > 1 ? "s" : ""}</div>${foot(v.length > 0)}`;
+    scr.querySelectorAll(".art").forEach(b => b.onclick = () => {
+      let cur = (A[s.id] || []).slice(); const id = b.dataset.v;
+      if (cur.includes(id)) cur = cur.filter(x => x !== id); else { if (cur.length >= s.max) cur.shift(); cur.push(id); }
+      A[s.id] = cur; render();
+    });
+    fillImages(scr);
+  }
+  else if (s.k === "pair") {
+    const v = A[s.id];
+    scr.innerHTML = `<h1 class="q">${s.q}</h1><p class="help">Il faut trancher : les deux sont des plaisirs.</p>
+      <div class="pair"><button class="side" data-art="${s.a[1]}" data-v="a" aria-pressed="${v === "a"}"><b>${s.a[0]}</b></button><div class="or"><span>OU</span></div>
+      <button class="side" data-art="${s.b[1]}" data-v="b" aria-pressed="${v === "b"}"><b>${s.b[0]}</b></button></div>${foot(!!v)}`;
+    scr.querySelectorAll(".side").forEach(b => b.onclick = () => { A[s.id] = b.dataset.v; render(); auto(); });
+    fillImages(scr);
+  }
+  else if (s.k === "scale") {
+    const v = A[s.id];
+    scr.innerHTML = `<h1 class="q">${s.q}</h1><p class="help">Place-toi entre les deux.</p>
+      <div class="scale"><div class="track" role="radiogroup" aria-label="${s.q}">${[1, 2, 3, 4, 5].map(n => `<button class="dot" role="radio" aria-label="${n} sur 5" aria-checked="${v === n}" aria-pressed="${v === n}" data-v="${n}"></button>`).join("")}</div>
+      <div class="ends"><span>${s.left}</span><span>${s.right}</span></div></div>${foot(!!v)}`;
+    scr.querySelectorAll(".dot").forEach(b => b.onclick = () => { A[s.id] = +b.dataset.v; render(); auto(); });
+  }
+  else if (s.k === "swipe") renderSwipe(s);
+  else if (s.k === "colors") renderColors(s);
+  else if (s.k === "reveal") renderReveal();
+  const f = scr.querySelector("#first,[aria-pressed='true'],.opt,.art,.side,.dot,.rb"); if (f && s.k !== "reveal") f.focus({ preventScroll: true });
+}
+
+/* ---------- Coup d'œil ---------- */
+function renderSwipe(s) {
+  const r = A[s.id] = A[s.id] || {};
+  const left = s.cards.filter(n => r[n] === undefined);
+  if (!left.length) { go(1); return; }
+  const n = left[0], nx = left[1];
+  scr.innerHTML = `<h1 class="q" style="text-align:center">${s.q}</h1><p class="help" style="text-align:center">Carte ${s.cards.length - left.length + 1} sur ${s.cards.length}<span class="kbd"> · flèches ← et → au clavier</span></p>
+    <div class="swipe"><div class="deck">${nx ? `<div class="card under" data-card="${nx}"></div>` : ""}<div class="card" id="card" data-card="${n}"><span class="stamp like">J’ADORE</span><span class="stamp nope">PAS POUR MOI</span></div></div>
+    <div class="react"><div class="rc"><button class="rb no" data-r="-1" aria-label="Pas pour moi">✕</button><span>Pas pour moi</span></div>
+      <div class="rc"><button class="rb meh" data-r="0" aria-label="Bof">?</button><span>Bof</span></div>
+      <div class="rc"><button class="rb yes" data-r="1" aria-label="J’adore">♥</button><span>J’adore</span></div></div></div>${foot(false, { idk: false, label: "Passer" }).replace("disabled", "")}`;
+  fillImages(scr);
+  const card = $("card"), likeS = card.querySelector(".like"), nopeS = card.querySelector(".nope");
+  const decide = v => { const dx = v > 0 ? 600 : v < 0 ? -600 : 0; card.style.transform = `translate(${dx}px,${v === 0 ? 400 : 40}px) rotate(${v * 25}deg)`; card.style.opacity = 0; r[n] = v; setTimeout(render, 280); };
+  scr.querySelectorAll(".rb").forEach(b => b.onclick = () => decide(+b.dataset.r));
+  let x0 = null, dx = 0;
+  card.onpointerdown = e => { x0 = e.clientX; card.classList.add("drag"); card.setPointerCapture(e.pointerId); };
+  card.onpointermove = e => { if (x0 === null) return; dx = e.clientX - x0; card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`; likeS.style.opacity = Math.max(0, dx / 120); nopeS.style.opacity = Math.max(0, -dx / 120); };
+  card.onpointerup = () => { card.classList.remove("drag"); if (Math.abs(dx) > 110) decide(dx > 0 ? 1 : -1); else { card.style.transform = ""; likeS.style.opacity = nopeS.style.opacity = 0; } x0 = null; dx = 0; };
+}
+
+/* ---------- Couleurs (la seule question explicite) ---------- */
+const COLS = [["W", "Blanc"], ["U", "Bleu"], ["B", "Noir"], ["R", "Rouge"], ["G", "Vert"], ["C", "Incolore"]];
+const LV = [["0", "Jamais"], ["1", "Bof"], ["2", "Bien"], ["3", "J’adore"]];
+function renderColors(s) {
+  const v = A[s.id] = A[s.id] || { star: null };
+  const all = COLS.every(([c]) => v[c] !== undefined);
+  scr.innerHTML = `<h1 class="q">${s.q}</h1><p class="help">${s.help} « Jamais » écarte fortement cette couleur de tes propositions.</p>
+    <div class="cgrid">${COLS.map(([c, l]) => `<div class="crow"><img src="https://svgs.scryfall.io/card-symbols/${c}.svg" alt=""><b>${l}</b>
+      <div class="lv" role="radiogroup" aria-label="${l}">${LV.map(([n, t]) => `<button role="radio" class="${n === "0" ? "never" : ""}" aria-checked="${v[c] === n}" aria-pressed="${v[c] === n}" data-c="${c}" data-n="${n}">${t}</button>`).join("")}</div>
+      <button class="star" aria-label="Coup de cœur : ${l}" aria-pressed="${v.star === c}" data-c="${c}">★</button></div>`).join("")}</div>${foot(all, { label: "Voir mon profil" })}`;
+  scr.querySelectorAll(".lv button").forEach(b => b.onclick = () => { v[b.dataset.c] = b.dataset.n; renderColors(s); });
+  scr.querySelectorAll(".star").forEach(b => b.onclick = () => { v.star = v.star === b.dataset.c ? null : b.dataset.c; if (v.star) v[v.star] = "3"; renderColors(s); });
+}
+
+/* ---------- Révélation ---------- */
+const GUILD = { WU: "Azorius", UB: "Dimir", BR: "Rakdos", RG: "Gruul", WG: "Selesnya", WB: "Orzhov", UR: "Izzet", BG: "Golgari", WR: "Boros", UG: "Simic" };
+const PICKS = {
+  WU: ["Raff Capashen, Ship's Mage", "Brago, King Eternal", "Grand Arbiter Augustin IV"], UB: ["The Scarab God", "Yuriko, the Tiger's Shadow", "Lazav, the Multifarious"],
+  BR: ["Kardur, Doomscourge", "Prosper, Tome-Bound", "Judith, the Scourge Diva"], RG: ["Wulfgar of Icewind Dale", "Xenagos, God of Revels", "Klothys, God of Destiny"],
+  WG: ["Captain Sisay", "Rhys the Redeemed", "Trostani, Selesnya's Voice"], WB: ["Liesa, Shroud of Dusk", "Teysa Karlov", "Karlov of the Ghost Council"],
+  UR: ["Veyran, Voice of Duality", "Mizzix of the Izmagnus", "Niv-Mizzet, Parun"], BG: ["Slimefoot, the Stowaway", "Meren of Clan Nel Toth", "Glissa Sunslayer"],
+  WR: ["Feather, the Redeemed", "Aurelia, the Warleader", "Winota, Joiner of Forces"], UG: ["Kinnan, Bonder Prodigy", "Tatyova, Benthic Druid", "Aesi, Tyrant of Gyre Strait"]
+};
+const FANT = { villain: "Le grand méchant", necro: "Le nécromancien", inventor: "Le savant fou", druid: "Le druide", warlord: "Le chef de guerre", chaos: "L’agent du chaos" };
+function profileFromAnswers() {
+  const c = A.colors || {}, lv = { "0": .05, "1": .3, "2": .6, "3": .85 };
+  const said = Object.fromEntries(CORDER.map(k => [k, c[k] !== undefined ? lv[c[k]] + (c.star === k ? .15 : 0) : .4]));
+  const nudge = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
+  if (A.probleme && A.probleme !== "?") nudge[A.probleme] += .3;
+  (A.fantasy || []).forEach(f => ({ villain: ["B", "U"], necro: ["B", "G"], inventor: ["U", "R"], druid: ["G", "U"], warlord: ["R", "W"], chaos: ["R"] }[f] || []).forEach(k => nudge[k] += .2));
+  Object.entries((A.swipe) || {}).forEach(([n, r]) => ({ "Atraxa, Praetors' Voice": "WUBG", "Krenko, Mob Boss": "R", "Talrand, Sky Summoner": "U", "Edgar Markov": "WBR" }[n] || "").split("").forEach(k => nudge[k] += r * .08));
+  const rev = Object.fromEntries(CORDER.map(k => [k, Math.max(.08, Math.min(1, said[k] * .6 + .15 + nudge[k]))]));
+  const top = "WUBRG".split("").sort((a, b) => (said[b] + rev[b]) - (said[a] + rev[a])).slice(0, 2);
+  const key = "WUBRG".split("").filter(k => top.includes(k)).join("");
+  return { said, rev, key, guild: GUILD[key], title: FANT[(A.fantasy || [])[0]] || "L’explorateur", picks: PICKS[key] };
+}
+function renderReveal() {
+  const P = profileFromAnswers(), me = ME && FBYID[ME];
+  scr.innerHTML = `<div class="load" id="load">CALCUL DE TON PROFIL…</div>
+    <div class="rhex" id="rhex">${hexSVG(null, null, { labels: true, grid: "#4A4058" })}</div>
+    <div class="rtitle" id="rtitle"><small>${me ? me.nom.toUpperCase() + ", TU ES…" : "TU ES…"}</small><h1>${P.title}</h1><p>${P.guild}</p></div>
+    <div class="rcards">${P.picks.map((n, k) => `<div class="flip${k === 1 ? " mid" : ""}"><div class="in"><div class="b">${hexSVG(null, null, { grid: "#B08D57" })}</div><div class="f"><img data-card="${n}" alt="${n}"></div></div>
+      <div class="cap">${["La surprise cohérente", "Le choix sûr", "Hors de ta zone"][k]}</div></div>`).join("")}</div>
+    <div class="after" id="after"><a class="btn solid" href="${me ? "profil.html?j=" + me.id : "qui.html"}">Publier ma fiche</a><button class="btn" onclick="i=1;render()">Revoir mes réponses</button></div>
+    <p class="demo">Maquette : profil calculé de façon simplifiée à partir de tes réponses.</p>`;
+  fillImages(scr);
+  const svg = $("rhex").querySelector("svg"), t0 = performance.now() + 900, D = 1400;
+  const ease = x => 1 - Math.pow(1 - x, 3);
+  const said = document.createElementNS("http://www.w3.org/2000/svg", "polygon"), rev = said.cloneNode();
+  said.setAttribute("fill", "#E9D7AE"); said.setAttribute("fill-opacity", ".28"); said.setAttribute("stroke", "#E9D7AE"); said.setAttribute("stroke-width", "2");
+  rev.setAttribute("fill", "none"); rev.setAttribute("stroke", "#fff"); rev.setAttribute("stroke-width", "1.5"); rev.setAttribute("stroke-dasharray", "5 4");
+  svg.append(said, rev);
+  const frame = now => {
+    const k = ease(Math.max(0, Math.min(1, (now - t0) / D)));
+    const sc = v => Object.fromEntries(CORDER.map(c => [c, v[c] * k]));
+    said.setAttribute("points", hexPoly(sc(P.said))); rev.setAttribute("points", hexPoly(sc(P.rev)));
+    if (k < 1) requestAnimationFrame(frame);
+    else {
+      $("load").textContent = "CE QUE TU DIS · CE QUE TES RÉPONSES RÉVÈLENT";
+      setTimeout(() => $("rtitle").classList.add("on"), 200);
+      scr.querySelectorAll(".flip").forEach((f, n) => setTimeout(() => f.classList.add("on"), 1100 + [1, 0, 2][n] * 350));
+      setTimeout(() => $("after").classList.add("on"), 2400);
+    }
+  };
+  requestAnimationFrame(frame);
+}
+
+document.addEventListener("keydown", e => {
+  const s = STEPS[i]; if (e.target.tagName === "INPUT") return;
+  if (s.k === "single" && /^[1-9]$/.test(e.key)) { const b = scr.querySelectorAll(".opt")[+e.key - 1]; if (b) b.click(); }
+  if (s.k === "swipe") { if (e.key === "ArrowRight") scr.querySelector(".rb.yes").click(); if (e.key === "ArrowLeft") scr.querySelector(".rb.no").click(); }
+});
+render();
+</script>
+</body>
+</html>

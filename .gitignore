@@ -1,0 +1,11 @@
+# Réglages locaux de l'éditeur et de Claude
+.claude/
+
+# Images de référence (visuels d'autres jeux, à ne pas publier)
+*.jfif
+
+# Fichiers temporaires
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — Le groupe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+.hero{position:relative;height:min(56vh,460px);min-height:340px;overflow:hidden;background:var(--night) center 35%/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,15,24,.6),rgba(18,15,24,.35) 40%,rgba(18,15,24,.9))}
+.hero-txt{position:absolute;left:0;right:0;bottom:80px;z-index:2;text-align:center;color:#fff;padding:0 16px}
+.hero h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.6rem,8vw,5.5rem);margin:0;line-height:1}
+.hero .sub{font-family:Cinzel,serif;letter-spacing:.18em;color:var(--gold-l);font-size:.9rem;margin-top:8px}
+.hero .orn{color:var(--gold-l)}
+
+/* ---------- Hexagone du groupe ---------- */
+.ghex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center;padding:20px 0 10px}
+.ghex .big svg{width:100%;max-width:440px;display:block;margin:0 auto}
+.who{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.who button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border:1px solid var(--line);border-radius:30px;font-size:.88rem;background:#fff}
+.who button span{width:26px;height:26px;border-radius:50%;background:#222 center/cover}
+.who button[aria-pressed="true"]{border-color:var(--plum);background:var(--plum);color:#fff}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+.stat{border-top:1px solid var(--gold);padding-top:10px}
+.stat small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stat b{font-family:Cinzel,serif;font-size:1.15rem;color:var(--plum)}
+.hint{font-size:.85rem;color:var(--muted)}
+.stats{grid-template-columns:1fr 1fr}
+.stat b.zero{color:#B8AEB9}
+.pct.zero{color:#6E6475}
+.pc.empty .art{background:radial-gradient(circle at 50% 40%,#3A2840,#1F1424 75%)}
+.pc.empty .art::after{display:none}
+.pc .bigini{position:absolute;left:18px;top:6px;font-family:Cinzel,serif;font-weight:800;font-size:5.5rem;line-height:1.3;color:rgba(233,215,174,.22)}
+.cmp-empty .pic{font-size:3rem}
+
+/* ---------- Cartes des joueurs ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:22px;padding:20px 0 10px}
+.pc{display:block;text-decoration:none;background:#fff;box-shadow:0 8px 24px rgba(40,20,40,.12);transition:transform .2s,box-shadow .2s;position:relative}
+.pc:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(40,20,40,.2)}
+.pc .art{height:150px;background:#222 center 25%/cover;position:relative}
+.pc .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,var(--t) 100%);opacity:.9}
+.pc .mh{position:absolute;right:10px;bottom:-34px;width:84px;height:84px;background:#fff;border-radius:50%;z-index:2;padding:4px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.pc .body{padding:14px 16px 16px}
+.pc b{font-family:Cinzel,serif;font-size:1.3rem;display:block}
+.pc .t{font-size:.8rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.pc .phare{margin-top:12px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+.pc .phare strong{color:var(--ink);font-weight:700}
+.pc time{display:block;font-size:.75rem;color:var(--gold);margin-top:4px}
+
+/* ---------- Comparaison ---------- */
+.cmp{background:var(--night);color:#E9E4EF;position:relative;padding:70px 0 80px;margin-top:60px}
+.cmp .section-title{padding-top:20px}
+.cmp .section-title h2{color:#fff}
+.cmp .section-title p{color:#B9B0C6}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;max-width:900px;margin:20px auto 0}
+.side{text-align:center}
+.side .pic{width:140px;height:140px;border-radius:50%;margin:0 auto 12px;background:#222 center/cover;box-shadow:0 0 0 3px var(--night),0 0 0 5px var(--gold)}
+.side select{font:inherit;font-family:Cinzel,serif;background:transparent;color:#fff;border:1px solid #4A4058;padding:6px 10px}
+.side select option{color:#000}
+.score{text-align:center}
+.score .pct{font-family:Cinzel,serif;font-size:3.6rem;font-weight:800;color:var(--gold-l);line-height:1}
+.score small{letter-spacing:.14em;font-size:.72rem;color:#B9B0C6}
+.score svg{width:180px;display:block;margin:8px auto}
+.verdict{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:900px;margin:30px auto 0}
+.verdict h3{font-family:Cinzel,serif;font-size:1rem;color:var(--gold-l);margin:0 0 6px}
+.verdict ul{margin:0;padding-left:18px;color:#D8D0E2}
+
+@media (max-width:760px){
+  .ghex,.verdict{grid-template-columns:1fr}
+  .duel{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="nav" data-current="Le groupe"></div>
+
+<header class="hero" data-art="Kenrith, the Returned King" data-credit-target="cr1">
+  <div class="hero-txt">
+    <h1>La table</h1>
+    <div class="sub" id="gsub"></div>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <span class="credit" id="cr1"></span>
+  <svg class="tear"></svg>
+</header>
+
+<main class="wrap">
+  <div class="section-title">
+    <h2>L’hexagone du groupe</h2>
+    <p>La moyenne de la table, et chaque joueur en transparence. Clique sur un nom pour le mettre en avant.</p>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="ghex">
+    <div class="big" id="bighex"></div>
+    <div>
+      <div class="who" id="who"></div>
+      <p class="hint" id="whohint">Toute la table</p>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <h2>Les fiches</h2>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="cards" id="cards"></div>
+</main>
+
+<section class="cmp">
+  <svg class="tear top"></svg>
+  <div class="section-title">
+    <h2>Face à face</h2>
+    <p>Choisis deux joueurs pour voir ce qui les rapproche et ce qui les oppose.</p>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="wrap">
+    <div class="cmp-empty" id="cmpEmpty"></div><div class="duel" id="duel">
+      <div class="side"><div class="pic" id="pa"></div><select id="sa" aria-label="Premier joueur"></select></div>
+      <div class="score"><div class="pct" id="pct"></div><small>COMPATIBILITÉ</small><div id="duohex"></div></div>
+      <div class="side"><div class="pic" id="pb"></div><select id="sb" aria-label="Deuxième joueur"></select></div>
+    </div>
+    <div class="verdict" id="verdict">
+      <div><h3>Ce qui vous rapproche</h3><ul id="common"></ul></div>
+      <div><h3>Ce qui vous oppose</h3><ul id="oppo"></ul></div>
+    </div>
+  </div>
+</section>
+
+<footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
+
+<script src="commun.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const comb = f => Object.fromEntries(CORDER.map(c => [c, (f.said[c] + f.rev[c]) / 2]));
+const nDone = DONE.length, nClaimed = FRIENDS.filter(f => f.claimed).length;
+$("gsub").textContent = `${FRIENDS.length} JOUEURS · ${nDone} PROFIL${nDone > 1 ? "S" : ""} COMPLÉTÉ${nDone > 1 ? "S" : ""}`;
+const avg = nDone ? Object.fromEntries(CORDER.map(c => [c, DONE.reduce((s, f) => s + comb(f)[c], 0) / nDone])) : null;
+
+/* ---------- Hexagone du groupe ---------- */
+let sel = null;
+function drawBig() {
+  let extra = DONE.map(f => { const on = sel === f.id, col = TINT[dominant(f)][0];
+    return `<polygon points="${hexPoly(comb(f))}" fill="${on ? col : "none"}" fill-opacity="${on ? .3 : 0}" stroke="${col}" stroke-width="${on ? 2.5 : 1}" stroke-opacity="${sel && !on ? .15 : .55}"/>`; }).join("");
+  if (avg) extra += `<polygon points="${hexPoly(avg)}" fill="#4A2E4F" fill-opacity="${sel ? .05 : .22}" stroke="#4A2E4F" stroke-width="2" stroke-dasharray="${sel ? "4 4" : ""}"/>`;
+  $("bighex").innerHTML = hexSVG(null, null, { labels: true, question: !avg }).replace("</svg>", extra + "</svg>");
+  document.querySelectorAll("#who button").forEach(b => b.setAttribute("aria-pressed", (b.dataset.id || null) === sel));
+  $("whohint").textContent = !avg ? "L’hexagone du groupe se dessinera dès que le premier profil sera publié."
+    : sel ? `${FBYID[sel].nom} en couleur, la moyenne du groupe en pointillés.` : "Toute la table : la moyenne en violet, chaque joueur en trait fin.";
+}
+$("who").innerHTML = `<button data-id="" onclick="sel=null;drawBig()"><span style="background:#4A2E4F"></span>Tout le groupe</button>` +
+  FRIENDS.map(f => f.done ? `<button data-id="${f.id}" onclick="sel=sel==='${f.id}'?null:'${f.id}';drawBig()"><span ${avAttrs(f)}></span>${f.nom}</button>`
+    : `<button disabled title="Quiz pas encore fait" style="opacity:.45;cursor:default"><span ${avAttrs(f)}></span>${f.nom}</button>`).join("");
+drawBig();
+
+/* ---------- Statistiques : à zéro tant que rien n'a été fait ---------- */
+let S;
+if (nDone) {
+  const sorted = CORDER.slice().sort((a, b) => avg[b] - avg[a]);
+  const sc = {}; DONE.forEach(f => f.styles.slice(0, 2).forEach(([l]) => sc[l] = (sc[l] || 0) + 1));
+  const pc = {}; DONE.forEach(f => pc[f.psy] = (pc[f.psy] || 0) + 1);
+  S = [["Profils complétés", `${nDone} / ${FRIENDS.length}`], ["Couleur reine", CN[sorted[0]]], ["Couleur oubliée", CN[sorted[5]]],
+    ["Style le plus répandu", Object.entries(sc).sort((a, b) => b[1] - a[1])[0][0]], ["Profil dominant", Object.entries(pc).sort((a, b) => b[1] - a[1])[0][0]],
+    ["Devinettes jouées", MODE === "exemple" ? 12 : 0], ["Commandants conseillés", MODE === "exemple" ? 5 : 0], ["Profils réclamés", `${nClaimed} / ${FRIENDS.length}`]];
+} else {
+  S = [["Profils complétés", `0 / ${FRIENDS.length}`], ["Profils réclamés", `${nClaimed} / ${FRIENDS.length}`], ["Couleur reine", "—"], ["Couleur oubliée", "—"],
+    ["Style le plus répandu", "—"], ["Profil dominant", "—"], ["Devinettes jouées", 0], ["Commandants conseillés", 0]];
+}
+$("stats").innerHTML = S.map(([k, v]) => `<div class="stat"><small>${k}</small><b class="${v === "—" || v === 0 ? "zero" : ""}">${v}</b></div>`).join("");
+
+/* ---------- Fiches ---------- */
+$("cards").innerHTML = FRIENDS.map(f => {
+  const [col] = TINT[dominant(f)];
+  const chip = f.done ? "" : f.claimed ? `<span class="chip">Quiz à faire</span>` : `<span class="chip free">Profil libre</span>`;
+  return `<a class="pc${f.done ? "" : " empty"}" href="profil.html?j=${f.id}" style="--t:${col}">
+    <div class="art" ${f.avatar ? `data-art="${f.avatar}"` : ""}>${f.avatar ? "" : `<span class="bigini">${f.nom[0]}</span>`}<div class="mh">${hexSVG(f.said, f.rev, { color: col, question: !f.done })}</div></div>
+    <div class="body"><b>${f.nom}</b><div class="t">${f.done ? f.titre + " · " + f.id_c : chip}</div>
+    <div class="phare">Commandant phare : <strong>${f.done ? f.cmdrs[1][0] : "—"}</strong><time>${f.done ? "Profil mis à jour " + f.maj : f.claimed ? "Réclamé, en attente du quiz" : "En attente de son propriétaire"}</time></div></div></a>`;
+}).join("");
+
+/* ---------- Face à face : il faut deux profils complétés ---------- */
+if (nDone < 2) {
+  $("duel").style.display = "none"; $("verdict").style.display = "none";
+  $("cmpEmpty").innerHTML = `<div class="duel"><div class="side"><div class="pic ini">?</div></div><div class="score"><div class="pct zero">– %</div><small>COMPATIBILITÉ</small></div><div class="side"><div class="pic ini">?</div></div></div>
+    <p class="ph" style="text-align:center;color:#B9B0C6">Le face-à-face s’ouvrira quand deux joueurs auront publié leur profil (${nDone} sur 2 pour l’instant).</p>`;
+} else {
+  const opts = DONE.map(f => `<option value="${f.id}">${f.nom}</option>`).join("");
+  const sa = $("sa"), sb = $("sb"); sa.innerHTML = opts; sb.innerHTML = opts; sa.value = DONE[0].id; sb.value = DONE[DONE.length - 1].id;
+  function compare() {
+    const a = FBYID[sa.value], b = FBYID[sb.value], ca = comb(a), cb = comb(b);
+    $("pa").setAttribute("data-art", a.avatar); $("pb").setAttribute("data-art", b.avatar);
+    const colSim = 1 - CORDER.reduce((s, c) => s + Math.abs(ca[c] - cb[c]), 0) / 6;
+    const sA = Object.fromEntries(a.styles), sB = Object.fromEntries(b.styles);
+    const shared = Object.keys(sA).filter(k => sB[k] !== undefined);
+    const styleSim = shared.reduce((s, k) => s + (1 - Math.abs(sA[k] - sB[k]) / 100), 0) / 6;
+    $("pct").textContent = (a === b ? 100 : Math.round((colSim * .55 + styleSim * .45) * 100)) + " %";
+    $("duohex").innerHTML = hexSVG(null, null, { grid: "#4A4058" }).replace("</svg>",
+      `<polygon points="${hexPoly(ca)}" fill="${TINT[dominant(a)][0]}" fill-opacity=".45" stroke="#E9D7AE"/><polygon points="${hexPoly(cb)}" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="5 4"/></svg>`);
+    const common = [...CORDER.filter(c => ca[c] > .6 && cb[c] > .6).map(c => `Vous partagez ${CN[c]}`), ...shared.filter(k => sA[k] >= 55 && sB[k] >= 55).map(k => `Vous aimez tous les deux : ${k.toLowerCase()}`)];
+    const opp = [];
+    CORDER.map(c => [c, ca[c] - cb[c]]).sort((x, y) => Math.abs(y[1]) - Math.abs(x[1])).slice(0, 2).forEach(([c, d]) => { if (Math.abs(d) > .3) opp.push(`${d > 0 ? a.nom : b.nom} est bien plus attiré par ${CN[c]}`); });
+    if (a.psy !== b.psy) opp.push(`${a.nom} est plutôt ${a.psy}, ${b.nom} plutôt ${b.psy}`);
+    opp.push(`${b.nom} devrait éviter ce que ${a.nom} déteste : ${a.deteste.toLowerCase()}`);
+    $("common").innerHTML = common.slice(0, 4).map(x => `<li>${x}</li>`).join("") || "<li>Pas grand-chose… idéal pour des parties variées !</li>";
+    $("oppo").innerHTML = opp.slice(0, 4).map(x => `<li>${x}</li>`).join("");
+    fillImages($("duel"));
+  }
+  sa.onchange = sb.onchange = compare; compare();
+}
+fillImages();
+</script>
+</body>
+</html>

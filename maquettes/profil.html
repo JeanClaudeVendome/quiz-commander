@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — Profil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+/* ---------- HERO : illustration + fondu dans la couleur dominante du joueur ---------- */
+.hero{position:relative;height:min(78vh,620px);min-height:440px;overflow:hidden;background:var(--accent-deep) center 25%/cover no-repeat}
+.hero .tint{position:absolute;inset:0;z-index:1;background:var(--accent);mix-blend-mode:color;opacity:.35}
+.hero::after{content:"";position:absolute;inset:0;z-index:1;background:
+  linear-gradient(180deg,rgba(0,0,0,.5) 0%,transparent 20%),
+  linear-gradient(180deg,transparent 30%,color-mix(in srgb,var(--accent) 55%,transparent) 62%,var(--accent) 88%,var(--accent) 100%)}
+.hero.empty{background:radial-gradient(circle at 50% 35%,#3A2840,#1F1424 70%)}
+.hero.empty .tint{display:none}
+.hero .wmk{position:absolute;inset:0;z-index:1;opacity:.08;background:url("https://svgs.scryfall.io/card-symbols/C.svg") center 40%/280px no-repeat;filter:invert(1)}
+.hero-txt{position:absolute;left:0;right:0;bottom:90px;text-align:center;z-index:2;color:#fff;padding:0 16px}
+.hero h1{font-family:Cinzel,serif;font-weight:700;font-size:clamp(3rem,11vw,7.5rem);line-height:1;margin:0;letter-spacing:.02em;text-shadow:0 4px 30px rgba(0,0,0,.45)}
+.hero .sub{font-family:Cinzel,serif;color:var(--gold-l);letter-spacing:.18em;font-size:.95rem;margin-top:10px;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.hero .orn{color:var(--gold-l)}
+
+/* ---------- CORPS ---------- */
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:start;padding:56px 0 30px}
+.kicker{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"";width:28px;height:1px;background:var(--muted)}
+h2.name{font-family:Cinzel,serif;color:var(--plum);font-size:clamp(2rem,5vw,3rem);line-height:1.05;margin:.3em 0 .5em}
+h3{font-family:Cinzel,serif;font-size:1.05rem;margin:28px 0 4px}
+h3::after{content:"";display:block;width:36px;height:1px;background:var(--gold);margin-top:8px}
+.intro p{color:var(--muted);margin:10px 0}
+.quote{font-family:Cinzel,serif;color:var(--ink);font-size:1.05rem;border-left:2px solid var(--gold);padding-left:14px;margin:16px 0}
+.cta{margin-top:22px}
+.hexbox{position:relative;text-align:center}
+.hexbox .wm{position:absolute;inset:-20px;opacity:.07;background:center/70% no-repeat}
+.hexbox svg{position:relative;width:100%;max-width:400px}
+.legend{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:18px;height:3px;margin-right:6px;vertical-align:middle;background:var(--accent)}
+.legend span.rev::before{background:none;border-top:2px dashed var(--ink);height:0}
+
+.styles{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px;padding:20px 0 10px}
+.style{text-align:center}
+.style .tile{aspect-ratio:3/4;border-radius:4px;overflow:hidden;position:relative;background:#222;box-shadow:0 6px 18px rgba(40,20,40,.18)}
+.style .tile img{width:100%;height:100%;object-fit:cover;display:block}
+.style .tile.empty{background:radial-gradient(circle at 50% 40%,#3A2840,#1F1424 80%);display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:2.6rem;color:rgba(233,215,174,.3)}
+.style .tile .pct{position:absolute;left:6px;bottom:6px;background:rgba(15,15,25,.8);color:#fff;font-size:.8rem;padding:1px 7px;border-radius:3px;font-family:Lato,sans-serif}
+.style .lab{font-weight:700;font-size:.9rem;margin-top:8px;line-height:1.25}
+
+.cmdrs{display:grid;grid-template-columns:1fr 1.15fr 1fr;align-items:center;padding:30px 0 20px}
+.cm{position:relative}
+.cm img,.cm .back{width:100%;display:block;border-radius:14px;aspect-ratio:488/680;background:#222}
+.cm .back{background:radial-gradient(circle at 50% 40%,#3A2840,#1F1424 80%);border:6px solid #120F18;display:flex;align-items:center;justify-content:center;font-family:Cinzel,serif;font-size:4rem;color:rgba(233,215,174,.3)}
+.cm.side{transform:scale(.88)}
+.cm.mid{z-index:2}
+.cm.mid img,.cm.mid .back{box-shadow:0 18px 40px rgba(30,15,40,.35)}
+.cm .tag{text-align:center;margin-top:12px}
+.cm .tag b{font-family:Cinzel,serif;display:block;font-size:1rem}
+.cm .tag span{font-size:.85rem;color:var(--muted)}
+.cm .pctbig{position:absolute;top:-14px;right:-10px;background:var(--accent);color:#fff;font-family:Cinzel,serif;font-weight:700;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;border:3px solid var(--cream)}
+
+.hist{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:20px 0 70px}
+.hist div{text-align:center;font-size:.85rem;color:var(--muted)}
+.hist svg{width:120px}
+.others{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;padding:0 0 60px}
+.others a{width:54px;height:54px;border-radius:50%;background:#222 center/cover;box-shadow:0 0 0 2px var(--cream),0 0 0 3px var(--line);font-size:1.3rem}
+.others a[aria-current="true"]{box-shadow:0 0 0 2px var(--cream),0 0 0 4px var(--gold)}
+
+@media (max-width:760px){
+  .intro{grid-template-columns:1fr;gap:10px}
+  .styles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cmdrs{grid-template-columns:1fr;gap:28px}
+  .cm.side{transform:none}
+}
+</style>
+</head>
+<body>
+<div id="nav" data-current="Mon profil"></div>
+
+<header class="hero" id="hero" data-credit-target="cr1">
+  <div class="tint"></div>
+  <div class="hero-txt">
+    <h1 id="hname"></h1>
+    <div class="sub" id="hsub"></div>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <span class="credit" id="cr1"></span>
+  <svg class="tear"></svg>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <div id="left"></div>
+    <div class="hexbox">
+      <div class="wm" id="wm"></div>
+      <div id="hex"></div>
+      <div class="legend"><span>Ce qu’il dit</span><span class="rev">Ce que ses réponses révèlent</span></div>
+    </div>
+  </section>
+
+  <div class="section-title"><h2>Style de jeu</h2><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="styles" id="styles"></div>
+
+  <div class="section-title"><h2>Ses commandants</h2><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="cmdrs" id="cmdrs"></div>
+
+  <div class="section-title"><h2>Son évolution</h2><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="hist" id="hist"></div>
+
+  <div class="section-title" style="padding-top:10px"><h2>Les autres joueurs</h2><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="others" id="others"></div>
+</main>
+
+<footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
+
+<script src="commun.js"></script>
+<script>
+const f = FBYID[new URLSearchParams(location.search).get("j")] || FBYID[ME] || FRIENDS[0];
+const $ = id => document.getElementById(id);
+const isMe = ME === f.id;
+applyTint(f);
+document.title = "Maquette — " + f.nom;
+$("hname").textContent = f.nom;
+$("hsub").textContent = statusOf(f).toUpperCase();
+const FAM = ["La surprise cohérente", "Le choix sûr", "Hors de ta zone"];
+
+if (f.done) {
+  $("hero").setAttribute("data-art", f.avatar);
+  $("left").innerHTML = `<div class="kicker">Profil de joueur · version du 7 octobre 2026</div>
+    <h2 class="name">${f.devise}</h2>
+    <h3>Qui il est</h3><p>${f.qui}</p><div class="quote">« ${f.citation} »</div>
+    <h3>Ce qu’il déteste affronter</h3><p>${f.deteste}</p>
+    <h3>Sa carte fétiche</h3><p>${f.fetiche}</p>`;
+  $("wm").style.backgroundImage = `url("https://svgs.scryfall.io/card-symbols/${dominant(f)}.svg")`;
+  $("hex").innerHTML = hexSVG(f.said, f.rev, { labels: true });
+  $("styles").innerHTML = f.styles.map(([l, p, c]) => `<div class="style"><div class="tile"><img data-art="${c}" alt=""><span class="pct">${p} %</span></div><div class="lab">${l}</div></div>`).join("");
+  $("cmdrs").innerHTML = f.cmdrs.map(([n, p], i) => `<div class="cm ${i === 1 ? "mid" : "side"}"><img data-card="${n}" alt="${n}"><div class="pctbig">${p}%</div><div class="tag"><b>${FAM[i]}</b><span>${n}</span></div></div>`).join("");
+  const jit = (v, k) => Object.fromEntries(CORDER.map((c, i) => [c, Math.max(.1, Math.min(1, v[c] + Math.sin(i * 2.3 + k) * .18 * k))]));
+  $("hist").innerHTML = [["Mars 2026", jit(f.said, 1.4), jit(f.rev, 1.6)], ["Juin 2026", jit(f.said, .7), jit(f.rev, .8)], ["Octobre 2026", f.said, f.rev]]
+    .map(([d, a, b]) => `<div>${hexSVG(a, b)}<br>${d}</div>`).join("");
+} else {
+  /* Profil vide : réservé ou libre */
+  $("hero").classList.add("empty");
+  $("hero").insertAdjacentHTML("afterbegin", `<div class="wmk"></div>`);
+  let txt, cta;
+  if (!f.claimed) { txt = `Ce profil attend son propriétaire. Si tu es ${f.nom}, réclame-le : il sera verrouillé à ton nom, et personne d’autre ne pourra le prendre.`; cta = `<a class="btn solid" href="qui.html?j=${f.id}">C’est moi, je le réclame</a>`; }
+  else if (isMe) { txt = "Ton profil est réservé. Fais le quiz pour remplir cette page : ton hexagone, tes styles de jeu et tes commandants apparaîtront ici."; cta = `<a class="btn solid" href="quiz.html">Faire le quiz</a>`; }
+  else { txt = `${f.nom} a réclamé son profil, mais n’a pas encore fait le quiz. Reviens bientôt !`; cta = ""; }
+  $("left").innerHTML = `<div class="kicker">${f.claimed ? "Profil réservé" : "Profil libre"}</div>
+    <h2 class="name">Une page encore blanche</h2><p>${txt}</p>
+    <h3>Qui il est</h3><p class="ph">À découvrir</p>
+    <h3>Ce qu’il déteste affronter</h3><p class="ph">À découvrir</p>
+    <h3>Sa carte fétiche</h3><p class="ph">À découvrir</p>
+    ${cta ? `<div class="cta">${cta.replace("btn solid", "btn ghost-dark")}</div>` : ""}`;
+  $("hex").innerHTML = hexSVG(null, null, { labels: true, question: true });
+  $("styles").innerHTML = Array.from({ length: 6 }, () => `<div class="style"><div class="tile empty">?<span class="pct">0 %</span></div><div class="lab ph">À découvrir</div></div>`).join("");
+  $("cmdrs").innerHTML = FAM.map((fam, i) => `<div class="cm ${i === 1 ? "mid" : "side"}"><div class="back">?</div><div class="tag"><b>${fam}</b><span class="ph">Après le quiz</span></div></div>`).join("");
+  $("hist").innerHTML = `<p class="ph">Aucune version publiée pour l’instant.</p>`;
+}
+$("others").innerHTML = FRIENDS.map(x => `<a href="profil.html?j=${x.id}" ${avAttrs(x)} title="${x.nom}" aria-label="${x.nom}" aria-current="${x.id === f.id}"></a>`).join("");
+fillImages();
+</script>
+</body>
+</html>

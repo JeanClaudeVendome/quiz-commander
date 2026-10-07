@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — Qui es-tu ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+body{background:var(--night)}
+.stage{position:relative;min-height:100vh;background:var(--night) center 30%/cover no-repeat;color:#fff;padding:120px 16px 80px}
+.stage::before{content:"";position:absolute;inset:0;background:rgba(18,15,24,.82)}
+.stage>*{position:relative}
+.head{text-align:center}
+.head h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,7vw,4.5rem);margin:0;line-height:1}
+.head p{color:#CFC6DA;max-width:54ch;margin:14px auto 0}
+.head .orn{color:var(--gold-l)}
+.code{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin:30px 0 10px}
+.code label{font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.12em;color:var(--gold-l)}
+input{font:inherit;background:rgba(255,255,255,.06);border:1px solid #5A4E68;color:#fff;padding:10px 14px;outline:none}
+input:focus{border-color:var(--gold-l)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;max-width:900px;margin:34px auto 0}
+.who{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:22px 12px 18px;border:1px solid #4A4058;background:rgba(255,255,255,.03);transition:border-color .2s,transform .2s;position:relative}
+.who:hover{border-color:var(--gold-l);transform:translateY(-3px)}
+.who:focus-visible{outline:2px solid var(--gold-l);outline-offset:3px}
+.who .pic{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;background:#2A2033 center/cover;box-shadow:0 0 0 3px var(--night),0 0 0 4px #5A4E68;font-size:2.4rem}
+.who b{font-family:Cinzel,serif;font-size:1.25rem;display:block}
+.who small{color:#A89FB5;font-size:.8rem}
+.who.locked{opacity:.55}
+.who.locked .lock{position:absolute;top:10px;right:12px;font-size:.72rem;letter-spacing:.1em;color:var(--gold-l);font-family:Cinzel,serif}
+.who.new{border-style:dashed}
+.who.new .pic{background:transparent;box-shadow:0 0 0 1px #5A4E68;font-size:2.6rem;color:var(--gold-l);display:flex;align-items:center;justify-content:center}
+.who[aria-pressed="true"]{border-color:var(--gold-l);background:rgba(233,215,174,.08);opacity:1}
+.panel{max-width:520px;margin:30px auto 0;padding:24px;border:1px solid var(--gold);background:rgba(18,15,24,.85);text-align:center}
+.panel h2{font-family:Cinzel,serif;margin:0 0 6px}
+.panel p{color:#CFC6DA;margin:6px 0 16px}
+.panel .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.err{color:#F0A49A;font-size:.85rem;min-height:1.2em;margin-top:8px}
+.already{max-width:520px;margin:30px auto 0;text-align:center;color:#CFC6DA}
+</style>
+</head>
+<body>
+<div id="nav"></div>
+
+<section class="stage" data-art="Mirror Gallery">
+  <div class="head">
+    <h1>Qui es-tu ?</h1>
+    <p>Choisis ton profil. Une fois réclamé, il est verrouillé à ton nom : personne d’autre ne pourra le prendre.</p>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="code"><label for="gcode">CODE DU GROUPE</label><input id="gcode" value="dragon-du-mardi" size="16"><span style="font-size:.78rem;color:#A89FB5">(maquette : n’importe quel code)</span></div>
+  <div id="already"></div>
+  <div class="grid" id="grid"></div>
+  <div id="panel"></div>
+</section>
+
+<footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
+
+<script src="commun.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+if (ME && FBYID[ME]) $("already").innerHTML = `<div class="already">Tu es connecté en tant que <b>${FBYID[ME].nom}</b>. <button class="btn" style="padding:6px 12px;font-size:.7rem;margin-left:8px" onclick="ST.del('mq-me');location.reload()">Ce n’est pas moi</button></div>`;
+
+let pick = null;
+function draw() {
+  $("grid").innerHTML = FRIENDS.map(f => `<button class="who${f.claimed ? " locked" : ""}" data-id="${f.id}" aria-pressed="${pick === f.id}">
+      ${f.claimed ? `<span class="lock">🔒 PRIS</span>` : ""}<div class="pic" ${avAttrs(f)}></div><b>${f.nom}</b><small>${f.claimed ? "Déjà réclamé" : "Libre"}</small></button>`).join("")
+    + `<button class="who new" data-id="__new" aria-pressed="${pick === "__new"}"><div class="pic">+</div><b>Nouveau</b><small>Créer un autre profil</small></button>`;
+  document.querySelectorAll(".who").forEach(b => b.onclick = () => { pick = b.dataset.id; draw(); panel(); });
+  fillImages($("grid"));
+}
+function panel() {
+  const f = FBYID[pick]; let h;
+  if (pick === "__new") h = `<h2>Créer ton profil</h2><p>Ton prénom ou ton pseudo, tel que le groupe te connaît.</p>
+      <div class="row"><input id="nname" placeholder="Prénom" maxlength="20"><input id="pin" placeholder="Code à 4 chiffres" inputmode="numeric" maxlength="4" size="14"></div>
+      <div class="err" id="err"></div><button class="btn solid" onclick="create()">Créer et entrer</button>`;
+  else if (f.claimed) h = `<h2>${f.nom} est déjà pris</h2><p>Si c’est ton profil, entre ton code personnel pour te reconnecter. Sinon, crée un nouveau profil.</p>
+      <div class="row"><input id="pin" placeholder="Ton code à 4 chiffres" inputmode="numeric" maxlength="4" size="18"></div>
+      <div class="err" id="err"></div><button class="btn solid" onclick="enter()">Me reconnecter</button>`;
+  else h = `<h2>Tu es ${f.nom} ?</h2><p>Choisis un code personnel à 4 chiffres. Il te servira à te reconnecter sur un autre appareil. Ce choix est définitif.</p>
+      <div class="row"><input id="pin" placeholder="Code à 4 chiffres" inputmode="numeric" maxlength="4" size="14"></div>
+      <div class="err" id="err"></div><button class="btn solid" onclick="claim()">C’est moi</button>`;
+  $("panel").innerHTML = `<div class="panel">${h}</div>`;
+  const first = $("panel").querySelector("input"); if (first) first.focus();
+  $("panel").querySelectorAll("input").forEach(i => i.oninput = () => $("err").textContent = "");
+}
+const pinOk = () => /^\d{4}$/.test(($("pin") || {}).value || "");
+function login(id) { ST.set("mq-me", id); location.href = "profil.html?j=" + id; }
+function claim() { if (!pinOk()) return $("err").textContent = "Entre un code de 4 chiffres."; const c = ST.get("mq-claims", {}); c[pick] = Date.now(); ST.set("mq-claims", c); login(pick); }
+function enter() { if (!pinOk()) return $("err").textContent = "Entre ton code de 4 chiffres."; login(pick); }
+function create() {
+  const n = ($("nname").value || "").trim();
+  if (!n) return $("err").textContent = "Entre un prénom.";
+  if (FRIENDS.some(f => f.nom.toLowerCase() === n.toLowerCase())) return $("err").textContent = "Ce prénom existe déjà dans le groupe.";
+  if (!pinOk()) return $("err").textContent = "Entre un code de 4 chiffres.";
+  const id = n.toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "") + "-" + Date.now().toString(36);
+  const cu = ST.get("mq-custom", []); cu.push({ id, nom: n }); ST.set("mq-custom", cu);
+  const c = ST.get("mq-claims", {}); c[id] = Date.now(); ST.set("mq-claims", c); login(id);
+}
+const want = new URLSearchParams(location.search).get("j");
+if (want && FBYID[want]) { pick = want; }
+draw(); if (pick) panel();
+fillImages();
+</script>
+</body>
+</html>

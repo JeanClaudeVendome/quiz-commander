@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — Accueil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="commun.css">
+<style>
+/* ---------- Héros ---------- */
+.hero{position:relative;height:min(92vh,760px);min-height:520px;overflow:hidden;background:var(--night) center 30%/cover no-repeat}
+.hero::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(ellipse at center,rgba(18,15,24,.1) 0%,rgba(18,15,24,.55) 70%),
+  linear-gradient(180deg,rgba(18,15,24,.55) 0%,rgba(18,15,24,0) 25%,rgba(18,15,24,.2) 60%,rgba(18,15,24,.9) 100%)}
+.hero-txt{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;padding:60px 16px 40px}
+.hero .pre{font-family:Cinzel,serif;letter-spacing:.3em;font-size:clamp(.8rem,1.6vw,1rem);color:var(--gold-l)}
+.hero h1{font-family:Cinzel,serif;font-weight:800;font-size:clamp(2.4rem,7.5vw,5.4rem);line-height:1.02;margin:.15em 0;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.hero .post{font-family:Cinzel,serif;letter-spacing:.14em;font-size:clamp(.9rem,2vw,1.25rem)}
+.hero .ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.hero .down{position:absolute;left:50%;bottom:64px;transform:translateX(-50%);z-index:4;color:var(--gold-l);font-size:1.4rem;text-decoration:none;animation:bob 2s infinite}
+@keyframes bob{50%{transform:translate(-50%,6px)}}
+.hero .credit{bottom:60px}
+
+/* ---------- Le groupe : rangée d'avatars ---------- */
+.avrow{position:relative;display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,22px);padding:26px 0 10px;flex-wrap:wrap}
+.avrow::before,.avrow::after{content:"";flex:1 1 40px;max-width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.avrow::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.av{all:unset;cursor:pointer;width:62px;height:62px;border-radius:50%;background:#222 center/cover;box-shadow:0 0 0 2px var(--cream),0 0 0 3px var(--line);transition:transform .2s,box-shadow .2s;position:relative}
+.av:hover{transform:translateY(-3px)}
+.av[aria-pressed="true"]{width:78px;height:78px;box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--gold)}
+.av:focus-visible{outline:2px solid var(--plum);outline-offset:6px}
+
+/* ---------- Le groupe : vitrine (gauche / centre / droite) ---------- */
+.show{display:grid;grid-template-columns:1fr 1.05fr 1fr;align-items:center;margin:40px 0 0;min-height:420px}
+.panel{position:relative;height:300px;background:#222 center/cover;overflow:hidden}
+.panel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(18,15,24,.15),rgba(18,15,24,.35))}
+.panel .lab{position:absolute;z-index:2;top:-74px;font-size:.9rem}
+.side-txt{padding:0 6px 14px}
+.side-txt b{font-family:Cinzel,serif;font-size:1.25rem;color:var(--plum)}
+.side-txt span{color:var(--muted);font-size:.85rem}
+.side-txt span::before{content:" / ";color:var(--line)}
+.side-txt p{margin:2px 0 0;font-size:.85rem;color:var(--muted);font-style:italic}
+.center{position:relative;z-index:3;height:430px;background:#222 center/cover;box-shadow:0 24px 50px rgba(30,15,40,.45);display:flex;flex-direction:column;justify-content:flex-end}
+.center::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,15,24,0) 35%,rgba(18,15,24,.92) 80%)}
+.center .info{position:relative;z-index:2;padding:22px;color:#fff}
+.center .info b{font-family:Cinzel,serif;font-size:1.6rem}
+.center .info .t{color:var(--gold-l);font-family:Cinzel,serif;font-size:.85rem;letter-spacing:.08em}
+.center .info p{font-size:.9rem;color:#D8D0E2;margin:8px 0 14px}
+.center .info a{font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.1em;color:var(--gold-l);text-decoration:none}
+.center .hexmini{position:absolute;top:12px;right:12px;width:92px;z-index:2;background:rgba(18,15,24,.55);border-radius:50%;padding:4px}
+.panel.empty,.center.empty{background:radial-gradient(circle at 50% 40%,#3A2840,#1F1424 70%)}
+.panel.empty::after,.center.empty::after{display:none}
+.bigini{position:absolute;inset:0 0 auto 0;top:18%;text-align:center;font-family:Cinzel,serif;font-weight:800;font-size:8rem;line-height:1;color:rgba(233,215,174,.18);z-index:1}
+.panel .bigini{top:25%;font-size:6rem}
+.feed .nofeed{grid-template-columns:56px 1fr}
+.arrow{all:unset;cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.arrow.l{left:-22px;background:#2A2230;color:#fff}
+.arrow.r{right:-22px;background:var(--gold);color:#fff}
+
+/* ---------- Comment ça marche / Actualités ---------- */
+.news{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:0;align-items:center;padding:30px 0 70px}
+.n-left{height:340px;background:#222 center/cover;position:relative;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:22px}
+.n-left::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,15,24,.1),rgba(18,15,24,.85))}
+.n-left *{position:relative}
+.n-left b{font-family:Cinzel,serif;font-size:1.2rem;line-height:1.3}
+.n-left ol{margin:10px 0 0;padding-left:18px;font-size:.88rem;color:#DCD4E6}
+.n-mid{position:relative;z-index:2;height:430px;background:#222 center/cover;box-shadow:0 24px 50px rgba(30,15,40,.45);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:26px;color:#fff;margin:0 -10px}
+.n-mid::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,15,24,0) 30%,rgba(18,15,24,.92))}
+.n-mid *{position:relative}
+.n-mid small{font-family:Cinzel,serif;font-size:.75rem;letter-spacing:.14em;color:var(--gold-l)}
+.n-mid b{font-family:Cinzel,serif;font-size:1.6rem;line-height:1.25;margin:8px 0 18px;display:block}
+.n-right{padding-left:34px}
+.n-right .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.n-right .head span{font-family:Cinzel,serif;font-size:.8rem;letter-spacing:.12em;color:var(--plum)}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.feed .pic{width:56px;height:56px;border-radius:50%;background:#222 center/cover}
+.feed b{font-family:Cinzel,serif;font-size:.92rem}
+.feed p{margin:0;font-size:.85rem;color:var(--muted);line-height:1.4}
+.feed time{font-size:.75rem;color:var(--gold)}
+
+/* ---------- Bandeau « Devine ton ami » ---------- */
+.band{position:relative;padding:110px 16px;text-align:center;color:#fff;background:var(--night) center 35%/cover no-repeat;overflow:hidden}
+.band::before{content:"";position:absolute;inset:0;background:rgba(18,15,24,.72)}
+.band *{position:relative}
+.band h2{font-family:Cinzel,serif;font-size:clamp(1.8rem,4.5vw,3rem);margin:0}
+.band p{max-width:52ch;margin:14px auto 26px;color:#D8D0E2}
+.band .tear{position:absolute}
+
+@media (max-width:860px){
+  .show,.news{grid-template-columns:1fr;gap:22px}
+  .show .side,.arrow{display:none}
+  .n-mid{margin:0}.n-right{padding:0}
+}
+</style>
+</head>
+<body>
+<div id="nav" data-current="Accueil"></div>
+
+<header class="hero" data-art="Atraxa, Grand Unifier" data-credit-target="cr1">
+  <div class="hero-txt">
+    <div class="pre">LE GRAND QUIZ</div>
+    <h1>Trouve le commandant<br>qui te ressemble</h1>
+    <div class="post">ET DÉCOUVRE CELUI DE TES AMIS</div>
+    <div class="ctas">
+      <a class="btn solid" href="quiz.html">Faire le quiz</a>
+      <a class="btn" href="groupe.html">Voir le groupe</a>
+    </div>
+  </div>
+  <a class="down" href="#groupe" aria-label="Descendre">⌄</a>
+  <span class="credit" id="cr1"></span>
+  <svg class="tear"></svg>
+</header>
+
+<section id="groupe" class="wrap">
+  <div class="section-title">
+    <h2>Les joueurs du groupe</h2>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="avrow" id="avrow"></div>
+
+  <div class="show" id="show">
+    <div class="side" id="sl"></div>
+    <div class="center" id="sc"></div>
+    <div class="side" id="sr"></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-title">
+    <h2>Comment ça marche</h2>
+    <div class="orn"><i></i><b></b><i></i></div>
+  </div>
+  <div class="news">
+    <div class="n-left" data-art="Jace, the Mind Sculptor">
+      <b>Trois étapes,<br>une vingtaine de minutes</b>
+      <ol>
+        <li>Réponds au quiz, sans jamais parler de couleurs.</li>
+        <li>Découvre ton hexagone et tes commandants.</li>
+        <li>Publie ta fiche pour le groupe.</li>
+      </ol>
+    </div>
+    <div class="n-mid" data-art="Kenrith, the Returned King">
+      <small>À TON TOUR</small>
+      <b>Fais le quiz<br>et rejoins la table</b>
+      <a class="btn solid" href="quiz.html">Commencer</a>
+    </div>
+    <div class="n-right">
+      <div class="head"><span>Dernières nouvelles</span><a class="btn ghost-dark" href="groupe.html" style="padding:6px 12px;font-size:.7rem">Tout voir</a></div>
+      <ul class="feed" id="feed"></ul>
+    </div>
+  </div>
+</section>
+
+<section class="band" data-art="Mirror Gallery">
+  <svg class="tear top"></svg>
+  <h2>Devine ton ami</h2>
+  <p>Le site te pose dix questions du quiz d’un ami. À toi de deviner ce qu’il a répondu. Qui connaît le mieux le groupe ?</p>
+  <a class="btn solid" href="devine.html">Jouer</a>
+  <svg class="tear" data-fill="#120F18"></svg>
+</section>
+
+<footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · ©Wizards of the Coast LLC</footer>
+
+<script src="commun.js"></script>
+<script>
+if (!ME) { const b = document.querySelector(".hero .btn.solid"); b.textContent = "Entrer"; b.href = "qui.html"; }
+let cur = 0;
+const bigIni = f => `<div class="bigini">${f.nom[0]}</div>`;
+function showcase() {
+  const n = FRIENDS.length, f = FRIENDS[cur], L = FRIENDS[(cur - 1 + n) % n], R = FRIENDS[(cur + 1) % n];
+  const side = (x, align) => `<div class="side-txt" style="text-align:${align}"><b>${x.nom}</b><span>${x.done ? x.titre : statusOf(x)}</span><p>${x.done ? "« " + x.devise + " »" : "&nbsp;"}</p></div>
+    <a href="profil.html?j=${x.id}" class="panel${x.avatar ? "" : " empty"}" style="display:block" ${x.avatar ? `data-art="${x.avatar}"` : ""} aria-label="Fiche de ${x.nom}">${x.avatar ? "" : bigIni(x)}</a>`;
+  document.getElementById("sl").innerHTML = side(L, "left");
+  document.getElementById("sr").innerHTML = side(R, "right");
+  const sc = document.getElementById("sc");
+  sc.className = "center" + (f.avatar ? "" : " empty");
+  if (f.avatar) sc.setAttribute("data-art", f.avatar); else { sc.removeAttribute("data-art"); sc.style.backgroundImage = ""; }
+  const txt = f.done ? f.qui : f.claimed ? `${f.nom} a réclamé son profil, mais n’a pas encore fait le quiz.` : `Ce profil attend son propriétaire. C’est toi, ${f.nom} ? Réclame-le pour faire le quiz.`;
+  const cta = !f.claimed ? `<a href="qui.html?j=${f.id}">C’EST MOI →</a>` : `<a href="profil.html?j=${f.id}">VOIR SA FICHE →</a>`;
+  sc.innerHTML = `<button class="arrow l" aria-label="Précédent" onclick="go(-1)">←</button><button class="arrow r" aria-label="Suivant" onclick="go(1)">→</button>
+    ${f.avatar ? "" : bigIni(f)}
+    ${f.done ? `<div class="hexmini">${hexSVG(f.said, f.rev, { color: "#E9D7AE", grid: "#555", ink: "#fff" })}</div>` : ""}
+    <div class="info"><b>${f.nom}</b><div class="t">${statusOf(f).toUpperCase()}</div><p>${txt}</p>${cta}</div>`;
+  document.querySelectorAll(".av").forEach((b, i) => b.setAttribute("aria-pressed", i === cur));
+  fillImages(document.getElementById("show"));
+}
+function go(d) { cur = (cur + d + FRIENDS.length) % FRIENDS.length; showcase(); }
+document.getElementById("avrow").innerHTML = FRIENDS.map((f, i) => `<button class="av" ${avAttrs(f)} title="${f.nom}" aria-label="${f.nom}" onclick="cur=${i};showcase()"></button>`).join("");
+cur = Math.min(1, FRIENDS.length - 1); showcase();
+
+// Fil des nouvelles : vide au départ, alimenté par les vraies actions
+const ago = t => { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? "à l’instant" : m < 60 ? `il y a ${m} min` : m < 1440 ? `il y a ${Math.round(m / 60)} h` : `il y a ${Math.round(m / 1440)} j`; };
+let FEED = Object.entries(CLAIMS).filter(([id]) => FBYID[id]).sort((a, b) => b[1] - a[1]).map(([id, t]) => [id, "a réclamé son profil", ago(t)]);
+if (MODE === "exemple") FEED = [["filipe", "a mis à jour son profil", "hier"], ["ben", "a deviné 9 réponses sur 10 de Clement", "il y a 2 jours"], ["clement", "a publié son premier profil", "il y a 2 jours"], ["ilyes", "conseille Prossh, Skyraider of Kher à Ben", "il y a 5 jours"]];
+document.getElementById("feed").innerHTML = FEED.slice(0, 4).map(([id, t, d]) => { const f = FBYID[id]; return `<li><a class="pic" href="profil.html?j=${id}" ${avAttrs(f)} aria-label="${f.nom}"></a><div><b>${f.nom}</b><p>${t}</p><time>${d}</time></div></li>`; }).join("")
+  || `<li class="nofeed"><div class="pic ini">✦</div><div><b>Rien pour l’instant</b><p>Les nouvelles apparaîtront dès qu’un joueur réclamera son profil ou publiera son quiz.</p></div></li>`;
+fillImages();
+</script>
+</body>
+</html>

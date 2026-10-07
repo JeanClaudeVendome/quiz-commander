@@ -1,0 +1,23 @@
+{
+ "_doc": "Référence manuelle de puissance, appliquée après le calcul automatique de scripts/build_data.py (la puissance d'un commandant listé ne peut pas être inférieure à la valeur de sa liste). « cedh » : commandants couramment joués en Commander compétitif (bracket 5). « fort » : commandants très forts, fréquents en bracket 4 et parfois vus en cEDH. Mis à jour le 7 octobre 2026, à corriger librement : un nom absent du catalogue est simplement ignoré.",
+ "cedh": [
+  "Kinnan, Bonder Prodigy", "Najeela, the Blade-Blossom", "Thrasios, Triton Hero", "Tymna the Weaver", "Kraum, Ludevic's Opus",
+  "Rograkh, Son of Rohgahh", "Silas Renn, Seeker Adept", "Ishai, Ojutai Dragonspeaker", "Vial Smasher the Fierce", "Malcolm, Alluring Scoundrel",
+  "Tivit, Seller of Secrets", "Urza, Lord High Artificer", "Godo, Bandit Warlord", "Winota, Joiner of Forces", "Sisay, Weatherlight Captain",
+  "Etali, Primal Conqueror", "Kefka, Court Mage", "Atraxa, Grand Unifier", "Glarb, Calamity's Augur", "Satya, Aetherflux Genius",
+  "Dargo, the Shipwrecker", "Yuriko, the Tiger's Shadow", "Magda, Brazen Outlaw", "Korvold, Fae-Cursed King", "Grand Arbiter Augustin IV",
+  "Elsha of the Infinite", "Inalla, Archmage Ritualist", "Derevi, Empyrial Tactician", "Selvala, Heart of the Wilds", "Zur the Enchanter",
+  "Krark, the Thumbless", "Sakashima of a Thousand Faces", "Talion, the Kindly Lord", "Tevesh Szat, Doom of Fools", "Tasigur, the Golden Fang",
+  "Arcum Dagsson", "Chulane, Teller of Tales", "The Gitrog Monster", "Sidisi, Undead Vizier", "Rocco, Cabaretti Caterer", "Vivi Ornitier",
+  "The First Sliver", "Thalia and The Gitrog Monster"
+ ],
+ "fort": [
+  "Niv-Mizzet, Parun", "Shorikai, Genesis Engine", "Jeska, Thrice Reborn", "Ardenn, Intrepid Archaeologist", "Esior, Wardwing Familiar",
+  "Yoshimaru, Ever Faithful", "Bruse Tarl, Boorish Herder", "Animar, Soul of Elements", "Teferi, Temporal Archmage", "Narset, Enlightened Exile",
+  "Kess, Dissident Mage", "Prossh, Skyraider of Kher", "K'rrik, Son of Yawgmoth", "Ghave, Guru of Spores", "Breya, Etherium Shaper",
+  "Light-Paws, Emperor's Voice", "Dihada, Binder of Wills", "Zhulodok, Void Gorger", "Kodama of the East Tree", "Emry, Lurker of the Loch",
+  "Feather, the Redeemed", "Edgar Markov", "Yisan, the Wanderer Bard", "Gale, Waterdeep Prodigy", "Kenrith, the Returned King",
+  "Muldrotha, the Gravetide", "Chatterfang, Squirrel General", "Krenko, Mob Boss", "Sram, Senior Edificer", "Obeka, Splitter of Seconds"
+ ],
+ "valeurs": {"cedh": 4.6, "fort": 3.9}
+}

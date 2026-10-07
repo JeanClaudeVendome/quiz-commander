@@ -1,0 +1,36 @@
+{
+ "commandants": 3472,
+ "sans_style": 231,
+ "avec_combo": 1442,
+ "preconstruits": 193,
+ "noms_fr": 3214,
+ "universes_beyond": 1292,
+ "puissance": {
+  "1": 400,
+  "2": 2513,
+  "3": 438,
+  "4": 121,
+  "5": 0
+ },
+ "complexite": {
+  "1": 853,
+  "2": 1941,
+  "3": 576,
+  "4": 74,
+  "5": 28
+ },
+ "precision_sans_corrections": {
+  "verifies": 145,
+  "style_principal_trouve": 0.621,
+  "au_moins_un_style_commun": 0.897,
+  "puissance_moyenne_par_niveau_verifie": {
+   "1": 2.5,
+   "2": 2.72,
+   "3": 2.94
+  }
+ },
+ "etiquettes_inconnues": [],
+ "references_puissance_introuvables": [],
+ "corrections_sans_correspondance": [],
+ "date": "2026-10-07"
+}
