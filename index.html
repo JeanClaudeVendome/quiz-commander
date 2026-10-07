@@ -112,8 +112,14 @@
   <svg class="tear"></svg>
 </header>
 
+<section class="wrap">
+  <div class="section-title"><h2>Les groupes</h2><p>Chaque groupe est une table de jeu. Tout le monde voit tout le monde : rejoins ceux où tu joues.</p><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="gcs" id="groupes"></div>
+  <p style="text-align:center;margin-top:18px"><a class="btn ghost-dark" href="groupe.html">Tous les groupes</a></p>
+</section>
+
 <section id="groupe" class="wrap">
-  <div class="section-title"><h2>Les joueurs du groupe</h2><div class="orn"><i></i><b></b><i></i></div></div>
+  <div class="section-title"><h2>Les joueurs</h2><p><a href="joueurs.html" style="color:var(--plum)">Voir l'annuaire complet, avec recherche et filtres →</a></p><div class="orn"><i></i><b></b><i></i></div></div>
   <div class="avrow" id="avrow"></div>
   <div class="show" id="show"><div class="side" id="sl"></div><div class="center" id="sc"></div><div class="side" id="sr"></div></div>
 </section>
@@ -156,6 +162,10 @@
   else if (moi.reponses) $("cta1").textContent = "Refaire le quiz";
 
   const pNv = ST.nouvelles().catch(() => []); // en parallèle de l'affichage
+  // Les groupes : les miens d'abord, puis les plus remplis
+  const mes = SITE.mesCercles();
+  const tri = G.cercles.slice().sort((a, b) => (mes.includes(b) - mes.includes(a)) || (b.membres.length - a.membres.length));
+  $("groupes").innerHTML = tri.slice(0, 6).map(c => SITE.carteCercle(c)).join("") || `<p class="ph" style="text-align:center;grid-column:1/-1">Aucun groupe pour l'instant.</p>`;
   let cur = Math.max(0, J.findIndex(j => j.id === (moi && moi.id)));
   const bigIni = j => `<div class="bigini" aria-hidden="true">${esc(j.pseudo[0])}</div>`;
   function vitrine() {
@@ -186,8 +196,8 @@
   // Fil des nouvelles : réclamations, publications, devinettes
   SITE.images();
   const nv = await pNv;
-  const T = { reclame: () => "a réclamé son profil", publie: () => "a publié son profil", devine: x => `a deviné ${x.score} réponse${x.score > 1 ? "s" : ""} sur 5 de ${esc((G.parId[x.cible] || {}).pseudo || "?")}` };
-  $("feed").innerHTML = nv.filter(x => G.parId[x.joueur]).slice(0, 4).map(x => { const j = G.parId[x.joueur];
+  const T = { reclame: () => "a réclamé son profil", publie: () => "a publié son profil", devine: x => `a deviné ${x.score} réponse${x.score > 1 ? "s" : ""} sur 5 de ${esc((G.parId[x.cible] || {}).pseudo || "?")}`, cercle: x => `a créé le groupe « ${esc(x.nom || "?")} »` };
+  $("feed").innerHTML = nv.filter(x => G.parId[x.joueur] && T[x.type]).slice(0, 4).map(x => { const j = G.parId[x.joueur];
     return `<li><a class="pic" href="profil.html?j=${j.id}" ${SITE.avAttrs(j)} aria-label="${esc(j.pseudo)}"></a><div><b>${esc(j.pseudo)}</b><p>${T[x.type](x)}</p><time datetime="${esc(x.date)}">${SITE.depuis(x.date)}</time></div></li>`; }).join("")
     || `<li class="nofeed"><div class="pic ini">✦</div><div><b>Rien pour l'instant</b><p>Les nouvelles apparaîtront dès qu'un joueur réclamera son profil ou publiera son quiz.</p></div></li>`;
   SITE.images();

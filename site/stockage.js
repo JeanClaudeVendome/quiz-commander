@@ -11,10 +11,12 @@
   const MODE = CFG.supabaseUrl && CFG.supabaseAnonKey ? "supabase" : "local";
   const SESS = "qc-session", DB = "qc-local-db";
   const MESSAGES = {
-    CODE_GROUPE: "Ce code de groupe est inconnu.", JOUEUR: "Ce joueur n'existe pas.", NON_RECLAME: "Ce profil n'a pas encore été réclamé.",
-    VERROUILLE: "Trop de codes faux : ce profil est verrouillé. Demande à l'administrateur du groupe.", CODE_PERSO: "Code personnel incorrect.",
+    CODE_GROUPE: "Ce code d'accès est inconnu.", JOUEUR: "Ce joueur n'existe pas.", NON_RECLAME: "Ce profil n'a pas encore été réclamé.",
+    VERROUILLE: "Trop de codes faux : ce profil est verrouillé. Demande à l'administrateur du site.", CODE_PERSO: "Code personnel incorrect.",
     FORMAT_PIN: "Le code personnel doit faire 4 chiffres.", DEJA_RECLAME: "Ce profil vient d'être réclamé par quelqu'un d'autre.",
-    PSEUDO_PRIS: "Ce prénom existe déjà dans le groupe.", GROUPE_PLEIN: "Le groupe est complet.", TROP_GROS: "Réponses trop volumineuses.",
+    PSEUDO_PRIS: "Ce prénom existe déjà.", GROUPE_PLEIN: "La communauté est complète.", TROP_GROS: "Réponses trop volumineuses.",
+    NOM_PRIS: "Un groupe porte déjà ce nom.", NOM_VIDE: "Donne un nom.", TROP_DE_GROUPES: "Il y a déjà trop de groupes.", GROUPE_INCONNU: "Ce groupe n'existe plus.",
+    PAS_MEMBRE: "Il faut faire partie du groupe pour y ajouter quelqu'un.", PAS_CREATEUR: "Seul le créateur du groupe peut le supprimer.",
     SOI_MEME: "Tu ne peux pas te deviner toi-même.", CODE_ADMIN: "Code administrateur incorrect.", RESEAU: "Impossible de joindre le serveur. Vérifie ta connexion."
   };
   const err = code => { const e = new Error(MESSAGES[code] || code); e.code = code; return e; };
@@ -50,8 +52,12 @@
     let b = lire(DB, null);
     if (!b) {
       const now = new Date().toISOString();
-      b = { groupe: { id: "local", nom: "La table (mode local)" }, joueurs: ["Ben", "Ilyes", "Clement", "Filipe"].map(p => ({ id: uid(), pseudo: p, avatar: null, pin: null, reclame_le: null, cree_le: now })), versions: [], devinettes: [] };
+      b = { groupe: { id: "local", nom: "Communauté (mode local)" }, joueurs: ["Ben", "Ilyes", "Clement", "Filipe"].map(p => ({ id: uid(), pseudo: p, avatar: null, pin: null, reclame_le: null, cree_le: now })), versions: [], devinettes: [] };
       ecrire(DB, b);
+    }
+    if (!b.cercles) { // base locale d'avant les groupes multiples : ses joueurs forment le premier groupe, « La table »
+      const c = { id: uid(), nom: "La table", cree_par: null, cree_le: new Date().toISOString() };
+      b.cercles = [c]; b.membres = b.joueurs.map(j => ({ cercle: c.id, joueur: j.id, ajoute_le: c.cree_le })); ecrire(DB, b);
     }
     return b;
   }
@@ -70,7 +76,7 @@
       return b.joueurs.map(j => {
         const vs = b.versions.filter(v => v.joueur === j.id).sort((x, y) => x.cree_le < y.cree_le ? 1 : -1), v = vs[0];
         return { id: j.id, pseudo: j.pseudo, avatar: j.avatar, reclame: !!j.pin, reclame_le: j.reclame_le, cree_le: j.cree_le,
-          mode: v && v.mode, reponses: v && v.reponses, maj: v && v.cree_le, nb_versions: vs.length };
+          mode: v && v.mode, reponses: v && v.reponses, maj: v && v.cree_le, nb_versions: vs.length, cercles: b.membres.filter(m => m.joueur === j.id).map(m => m.cercle) };
       });
     },
     joueur_historique: a => base().versions.filter(v => v.joueur === a.p_joueur).sort((x, y) => x.cree_le > y.cree_le ? 1 : -1)
@@ -80,6 +86,7 @@
       b.joueurs.forEach(j => { if (j.reclame_le) out.push({ type: "reclame", joueur: j.id, date: j.reclame_le }); });
       b.versions.forEach(v => out.push({ type: "publie", joueur: v.joueur, date: v.cree_le }));
       b.devinettes.forEach(d => out.push({ type: "devine", joueur: d.devineur, cible: d.cible, score: d.score, date: d.cree_le }));
+      b.cercles.forEach(c => { if (c.cree_par) out.push({ type: "cercle", joueur: c.cree_par, nom: c.nom, date: c.cree_le }); });
       return out.sort((x, y) => x.date < y.date ? 1 : -1).slice(0, 30);
     },
     groupe_devinettes: () => base().devinettes.map(d => ({ devineur: d.devineur, cible: d.cible, score: d.score, sur: d.sur, date: d.cree_le })),
@@ -106,6 +113,34 @@
     devinette_enregistrer: a => {
       const b = base(); joueurLocal(b, a.p_joueur, a.p_pin); if (a.p_joueur === a.p_cible) throw err("SOI_MEME");
       b.devinettes.push({ devineur: a.p_joueur, cible: a.p_cible, score: a.p_score, sur: a.p_sur, cree_le: new Date().toISOString() }); garder(b);
+    },
+    cercles_liste: () => { const b = base(); return b.cercles.map(c => Object.assign({}, c, { membres: b.membres.filter(m => m.cercle === c.id).map(m => m.joueur) })); },
+    cercle_creer: a => {
+      const b = base(), j = joueurLocal(b, a.p_joueur, a.p_pin), nom = (a.p_nom || "").trim().slice(0, 40);
+      if (!nom) throw err("NOM_VIDE");
+      if (b.cercles.some(c => c.nom.toLowerCase() === nom.toLowerCase())) throw err("NOM_PRIS");
+      const c = { id: uid(), nom, cree_par: j.id, cree_le: new Date().toISOString() };
+      b.cercles.push(c); b.membres.push({ cercle: c.id, joueur: j.id, ajoute_le: c.cree_le }); garder(b); return { id: c.id };
+    },
+    cercle_rejoindre: a => {
+      const b = base(), j = joueurLocal(b, a.p_joueur, a.p_pin);
+      if (!b.cercles.some(c => c.id === a.p_cercle)) throw err("GROUPE_INCONNU");
+      if (!b.membres.some(m => m.cercle === a.p_cercle && m.joueur === j.id)) b.membres.push({ cercle: a.p_cercle, joueur: j.id, ajoute_le: new Date().toISOString() });
+      garder(b); return { ok: true };
+    },
+    cercle_quitter: a => { const b = base(), j = joueurLocal(b, a.p_joueur, a.p_pin); b.membres = b.membres.filter(m => !(m.cercle === a.p_cercle && m.joueur === j.id)); garder(b); return { ok: true }; },
+    cercle_ajouter_profil: a => {
+      const b = base(), j = joueurLocal(b, a.p_joueur, a.p_pin), ps = (a.p_pseudo || "").trim().slice(0, 24);
+      if (!b.membres.some(m => m.cercle === a.p_cercle && m.joueur === j.id)) throw err("PAS_MEMBRE");
+      let cible = b.joueurs.find(x => x.pseudo.toLowerCase() === ps.toLowerCase());
+      if (!cible) { if (!ps) throw err("NOM_VIDE"); cible = { id: uid(), pseudo: ps, avatar: null, pin: null, reclame_le: null, cree_le: new Date().toISOString() }; b.joueurs.push(cible); }
+      if (!b.membres.some(m => m.cercle === a.p_cercle && m.joueur === cible.id)) b.membres.push({ cercle: a.p_cercle, joueur: cible.id, ajoute_le: new Date().toISOString() });
+      garder(b); return { id: cible.id };
+    },
+    cercle_supprimer: a => {
+      const b = base(), j = joueurLocal(b, a.p_joueur, a.p_pin), c = b.cercles.find(x => x.id === a.p_cercle);
+      if (!c || c.cree_par !== j.id) throw err("PAS_CREATEUR");
+      b.cercles = b.cercles.filter(x => x.id !== c.id); b.membres = b.membres.filter(m => m.cercle !== c.id); garder(b); return { ok: true };
     }
   };
   const appel = async (fn, args) => MODE === "supabase" ? rpc(fn, args) : LOCAL[fn](args || {});
@@ -137,6 +172,12 @@
     historique: id => lecture("joueur_historique", { p_code: S.code(), p_joueur: id }),
     nouvelles: () => lecture("groupe_nouvelles", { p_code: S.code() }),
     devinettes: () => lecture("groupe_devinettes", { p_code: S.code() }),
+    cercles: () => lecture("cercles_liste", { p_code: S.code() }),
+    creerCercle: nom => ecriture("cercle_creer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_nom: nom }),
+    rejoindre: id => ecriture("cercle_rejoindre", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cercle: id }),
+    quitter: id => ecriture("cercle_quitter", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cercle: id }),
+    ajouterProfil: (id, pseudo) => ecriture("cercle_ajouter_profil", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cercle: id, p_pseudo: pseudo }),
+    supprimerCercle: id => ecriture("cercle_supprimer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cercle: id }),
     async reclamer(id, pin) { await ecriture("joueur_reclamer", { p_code: S.code(), p_joueur: id, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: id, pin })); },
     async creer(pseudo, pin) { const r = await ecriture("joueur_creer", { p_code: S.code(), p_pseudo: pseudo, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: r.id, pin })); return r.id; },
     async connexion(id, pin) { await appel("joueur_connexion", { p_code: S.code(), p_joueur: id, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: id, pin })); },
@@ -148,6 +189,6 @@
     /* outils du mode local (encadré de démonstration) */
     reinitialiserLocal() { viderCache(); try { localStorage.removeItem(DB); localStorage.removeItem(SESS); } catch (e) { } }
   };
-  if (MODE === "local" && !session().code) ecrire(SESS, { code: "local", groupe: { id: "local", nom: "La table (mode local)" } });
+  if (MODE === "local" && !session().code) ecrire(SESS, { code: "local", groupe: { id: "local", nom: "Communauté (mode local)" } });
   window.QCStock = S;
 })();

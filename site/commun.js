@@ -155,13 +155,31 @@
 
   /* ---------- groupe (avec cache de page) ---------- */
   let groupe = null;
+  /* La communauté : tous les joueurs (tous visibles par tous) et les groupes de jeu (cercles) à l'intérieur */
   SITE.groupe = async function (force) {
     if (groupe && !force) return groupe;
-    const js = await ST.joueurs();
-    groupe = { joueurs: js, parId: Object.fromEntries(js.map(j => [j.id, j])) };
+    const [js, cs] = await Promise.all([ST.joueurs(), ST.cercles().catch(() => [])]);
+    groupe = { joueurs: js, parId: Object.fromEntries(js.map(j => [j.id, j])), cercles: cs || [], parCercle: Object.fromEntries((cs || []).map(c => [c.id, c])) };
     return groupe;
   };
   SITE.moi = () => groupe && groupe.parId[ST.moi()] || null;
+  SITE.membresDe = c => (c.membres || []).map(id => groupe.parId[id]).filter(Boolean);
+  SITE.cerclesDe = j => (j && j.cercles || []).map(id => groupe.parCercle[id]).filter(Boolean);
+  SITE.mesCercles = () => SITE.cerclesDe(SITE.moi());
+  /* Moyenne des hexagones d'une liste de joueurs (null si aucun profil publié) */
+  SITE.hexMoyen = joueurs => {
+    const P = joueurs.map(j => SITE.profil(j)).filter(Boolean).map(x => x.P.couleurs.final);
+    return P.length ? Object.fromEntries(QC.COULEURS.map(c => [c, P.reduce((s, f) => s + f[c], 0) / P.length])) : null;
+  };
+  /* Carte d'un groupe : mosaïque d'avatars, nombre de joueurs, mini-hexagone moyen */
+  SITE.carteCercle = function (c, opt) {
+    const mb = SITE.membresDe(c), moy = SITE.hexMoyen(mb), moi = SITE.moi(), dedans = c.id !== "tous" && moi && (c.membres || []).includes(moi.id);
+    const faits = mb.filter(j => j.reponses).length;
+    return `<a class="gc${dedans ? " mien" : ""}" href="groupe.html?g=${c.id}">
+      <div class="gc-mos">${mb.slice(0, 4).map(j => `<span ${SITE.avAttrs(j)}></span>`).join("")}${mb.length > 4 ? `<span class="plus">+${mb.length - 4}</span>` : ""}${!mb.length ? `<span class="ini">?</span>` : ""}</div>
+      <div class="gc-txt"><b>${esc(c.nom)}</b><small>${mb.length} joueur${mb.length > 1 ? "s" : ""} · ${faits} profil${faits > 1 ? "s" : ""} publié${faits > 1 ? "s" : ""}${dedans ? " · ton groupe" : ""}</small></div>
+      <div class="gc-hex">${SITE.hex(moy, null, { color: "#6B4A70", question: !moy, aria: "Hexagone du groupe " + c.nom })}</div></a>`;
+  };
 
   /* ---------- teinte (couleur dominante) ---------- */
   const TINT = { W: ["#B08A35", "#3A3220"], U: ["#3B5BA8", "#141B33"], B: ["#6A3F6E", "#1A1418"], R: ["#B3361F", "#3A1210"], G: ["#2F8A50", "#0F2A1A"], C: ["#7A7A86", "#24242A"], none: ["#6B4A70", "#1F1424"] };
@@ -173,12 +191,17 @@
   const IMG_KEY = "qc-images";
   let imgCache = {}; try { imgCache = JSON.parse(localStorage.getItem(IMG_KEY) || "{}"); } catch (e) { }
   let file = Promise.resolve();
-  /* Appel Scryfall avec nouvel essai si Scryfall demande de ralentir (erreur 429) : jusqu'à 3 essais, pauses croissantes */
+  /* Appel Scryfall avec nouvel essai si Scryfall demande de ralentir : jusqu'à 3 essais, pauses croissantes.
+     Attention : la réponse 429 de Scryfall n'a pas d'en-tête CORS, le navigateur la présente donc comme une
+     ERREUR RÉSEAU (fetch échoue) et non comme un statut 429 : les deux cas déclenchent un nouvel essai. */
   async function scryNamed(name) {
     for (let essai = 0; essai < 3; essai++) {
-      const r = await fetch("https://api.scryfall.com/cards/named?exact=" + encodeURIComponent(name));
-      if (r.status !== 429) return r.json();
-      await new Promise(ok => setTimeout(ok, 900 * (essai + 1)));
+      try {
+        const r = await fetch("https://api.scryfall.com/cards/named?exact=" + encodeURIComponent(name));
+        if (r.status === 404) return {};
+        if (r.ok) return r.json();
+      } catch (e) { /* limite de débit ou coupure réseau : on réessaie */ }
+      await new Promise(ok => setTimeout(ok, 1000 * (essai + 1)));
     }
     return {};
   }  SITE.image = function (name) {
@@ -245,7 +268,7 @@
   /* ---------- navigation ---------- */
   SITE.nav = function (courant) {
     const moi = SITE.moi();
-    const L = [["index.html", "Accueil"], ["groupe.html", "Le groupe"], [moi ? "profil.html?j=" + moi.id : "qui.html", "Mon profil"], ["quiz.html", "Le quiz"], ["devine.html", "Devine ton ami"]];
+    const L = [["index.html", "Accueil"], ["groupe.html", "Les groupes"], ["joueurs.html", "Les joueurs"], [moi ? "profil.html?j=" + moi.id : "qui.html", "Mon profil"], ["quiz.html", "Le quiz"], ["devine.html", "Devine ton ami"]];
     const who = moi ? `<a class="me" href="profil.html?j=${moi.id}"><span ${SITE.avAttrs(moi)}></span>${esc(moi.pseudo)}</a>` : `<a class="me" href="qui.html">Entrer</a>`;
     const el = document.getElementById("nav");
     if (!el) return;

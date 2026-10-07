@@ -50,7 +50,7 @@ input:focus{border-color:var(--gold-l)}
     <div class="orn"><i></i><b></b><i></i></div>
   </div>
   <form class="code" id="codeForm" hidden>
-    <label for="gcode">CODE DU GROUPE</label>
+    <label for="gcode">CODE D'ACCÈS</label>
     <div class="row"><input id="gcode" autocomplete="off" autocapitalize="none" size="20" required><button class="btn solid">Entrer</button></div>
     <div class="err" id="codeErr" role="alert"></div>
   </form>
@@ -70,7 +70,7 @@ input:focus{border-color:var(--gold-l)}
   SITE.images(document.querySelector(".stage"));
 
   if (!ST.code()) { // mode partagé : il faut d'abord le code du groupe
-    $("codeForm").hidden = false; $("intro").textContent = "Entre le code que l'administrateur du groupe t'a donné.";
+    $("codeForm").hidden = false; $("intro").textContent = "Entre le code d'accès que l'administrateur du site t'a donné.";
     $("gcode").focus();
     $("codeForm").onsubmit = async e => {
       e.preventDefault(); $("codeErr").textContent = "";

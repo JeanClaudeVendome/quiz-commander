@@ -7,11 +7,12 @@ Site statique (HTML, CSS, JavaScript) prévu pour GitHub Pages, avec une petite 
 
 | Page | Rôle |
 |---|---|
-| `index.html` | Accueil : les joueurs du groupe, le fil des nouvelles |
-| `qui.html` | Entrer : code du groupe, puis réclamer son profil, se reconnecter ou en créer un |
+| `index.html` | Accueil : les groupes, les joueurs, le fil des nouvelles |
+| `qui.html` | Entrer : code d'accès, puis réclamer son profil, se reconnecter ou en créer un |
 | `quiz.html` | Le quiz (découverte : 39 questions ; confirmé : 62), la révélation et la publication |
-| `profil.html` | La fiche d'un joueur : hexagone, styles, commandants proposés avec leurs explications, historique |
-| `groupe.html` | L'hexagone du groupe, les statistiques, les fiches, le face-à-face |
+| `profil.html` | La fiche d'un joueur : ses groupes, son hexagone, ses styles, ses commandants avec leurs explications, son historique |
+| `groupe.html` | Tous les groupes (et la création d'un groupe) ; avec `?g=…`, la page d'un groupe : hexagone, statistiques, fiches, face-à-face, rejoindre, quitter, ajouter un ami |
+| `joueurs.html` | L'annuaire de toute la communauté, avec recherche et filtres (groupe, style, couleur, état du profil) |
 | `devine.html` | Devine ton ami : cinq questions du quiz d'un ami, et le classement |
 | `ancien.html` | L'ancienne version du quiz (v3), conservée |
 | `maquettes/` | Les maquettes de design, avec des données fictives (pour mémoire) |
@@ -19,7 +20,14 @@ Site statique (HTML, CSS, JavaScript) prévu pour GitHub Pages, avec une petite 
 ## Deux modes de fonctionnement
 
 - **Mode local** (par défaut, tant que `site/config.js` est vide) : tout fonctionne, mais les profils restent dans le navigateur de chacun. Pratique pour essayer le site. Un encadré jaune le signale en bas de l'écran.
-- **Mode partagé** (Supabase) : les profils sont visibles par tout le groupe. Il faut le configurer une fois (ci-dessous).
+- **Mode partagé** (Supabase) : les profils sont visibles par toute la communauté. Il faut le configurer une fois (ci-dessous).
+
+## La communauté et les groupes
+
+- **La communauté**, ce sont tous les joueurs du site. Ils entrent avec **un seul code d'accès**, et **tout le monde voit tout le monde**.
+- **Les groupes** sont des tables de jeu à l'intérieur de la communauté : « La table », « Le jeudi en boutique »… **N'importe quel joueur peut en créer un**, en rejoindre ou en quitter. On peut être dans plusieurs groupes.
+- **Dans un groupe dont il fait partie**, un joueur peut ajouter un ami : s'il est déjà inscrit, il rejoint le groupe ; sinon, un profil « à réclamer » est créé à son nom.
+- **Seul le créateur d'un groupe peut le supprimer.** Les joueurs et leurs profils ne sont jamais supprimés avec lui.
 
 ## Mettre le site en ligne (environ 10 minutes)
 
@@ -39,25 +47,28 @@ Site statique (HTML, CSS, JavaScript) prévu pour GitHub Pages, avec une petite 
    - `REMPLACE-MOI-code-du-groupe` : le code que tu donneras à tes amis, par exemple `dragon-du-mardi` ;
    - `REMPLACE-MOI-code-admin` : un code à garder pour toi.
 
-   Colle-le dans une nouvelle requête, puis **Run**. Cela crée le groupe et les profils de Ben, Ilyes, Clement et Filipe.
-4. Va dans **Project Settings → API**. Copie **Project URL** et la clé **anon public** dans `site/config.js`.
-5. Envoie ce fichier modifié sur GitHub : le site se republie tout seul.
-6. Donne à tes amis l'adresse du site et le code du groupe. Chacun choisit son prénom, puis un code personnel à 4 chiffres.
+   Colle-le dans une nouvelle requête, puis **Run**. Cela crée la communauté et les profils de Ben, Ilyes, Clement et Filipe.
+
+   Le premier code est le **code d'accès** de toute la communauté.
+4. Colle ensuite le contenu de `supabase/migration-groupes.sql` dans une nouvelle requête, puis **Run**. Cela ajoute les groupes, et Ben, Ilyes, Clement et Filipe forment le premier groupe, « La table ». Ce script peut être relancé sans danger.
+5. Va dans **Project Settings → API Keys**. Copie l'adresse du projet et la clé publique (**Publishable key**, ou **anon** dans « Legacy API Keys ») dans `site/config.js`.
+6. Envoie ce fichier modifié sur GitHub : le site se republie tout seul.
+7. Donne à tes amis l'adresse du site et le code d'accès. Chacun choisit son prénom, puis un code personnel à 4 chiffres.
 
 **Sécurité :**
 - La clé « anon » est faite pour être publique.
-- Les données ne sont lisibles qu'avec le code du groupe. Les codes sont stockés hachés, jamais en clair.
+- Les données ne sont lisibles qu'avec le code d'accès. Les codes sont stockés hachés, jamais en clair.
 - Écrire au nom d'un joueur exige son code personnel. Après 10 essais faux, le profil se verrouille.
 - Un code à 4 chiffres protège contre les erreurs entre amis, pas contre un pirate déterminé : ne mets rien de sensible dans les réponses.
 
 **Code personnel oublié ou profil verrouillé :** dans Supabase, **SQL Editor**, lance la ligne qui convient en remplaçant les valeurs. L'identifiant du joueur se trouve dans l'adresse de sa fiche, après `?j=`.
 - Pour débloquer un profil verrouillé :
   ```
-  select admin_deverrouiller('code-du-groupe', 'code-admin', 'identifiant-du-joueur');
+  select admin_deverrouiller('code-d-acces', 'code-admin', 'identifiant-du-joueur');
   ```
 - Pour rendre un profil libre (code oublié) ; ses anciennes versions sont conservées :
   ```
-  select admin_liberer('code-du-groupe', 'code-admin', 'identifiant-du-joueur');
+  select admin_liberer('code-d-acces', 'code-admin', 'identifiant-du-joueur');
   ```
 
 **Mise en veille :** un projet Supabase gratuit se met en pause après une période sans activité. Si le site affiche « Impossible de joindre le serveur », rouvre le projet sur supabase.com et clique sur **Restore**.
@@ -111,7 +122,7 @@ Ajoute `-v` au second pour voir le détail des commandants proposés à chaque j
 
 ## Vie privée
 
-- En mode partagé, les réponses publiées sont visibles par **tout le groupe** (et seulement par lui).
+- En mode partagé, les réponses publiées sont visibles par **toute la communauté** (et seulement par elle).
 - Un brouillon de quiz reste dans le navigateur jusqu'à sa publication.
 - Le code personnel est gardé dans le navigateur de l'appareil où tu t'es connecté. Sur un appareil partagé, utilise « Ce n'est pas moi » pour te déconnecter.
 - Quand tu cherches une carte dans le quiz, le texte tapé est envoyé à Scryfall pour l'autocomplétion.

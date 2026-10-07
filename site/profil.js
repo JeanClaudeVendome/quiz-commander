@@ -17,6 +17,8 @@
   $("hsub").textContent = SITE.statut(j).toUpperCase();
   if (SITE.param("nouveau") && estMoi) $("bandeau").innerHTML = `<div class="bandeau" role="status">Ta fiche est publiée : tout le groupe peut la voir.</div>`; setTimeout(() => { const b = document.querySelector(".bandeau"); if (b) { b.style.opacity = 0; setTimeout(() => b.remove(), 700); } }, 5000);
   const FAM = [["surprise", "La surprise cohérente"], ["sur", "Le choix sûr"], ["horsZone", "Hors de ta zone"]];
+  const gs = SITE.cerclesDe(j);
+  const groupesHTML = `<p style="margin:10px 0 0">${gs.map(c => `<a class="chipg" href="groupe.html?g=${c.id}">${esc(c.nom)}</a>`).join("") || `<span class="ph">Dans aucun groupe pour l'instant.</span>`}${estMoi ? ` <a class="chipg" href="groupe.html" style="border-style:dashed">+ groupes</a>` : ""}</p>`;
 
   if (pr) {
     const P = pr.P, A = pr.A, res = pr.res;
@@ -24,7 +26,7 @@
     const av = SITE.avatarDe(j);
     if (av) { $("hero").setAttribute("data-art", av); $("hero").dataset.credit = "cr1"; }
     const contra = SITE.contradiction(P), cit = SITE.citation(A), det = SITE.deteste(A, P), fav = (A.favcards || [])[0];
-    $("left").innerHTML = `<div class="kicker">Profil ${j.mode === "confirme" ? "confirmé" : "découverte"} · version du ${esc(SITE.dateLongue(j.maj))}</div>
+    $("left").innerHTML = `<div class="kicker">Profil ${j.mode === "confirme" ? "confirmé" : "découverte"} · version du ${esc(SITE.dateLongue(j.maj))}</div>${groupesHTML}
       <h2 class="name">${esc(SITE.devise(P))}</h2>
       <h3>Qui c'est</h3><p>${esc(SITE.texteQui(P))}</p>${contra ? `<p class="contra">${esc(contra)}</p>` : ""}
       ${cit ? `<div class="quote">« ${esc(cit)} »</div>` : ""}
@@ -70,7 +72,7 @@
     if (!j.reclame) { txt = `Ce profil attend son propriétaire. Si tu es ${esc(j.pseudo)}, réclame-le : il sera verrouillé à ton nom, et personne d'autre ne pourra le prendre.`; cta = `<a class="btn ghost-dark" href="qui.html?j=${j.id}">C'est moi, je le réclame</a>`; }
     else if (estMoi) { txt = "Ton profil est réservé. Fais le quiz pour remplir cette page : ton hexagone, tes styles de jeu et tes commandants apparaîtront ici."; cta = `<a class="btn ghost-dark" href="quiz.html">Faire le quiz</a>`; }
     else txt = `${esc(j.pseudo)} a réclamé son profil, mais n'a pas encore fait le quiz. Reviens bientôt !`;
-    $("left").innerHTML = `<div class="kicker">${j.reclame ? "Profil réservé" : "Profil libre"}</div><h2 class="name">Une page encore blanche</h2><p>${txt}</p>
+    $("left").innerHTML = `<div class="kicker">${j.reclame ? "Profil réservé" : "Profil libre"}</div>${groupesHTML}<h2 class="name">Une page encore blanche</h2><p>${txt}</p>
       <h3>Qui c'est</h3><p class="ph">À découvrir</p><h3>Ne veut plus affronter</h3><p class="ph">À découvrir</p><h3>Carte fétiche</h3><p class="ph">À découvrir</p>${cta ? `<div class="cta">${cta}</div>` : ""}`;
     $("hex").innerHTML = SITE.hex(null, null, { labels: true, question: true });
     $("styles").innerHTML = Array.from({ length: 6 }, () => `<div class="style"><div class="tile empty">?<span class="pct">0 %</span></div><div class="lab ph">À découvrir</div></div>`).join("");

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Les groupes — Le grand quiz Commander</title>
+<title>Les joueurs — Le grand quiz Commander</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐉</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
@@ -74,48 +74,81 @@
 }
 </style>
 <style>
-.actions-g{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0 0}
-.form-g{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-.form-g input{font:inherit;padding:10px 12px;border:1px solid var(--line);min-height:44px;min-width:220px}
-.err-g{color:#A63C33;font-size:.88rem;text-align:center;min-height:1.2em;margin-top:6px}
-.vide-g{text-align:center;color:var(--muted);padding:10px 0}
-.hero .btn{margin-top:14px}
+.filtres{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:10px;margin:30px 0 10px}
+.filtres input,.filtres select{font:inherit;padding:10px 12px;border:1px solid var(--line);background:#fff;min-height:44px;width:100%}
+.coulf{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px;align-items:center}
+.coulf button{all:unset;cursor:pointer;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid transparent;opacity:.55}
+.coulf button img{width:28px;height:28px}
+.coulf button[aria-pressed="true"]{border-color:var(--gold);opacity:1}
+.coulf button:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.coulf small{color:var(--muted);margin-right:6px}
+.compte{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.pc .groupes{margin-top:8px}
+@media (max-width:760px){.filtres{grid-template-columns:1fr 1fr}.filtres input{grid-column:1/-1}}
 </style>
 </head>
 <body>
 <div id="nav"></div>
-<header class="hero" data-art="Kenrith, the Returned King" data-credit="cr1">
-  <div class="hero-txt"><h1 id="gtitre">Les groupes</h1><div class="sub" id="gsub"></div><div class="orn"><i></i><b></b><i></i></div><div id="gact"></div></div>
+<header class="hero" data-art="Tymna the Weaver" data-credit="cr1" style="height:min(46vh,380px);min-height:300px">
+  <div class="hero-txt"><h1>Les joueurs</h1><div class="sub" id="jsub"></div><div class="orn"><i></i><b></b><i></i></div></div>
   <span class="credit" id="cr1"></span>
   <svg class="tear"></svg>
 </header>
-<main class="wrap" id="liste"></main>
-<div id="detail" hidden>
 <main class="wrap">
-  <div class="section-title"><h2 id="hexTitre">L'hexagone du groupe</h2><p>La moyenne du groupe, et chaque joueur en transparence. Choisis un nom pour le mettre en avant.</p><div class="orn"><i></i><b></b><i></i></div></div>
-  <div class="ghex"><div class="big" id="bighex"></div><div><div class="who" id="who"></div><p class="hint" id="whohint"></p><div class="stats" id="stats"></div></div></div>
-  <div class="section-title"><h2>Les fiches</h2><div class="orn"><i></i><b></b><i></i></div></div>
-  <div class="cards" id="cards"></div>
-  <div id="ajout"></div>
-</main>
-<section class="cmp">
-  <svg class="tear top"></svg>
-  <div class="section-title"><h2>Face à face</h2><p>Choisis deux joueurs, de n'importe quel groupe, pour voir ce qui les rapproche et ce qui les oppose.</p><div class="orn"><i></i><b></b><i></i></div></div>
-  <div class="wrap">
-    <div class="cmp-empty" id="cmpEmpty"></div>
-    <div class="duel" id="duel">
-      <div class="side"><div class="pic" id="pa"></div><select id="sa" aria-label="Premier joueur"></select></div>
-      <div class="score"><div class="pct" id="pct"></div><small>COMPATIBILITÉ</small><div id="duohex"></div></div>
-      <div class="side"><div class="pic" id="pb"></div><select id="sb" aria-label="Deuxième joueur"></select></div>
-    </div>
-    <div class="verdict" id="verdict"><div><h3>Ce qui vous rapproche</h3><ul id="common"></ul></div><div><h3>Ce qui vous oppose</h3><ul id="oppo"></ul></div></div>
+  <div class="filtres">
+    <input id="q" type="search" placeholder="Chercher un prénom" aria-label="Chercher un prénom">
+    <select id="fg" aria-label="Groupe"><option value="">Tous les groupes</option></select>
+    <select id="fs" aria-label="Style de jeu"><option value="">Tous les styles</option></select>
+    <select id="fe" aria-label="État du profil"><option value="">Tous les profils</option><option value="fait">Profil publié</option><option value="attente">Quiz à faire</option><option value="libre">Profil libre</option></select>
   </div>
-</section>
-</div>
+  <div class="coulf" id="fc"><small>Couleur dominante :</small></div>
+  <p class="compte" id="compte" aria-live="polite"></p>
+  <div class="cards" id="cards"></div>
+  <div style="height:60px"></div>
+</main>
 <footer><span class="logo">Le grand quiz Commander</span>Contenu de fan non officiel · Illustrations et données : Scryfall · Combos : Commander Spellbook · ©Wizards of the Coast LLC</footer>
 
 <script src="moteur/reglages.js"></script><script src="moteur/questions.js"></script><script src="moteur/mesure.js"></script><script src="moteur/match.js"></script><script src="moteur/propositions.js"></script>
 <script src="site/config.js"></script><script src="site/stockage.js"></script><script src="site/commun.js"></script>
-<script src="site/groupe.js"></script>
+<script>
+(async function () {
+  const QC = window.QC, $ = SITE.$, esc = SITE.esc;
+  if (!(await SITE.demarrer("Les joueurs"))) return;
+  const G = await SITE.groupe(), J = G.joueurs.slice().sort((a, b) => (!!b.reponses - !!a.reponses) || a.pseudo.localeCompare(b.pseudo));
+  $("jsub").textContent = `${J.length} JOUEURS · ${J.filter(j => j.reponses).length} PROFILS PUBLIÉS · ${G.cercles.length} GROUPE${G.cercles.length > 1 ? "S" : ""}`;
+  $("fg").innerHTML += G.cercles.map(c => `<option value="${c.id}">${esc(c.nom)}</option>`).join("");
+  $("fs").innerHTML += QC.STYLES.slice().sort((a, b) => SITE.NOM_STYLE_COURT[a].localeCompare(SITE.NOM_STYLE_COURT[b])).map(k => `<option value="${k}">Aime : ${esc(SITE.NOM_STYLE_COURT[k])}</option>`).join("");
+  const couleurs = new Set();
+  $("fc").innerHTML += QC.COULEURS.map(c => `<button data-c="${c}" aria-pressed="false" aria-label="${QC.NOMS_COULEURS[c]}" title="${QC.NOMS_COULEURS[c]}"><img src="https://svgs.scryfall.io/card-symbols/${c}.svg" alt=""></button>`).join("");
+  $("fc").querySelectorAll("button").forEach(b => b.onclick = () => { const c = b.dataset.c; couleurs.has(c) ? couleurs.delete(c) : couleurs.add(c); b.setAttribute("aria-pressed", couleurs.has(c)); filtrer(); });
+  const norm = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  function carte(j) {
+    const pr = SITE.profil(j), av = SITE.avatarDe(j), col = SITE.TINT[SITE.dominante(pr && pr.P)][0];
+    const chip = pr ? "" : j.reclame ? `<span class="chip">Quiz à faire</span>` : `<span class="chip free">Profil libre</span>`;
+    return `<a class="pc${pr ? "" : " empty"}" href="profil.html?j=${j.id}" style="--t:${col}">
+      <div class="art" ${av ? `data-art="${esc(av)}"` : ""}>${av ? "" : `<span class="bigini" aria-hidden="true">${esc(j.pseudo[0])}</span>`}<div class="mh">${SITE.hex(pr && pr.P.couleurs.dit, pr && pr.P.couleurs.afficheRevele, { color: col, question: !pr })}</div></div>
+      <div class="body"><b>${esc(j.pseudo)}</b><div class="t">${pr ? esc(pr.titre + " · " + (SITE.GUILDES[pr.ident] || pr.ident)) : chip}</div>
+      <div class="groupes">${SITE.cerclesDe(j).map(c => `<span class="chipg">${esc(c.nom)}</span>`).join("")}</div>
+      <div class="phare"><time>${pr ? "Profil mis à jour " + SITE.depuis(j.maj) : j.reclame ? "Réclamé, en attente du quiz" : "En attente de son propriétaire"}</time></div></div></a>`;
+  }
+  function filtrer() {
+    const q = norm($("q").value.trim()), g = $("fg").value, s = $("fs").value, e = $("fe").value;
+    const l = J.filter(j => {
+      if (q && !norm(j.pseudo).includes(q)) return false;
+      if (g && !(j.cercles || []).includes(g)) return false;
+      if (e === "fait" && !j.reponses) return false; if (e === "attente" && (j.reponses || !j.reclame)) return false; if (e === "libre" && j.reclame) return false;
+      const pr = SITE.profil(j);
+      if (s && !(pr && pr.P.styles[s] > .25)) return false;
+      if (couleurs.size && !(pr && [...couleurs].some(c => SITE.dominante(pr.P) === c || pr.P.couleurs.final[c] >= .62))) return false;
+      return true;
+    });
+    $("compte").textContent = l.length === J.length ? `${J.length} joueurs` : `${l.length} joueur${l.length > 1 ? "s" : ""} sur ${J.length}`;
+    $("cards").innerHTML = l.map(carte).join("") || `<p class="ph" style="grid-column:1/-1;text-align:center">Personne ne correspond à ces filtres.</p>`;
+    SITE.images($("cards"));
+  }
+  ["q", "fg", "fs", "fe"].forEach(id => $(id).oninput = $(id).onchange = filtrer);
+  filtrer(); SITE.images();
+})();
+</script>
 </body>
 </html>
