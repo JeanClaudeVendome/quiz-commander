@@ -44,8 +44,9 @@
     $("qnum").innerHTML = qi >= 0 ? `<span class="long">Question </span>${qi + 1}<span class="long"> sur </span><span class="short"> / </span>${qs.length}<span class="long"> · environ ${reste} min</span>` : "";
   }
   function aller(d) { clearTimeout(T); D.i = Math.max(0, Math.min(STEPS.length - 1, D.i + d)); garder(); rendre(); window.scrollTo(0, 0); }
-  const avancer = () => { clearTimeout(T); T = setTimeout(() => aller(1), 380); };
   const repondre = (id, v) => { D.A[id] = v; garder(); };
+  // Après un choix, le focus va sur « Suivant » : on avance quand on le décide (clic, Entrée ou Espace)
+  const focusSuivant = () => { const nx = scr.querySelector('[data-act="next"]:not([disabled])'); if (nx) nx.focus({ preventScroll: true }); };
   function pied(peutSuivre, opt) {
     opt = opt || {};
     const s = STEPS[D.i];
@@ -108,14 +109,14 @@
     choix(q) {
       const v = D.A[q.id];
       scr.innerHTML = entete(q) + `<div class="opts" role="radiogroup" aria-label="${esc(q.q)}">${q.options.map((o, n) => `<button class="opt" role="radio" aria-checked="${v === o.id}" aria-pressed="${v === o.id}" data-v="${esc(o.id)}"><span class="k"><span>${n + 1}</span></span><span>${esc(o.l)}${o.d ? `<small>${esc(o.d)}</small>` : ""}</span></button>`).join("")}</div>` + pied(!!v);
-      scr.querySelectorAll(".opt").forEach(b => b.onclick = () => { repondre(q.id, b.dataset.v); rendre(); avancer(); });
+      scr.querySelectorAll(".opt").forEach(b => b.onclick = () => { repondre(q.id, b.dataset.v); rendre(); focusSuivant(); });
       brancherPied();
     },
     dilemme(q) {
       const v = D.A[q.id], [a, b] = q.options, art = q.art || [];
       const cote = (o, i) => `<button class="side${art[i] ? "" : " noart"}" ${art[i] ? `data-art="${esc(art[i])}"` : ""} data-v="${o.id}" aria-pressed="${v === o.id}"><b>${esc(o.l)}</b></button>`;
       scr.innerHTML = entete(q) + `<div class="pair">${cote(a, 0)}<div class="or"><span>OU</span></div>${cote(b, 1)}</div>` + pied(!!v);
-      scr.querySelectorAll(".side").forEach(x => x.onclick = () => { repondre(q.id, x.dataset.v); rendre(); avancer(); });
+      scr.querySelectorAll(".side").forEach(x => x.onclick = () => { repondre(q.id, x.dataset.v); rendre(); focusSuivant(); });
       brancherPied(); SITE.images(scr);
     },
     multi(q) {
@@ -132,7 +133,7 @@
       const v = D.A[q.id];
       scr.innerHTML = entete(q) + `<div class="scale"><div class="track" role="radiogroup" aria-label="${esc(q.q)}">${[1, 2, 3, 4, 5].map(n => `<button class="dot" role="radio" aria-label="${n} sur 5" aria-checked="${v === n}" aria-pressed="${v === n}" data-v="${n}"></button>`).join("")}</div>
         <div class="ends"><span>${esc(q.gauche)}</span><span>${esc(q.droite)}</span></div></div>` + pied(!!v);
-      scr.querySelectorAll(".dot").forEach(b => b.onclick = () => { repondre(q.id, +b.dataset.v); rendre(); avancer(); });
+      scr.querySelectorAll(".dot").forEach(b => b.onclick = () => { repondre(q.id, +b.dataset.v); rendre(); focusSuivant(); });
       brancherPied();
     },
     grille(q) {
@@ -350,6 +351,10 @@
     const s = STEPS[D.i];
     if (s.k === "q" && (s.q.type === "choix") && /^[1-9]$/.test(e.key)) { const b = scr.querySelectorAll(".opt")[+e.key - 1]; if (b) b.click(); }
     if (s.k === "q" && s.q.type === "cartes") { if (e.key === "ArrowRight") scr.querySelector(".rb.yes").click(); if (e.key === "ArrowLeft") scr.querySelector(".rb.no").click(); }
+    // Entrée valide la réponse choisie (comme le bouton « Suivant ») ; sur un bouton, Entrée garde son effet normal
+    if (e.key === "Enter" && s.k === "q" && e.target.tagName !== "BUTTON" && e.target.tagName !== "A") {
+      const nx = scr.querySelector('[data-act="next"]:not([disabled])'); if (nx) { e.preventDefault(); nx.click(); }
+    }
   });
 
   depart();
