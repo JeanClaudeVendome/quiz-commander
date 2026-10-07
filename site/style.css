@@ -85,3 +85,5 @@ button.ini{font-size:1.5rem}
 .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* Téléphones : pas de flou sur les grands fonds illustrés (coûteux pour le processeur graphique) */
+@media (max-width:760px){.bg{filter:none!important;transform:none!important}}

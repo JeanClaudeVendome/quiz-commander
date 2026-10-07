@@ -10,6 +10,7 @@
   if (!j) { $("corps").innerHTML = `<p class="chargement">Aucun joueur dans ce groupe.</p>`; return; }
   const estMoi = moi && moi.id === j.id;
   if (!estMoi) document.querySelectorAll("#mainnav [aria-current]").forEach(a => a.removeAttribute("aria-current"));
+  const pHist = ST.historique(j.id).catch(() => []); // en parallèle de l'affichage
   const pr = SITE.profil(j);
   document.title = j.pseudo + " — Le grand quiz Commander";
   $("hname").textContent = j.pseudo;
@@ -50,7 +51,8 @@
     $("toutes").innerHTML = `<details class="toutes"><summary>Toutes ses propositions, avec les explications</summary><ul class="liste">${FAM.map(([f, lab]) => `<li class="fam-sec">${lab.toUpperCase()}</li>` + res.familles[f].map(ligne).join("")).join("")}
       <li class="fam-sec">LE CLASSEMENT GÉNÉRAL</li>${res.classement.map(ligne).join("")}</ul></details>`;
     // historique
-    let H = []; try { H = await ST.historique(j.id); } catch (e) { }
+    SITE.images();
+    const H = await pHist;
     $("hist").innerHTML = H.length > 1 ? H.slice(-5).map(v => { const Pv = QC.mesurer(v.reponses, v.mode);
       return `<div>${SITE.hex(Pv.couleurs.dit, Pv.couleurs.afficheRevele, { aria: "Hexagone du " + SITE.dateLongue(v.date) })}<br>${esc(SITE.dateLongue(v.date))}</div>`; }).join("")
       : `<p class="ph">Une seule version pour l'instant : l'évolution apparaîtra à la prochaine version du quiz.</p>`;

@@ -109,7 +109,8 @@
   const QC = window.QC, ST = window.QCStock, $ = SITE.$, esc = SITE.esc;
   if (!(await SITE.demarrer("Le groupe"))) return;
   const G = await SITE.groupe(), J = G.joueurs;
-  const faits = J.filter(j => j.reponses).map(j => Object.assign({ j }, SITE.profil(j)));
+  const pDv = ST.devinettes().catch(() => []); // en parallèle de l'affichage
+  const faits = J.filter(j => j.reponses).map(j => { const pr = SITE.profil(j); return { j, P: pr.P, A: pr.A, ident: pr.ident, titre: pr.titre }; });
   const nR = J.filter(j => j.reclame).length, nF = faits.length;
   $("gsub").textContent = `${J.length} JOUEURS · ${nF} PROFIL${nF > 1 ? "S" : ""} COMPLÉTÉ${nF > 1 ? "S" : ""}`;
   const fin = x => x.P.couleurs.final;
@@ -132,7 +133,7 @@
   grand();
 
   // Statistiques : à zéro tant que rien n'a été fait
-  let dv = []; try { dv = await ST.devinettes(); } catch (e) { }
+  const dv = await pDv;
   let S;
   if (nF) {
     const tri = QC.COULEURS.slice().sort((a, b) => moy[b] - moy[a]);

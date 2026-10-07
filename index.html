@@ -155,6 +155,7 @@
   if (!moi) { $("cta1").textContent = "Entrer"; $("cta1").href = "qui.html"; }
   else if (moi.reponses) $("cta1").textContent = "Refaire le quiz";
 
+  const pNv = ST.nouvelles().catch(() => []); // en parallèle de l'affichage
   let cur = Math.max(0, J.findIndex(j => j.id === (moi && moi.id)));
   const bigIni = j => `<div class="bigini" aria-hidden="true">${esc(j.pseudo[0])}</div>`;
   function vitrine() {
@@ -183,7 +184,8 @@
   vitrine();
 
   // Fil des nouvelles : réclamations, publications, devinettes
-  let nv = []; try { nv = await ST.nouvelles(); } catch (e) { }
+  SITE.images();
+  const nv = await pNv;
   const T = { reclame: () => "a réclamé son profil", publie: () => "a publié son profil", devine: x => `a deviné ${x.score} réponse${x.score > 1 ? "s" : ""} sur 5 de ${esc((G.parId[x.cible] || {}).pseudo || "?")}` };
   $("feed").innerHTML = nv.filter(x => G.parId[x.joueur]).slice(0, 4).map(x => { const j = G.parId[x.joueur];
     return `<li><a class="pic" href="profil.html?j=${j.id}" ${SITE.avAttrs(j)} aria-label="${esc(j.pseudo)}"></a><div><b>${esc(j.pseudo)}</b><p>${T[x.type](x)}</p><time datetime="${esc(x.date)}">${SITE.depuis(x.date)}</time></div></li>`; }).join("")

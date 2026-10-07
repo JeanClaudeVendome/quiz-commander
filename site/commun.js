@@ -109,15 +109,37 @@
     return [...l.slice(0, 3).map(s => s.toLowerCase()), ...d].join(", ");
   };
 
-  /* Profil complet d'un joueur à partir de sa dernière version (mis en cache) */
-  const cacheProfils = {};
+  /* Profil d'un joueur à partir de sa dernière version.
+     La mesure (P) est quasi gratuite ; les commandants proposés (res) coûtent cher (≈ 3 500 commandants notés) :
+     ils ne sont calculés qu'à la demande (pr.res), et gardés dans le navigateur par version et par date des données. */
+  const cacheProfils = {}, CACHE_RES = "qc-propositions";
+  let resDisque = null;
+  const lireRes = () => { if (!resDisque) { try { resDisque = JSON.parse(localStorage.getItem(CACHE_RES) || "{}"); } catch (e) { resDisque = {}; } } return resDisque; };
+  const compacter = x => ({ n: x.c.n, note: x.note, pct: x.pct, rang: x.rang, parts: x.parts, pourquoi: x.pourquoi, attention: x.attention, drapeaux: x.drapeaux });
+  const regonfler = l => l.map(x => Object.assign({}, x, { c: SITE.carte(x.n) })).filter(x => x.c);
+  function propositions(j, P) {
+    const cle = j.id + ":" + j.maj + ":" + ((catalogue && catalogue.meta && catalogue.meta.built) || "") + ":" + QC.R.diversite;
+    const d = lireRes();
+    if (d[cle]) {
+      const r = d[cle];
+      return { classement: regonfler(r.classement), familles: { sur: regonfler(r.sur), surprise: regonfler(r.surprise), horsZone: regonfler(r.horsZone) } };
+    }
+    const res = QC.proposer(P, { n: 12 });
+    // on ne garde que les versions actuelles des joueurs (le cache ne grossit pas indéfiniment)
+    for (const k in d) if (k.split(":")[0] === j.id) delete d[k];
+    d[cle] = { classement: res.classement.map(compacter), sur: res.familles.sur.map(compacter), surprise: res.familles.surprise.map(compacter), horsZone: res.familles.horsZone.map(compacter) };
+    try { localStorage.setItem(CACHE_RES, JSON.stringify(d)); } catch (e) { }
+    return { classement: res.classement, familles: res.familles };
+  }
   SITE.profil = function (j) {
     if (!j || !j.reponses) return null;
     const k = j.id + ":" + j.maj;
     if (cacheProfils[k]) return cacheProfils[k];
     const P = QC.mesurer(j.reponses, j.mode);
-    const res = QC.proposer(P, { n: 12 });
-    return cacheProfils[k] = { P, res, A: j.reponses, ident: SITE.identite(P), titre: SITE.titre(P) };
+    const pr = { P, A: j.reponses, ident: SITE.identite(P), titre: SITE.titre(P) };
+    let res = null;
+    Object.defineProperty(pr, "res", { get: () => res || (res = propositions(j, P)) });
+    return cacheProfils[k] = pr;
   };
   SITE.avatarDe = function (j) {
     if (j.avatar) return j.avatar;
@@ -236,8 +258,7 @@
     opts = opts || {};
     if (!ST.code() && !opts.sansGroupe) { location.href = "qui.html"; return false; }
     try {
-      await SITE.charger();
-      if (ST.code()) await SITE.groupe();
+      await Promise.all([SITE.charger(), ST.code() ? SITE.groupe() : null]); // en parallèle : catalogue et groupe
     } catch (e) {
       document.body.insertAdjacentHTML("afterbegin", `<div class="alerte">${esc(e.message)}</div>`);
       if (e.code === "CODE_GROUPE") { ST.oublierGroupe(); location.href = "qui.html"; }

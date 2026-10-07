@@ -110,6 +110,19 @@
   };
   const appel = async (fn, args) => MODE === "supabase" ? rpc(fn, args) : LOCAL[fn](args || {});
 
+  /* Cache de lecture (45 s, le temps de naviguer entre les pages) : évite d'attendre Supabase à chaque page.
+     Toute écriture le vide, pour qu'on voie toujours tout de suite ses propres changements. */
+  const CACHE = "qc-cache:", TTL = 45000;
+  async function lecture(fn, args) {
+    const k = CACHE + fn + ":" + JSON.stringify(args);
+    try { const c = JSON.parse(sessionStorage.getItem(k) || "null"); if (c && Date.now() - c.t < TTL) return c.v; } catch (e) { }
+    const v = await appel(fn, args);
+    try { sessionStorage.setItem(k, JSON.stringify({ t: Date.now(), v })); } catch (e) { }
+    return v;
+  }
+  function viderCache() { try { Object.keys(sessionStorage).filter(k => k.startsWith(CACHE)).forEach(k => sessionStorage.removeItem(k)); } catch (e) { } }
+  const ecriture = async (fn, args) => { const r = await appel(fn, args); viderCache(); return r; };
+
   /* ---------- Session (code du groupe + joueur connecté sur cet appareil) ---------- */
   const session = () => lire(SESS, {});
   const S = {
@@ -117,22 +130,23 @@
     session,
     code: () => session().code || (MODE === "local" ? "local" : null),
     moi: () => session().joueur || null,
-    async entrer(code) { const g = await appel("groupe_entrer", { p_code: code }); ecrire(SESS, Object.assign(session(), { code, groupe: g })); return g; },
+    async entrer(code) { const g = await appel("groupe_entrer", { p_code: code }); viderCache(); ecrire(SESS, Object.assign(session(), { code, groupe: g })); return g; },
     sortir() { const s = session(); delete s.joueur; delete s.pin; ecrire(SESS, s); },
     oublierGroupe() { try { localStorage.removeItem(SESS); } catch (e) { } },
-    joueurs: () => appel("groupe_joueurs", { p_code: S.code() }),
-    historique: id => appel("joueur_historique", { p_code: S.code(), p_joueur: id }),
-    nouvelles: () => appel("groupe_nouvelles", { p_code: S.code() }),
-    devinettes: () => appel("groupe_devinettes", { p_code: S.code() }),
-    async reclamer(id, pin) { await appel("joueur_reclamer", { p_code: S.code(), p_joueur: id, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: id, pin })); },
-    async creer(pseudo, pin) { const r = await appel("joueur_creer", { p_code: S.code(), p_pseudo: pseudo, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: r.id, pin })); return r.id; },
+    joueurs: () => lecture("groupe_joueurs", { p_code: S.code() }),
+    historique: id => lecture("joueur_historique", { p_code: S.code(), p_joueur: id }),
+    nouvelles: () => lecture("groupe_nouvelles", { p_code: S.code() }),
+    devinettes: () => lecture("groupe_devinettes", { p_code: S.code() }),
+    async reclamer(id, pin) { await ecriture("joueur_reclamer", { p_code: S.code(), p_joueur: id, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: id, pin })); },
+    async creer(pseudo, pin) { const r = await ecriture("joueur_creer", { p_code: S.code(), p_pseudo: pseudo, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: r.id, pin })); return r.id; },
     async connexion(id, pin) { await appel("joueur_connexion", { p_code: S.code(), p_joueur: id, p_pin: pin }); ecrire(SESS, Object.assign(session(), { joueur: id, pin })); },
-    publier: (mode, reponses, avatar) => appel("version_publier", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_mode: mode, p_reponses: reponses, p_avatar: avatar || null }),
-    avatar: av => appel("joueur_avatar", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_avatar: av }),
-    supprimerVersion: vid => appel("version_supprimer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_version: vid }),
-    devinette: (cible, score, sur) => appel("devinette_enregistrer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cible: cible, p_score: score, p_sur: sur || 5 }),
+    publier: (mode, reponses, avatar) => ecriture("version_publier", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_mode: mode, p_reponses: reponses, p_avatar: avatar || null }),
+    avatar: av => ecriture("joueur_avatar", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_avatar: av }),
+    supprimerVersion: vid => ecriture("version_supprimer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_version: vid }),
+    devinette: (cible, score, sur) => ecriture("devinette_enregistrer", { p_code: S.code(), p_joueur: S.moi(), p_pin: session().pin, p_cible: cible, p_score: score, p_sur: sur || 5 }),
+    viderCache,
     /* outils du mode local (encadré de démonstration) */
-    reinitialiserLocal() { try { localStorage.removeItem(DB); localStorage.removeItem(SESS); } catch (e) { } }
+    reinitialiserLocal() { viderCache(); try { localStorage.removeItem(DB); localStorage.removeItem(SESS); } catch (e) { } }
   };
   if (MODE === "local" && !session().code) ecrire(SESS, { code: "local", groupe: { id: "local", nom: "La table (mode local)" } });
   window.QCStock = S;
