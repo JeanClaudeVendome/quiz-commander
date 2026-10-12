@@ -31,11 +31,12 @@
  },
  "etiquettes_inconnues": [
   "auto-equip",
+  "counter-lord",
   "synergy-flashback",
   "synergy-leaves-creature",
   "synergy-unearth"
  ],
  "references_puissance_introuvables": [],
  "corrections_sans_correspondance": [],
- "date": "2026-10-07"
+ "date": "2026-10-12"
 }
