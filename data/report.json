@@ -1,14 +1,14 @@
 {
  "commandants": 3472,
  "sans_style": 231,
- "avec_combo": 1444,
+ "avec_combo": 1446,
  "preconstruits": 194,
  "noms_fr": 3214,
  "universes_beyond": 1292,
  "puissance": {
   "1": 400,
-  "2": 2509,
-  "3": 441,
+  "2": 2508,
+  "3": 442,
   "4": 122,
   "5": 0
  },
@@ -38,5 +38,5 @@
  ],
  "references_puissance_introuvables": [],
  "corrections_sans_correspondance": [],
- "date": "2026-10-19"
+ "date": "2026-10-26"
 }
