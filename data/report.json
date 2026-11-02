@@ -1,32 +1,32 @@
 {
  "commandants": 3472,
  "sans_style": 231,
- "avec_combo": 1446,
+ "avec_combo": 1448,
  "preconstruits": 194,
  "noms_fr": 3214,
- "universes_beyond": 1292,
+ "universes_beyond": 1294,
  "puissance": {
-  "1": 400,
-  "2": 2508,
-  "3": 442,
-  "4": 122,
+  "1": 398,
+  "2": 2503,
+  "3": 446,
+  "4": 125,
   "5": 0
  },
  "complexite": {
-  "1": 853,
-  "2": 1941,
-  "3": 576,
+  "1": 852,
+  "2": 1940,
+  "3": 578,
   "4": 74,
   "5": 28
  },
  "precision_sans_corrections": {
   "verifies": 145,
-  "style_principal_trouve": 0.621,
+  "style_principal_trouve": 0.614,
   "au_moins_un_style_commun": 0.897,
   "puissance_moyenne_par_niveau_verifie": {
    "1": 2.54,
-   "2": 2.72,
-   "3": 2.94
+   "2": 2.74,
+   "3": 2.96
   }
  },
  "etiquettes_inconnues": [
@@ -38,5 +38,5 @@
  ],
  "references_puissance_introuvables": [],
  "corrections_sans_correspondance": [],
- "date": "2026-10-26"
+ "date": "2026-11-02"
 }
