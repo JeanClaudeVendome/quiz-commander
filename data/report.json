@@ -1,14 +1,14 @@
 {
  "commandants": 3729,
  "sans_style": 242,
- "avec_combo": 1494,
+ "avec_combo": 1500,
  "preconstruits": 198,
- "noms_fr": 3214,
+ "noms_fr": 3398,
  "universes_beyond": 1491,
  "puissance": {
   "1": 416,
-  "2": 2736,
-  "3": 450,
+  "2": 2735,
+  "3": 451,
   "4": 127,
   "5": 0
  },
@@ -25,7 +25,7 @@
   "au_moins_un_style_commun": 0.897,
   "puissance_moyenne_par_niveau_verifie": {
    "1": 2.54,
-   "2": 2.74,
+   "2": 2.75,
    "3": 2.97
   }
  },
@@ -38,5 +38,5 @@
  ],
  "references_puissance_introuvables": [],
  "corrections_sans_correspondance": [],
- "date": "2026-11-09"
+ "date": "2026-11-16"
 }
